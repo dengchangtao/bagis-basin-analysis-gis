@@ -1,0 +1,45 @@
+﻿Imports System.ComponentModel
+
+Public Enum MapsFileName
+    <Description("")> no_name
+    <Description("snotel_sites")> Snotel
+    <Description("snowcourse_sites")> SnowCourse
+    <Description("elevzone")> ElevationZone
+    <Description("subelev")> SubElevationZone
+    <Description("aspzone")> AspectZone
+    <Description("slpzone")> SlopeZone
+    <Description("stelzone")> SnotelZone
+    <Description("scoszone")> SnowCourseZone
+    <Description("preczone")> PrecipZone
+    <Description("nppseduo")> PseudoRepresentedArea
+    <Description("npactual")> ActualRepresentedArea
+    <Description("pourpoint")> PourPoint
+    <Description("unsnappedpp")> UnsnappedPourPoint
+    <Description("grid")> filled_dem
+    <Description("grid")> slope
+    <Description("grid")> aspect
+    <Description("grid")> flow_direction
+    <Description("grid")> flow_accumulation
+    <Description("grid")> hillshade
+    <Description("grid")> Prism
+    <Description("grid")> dem
+    <Description("sum")> sum
+    <Description("dem_filled")> filled_dem_gdb
+    <Description("flow_direction")> flow_direction_gdb
+    <Description("flow_accumulation")> flow_accumulation_gdb
+    '<Description("preczone_v")> PrecipZoneVector
+    <Description("flow_length")> flow_length_gdb
+    <Description("slope")> slope_gdb
+    <Description("aspect")> aspect_gdb
+    <Description("hillshade")> hillshade_gdb
+    <Description("dem")> dem_gdb
+    <Description("pseudo_sites")> Pseudo
+    <Description("npdiff")> DifferenceRepresentedArea
+    <Description("s1_snotel_b")> S1SnotelBuffers
+    <Description("s1_snowCourse_b")> S1SnowCourseBuffers
+    <Description("s1_pseudo_b")> S1PseudoBuffers
+    <Description("s2_snotel_b")> S2SnotelBuffers
+    <Description("s2_snowCourse_b")> S2SnowCourseBuffers
+    <Description("s2_pseudo_b")> S2PseudoBuffers
+
+End Enum
