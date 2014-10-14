@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BAGIS", "BAGIS\BAGIS.vbproj", "{6FF293B8-121F-4620-999C-29E43145AC68}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BAGIS_ClassLibrary", "BAGIS_ClassLibrary\BAGIS_ClassLibrary.vbproj", "{DA894C59-5DA0-44DD-B8A6-89110BB0830B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FF293B8-121F-4620-999C-29E43145AC68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FF293B8-121F-4620-999C-29E43145AC68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FF293B8-121F-4620-999C-29E43145AC68}.Debug|x86.ActiveCfg = Debug|x86
+		{6FF293B8-121F-4620-999C-29E43145AC68}.Debug|x86.Build.0 = Debug|x86
+		{6FF293B8-121F-4620-999C-29E43145AC68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FF293B8-121F-4620-999C-29E43145AC68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FF293B8-121F-4620-999C-29E43145AC68}.Release|x86.ActiveCfg = Release|x86
+		{6FF293B8-121F-4620-999C-29E43145AC68}.Release|x86.Build.0 = Release|x86
+		{DA894C59-5DA0-44DD-B8A6-89110BB0830B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA894C59-5DA0-44DD-B8A6-89110BB0830B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA894C59-5DA0-44DD-B8A6-89110BB0830B}.Debug|x86.ActiveCfg = Debug|x86
+		{DA894C59-5DA0-44DD-B8A6-89110BB0830B}.Debug|x86.Build.0 = Debug|x86
+		{DA894C59-5DA0-44DD-B8A6-89110BB0830B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA894C59-5DA0-44DD-B8A6-89110BB0830B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA894C59-5DA0-44DD-B8A6-89110BB0830B}.Release|x86.ActiveCfg = Release|x86
+		{DA894C59-5DA0-44DD-B8A6-89110BB0830B}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

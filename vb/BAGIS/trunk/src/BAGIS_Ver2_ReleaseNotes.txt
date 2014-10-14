@@ -1,0 +1,142 @@
+BAGIS Version 2 Add-in Release Notes
+
+BAGIS version K released on June 6, 2014
+1) Updated version of ClassLibrary that is compatible with all ArcGIS 10.0, 10.1, and 10.2
+2) Switch dropdown lists on Maps screen to read-only to avoid crashes when users type in them
+
+BAGIS version K released on January 17, 2014
+1) Fix bug in Site Scenarios tool where pseudo-sites layer is missing from map after calculating the represented area following when the initial pseudo-site is added.
+2) Rename Elevation Scenario button to Site Scenarios
+3) Add support for File GDB when clipping supplemental layers to an AOI
+4) When the Site Scenarios form is loaded, the elevation(s) of sites relative to the DEM are validated. If the elevation(s) are out of range, BAGIS warns you and the site cannot be used in analysis
+5) The Settings form warns you when the snotel or snow course layers are in a different projection than the 30m DEM when the settings are saved.
+6) The sequencing of the buttons on the Generate Maps tool has been fixed.
+7) Fix bug where aoibagis layer is created without an attribute table. This bug was caused by the migration to the File Geodatabase format.
+
+BAGIS Version I released on November 13, 2013
+Done:
+
+1) Performance and user-requested enhancements to Site Scenario tool.
+
+
+================================================
+BAGIS Version H Pre-release released on October 11, 2013
+Done:
+
+1) Fixed a bug related to the activation of the Generate Maps menu when the AOI doesn't have snow course layers.
+
+2) Change the algorithm to allow the creation of AOI buffers with a large buffer distance. The buffer is first created as a shapefile and then is imported to FGDB to prevent xy domain issue associated with the map frame and FGDB when the buffered distance well extended beyond the Basin extent.
+
+3) Added subroutines to create paoi and aoib rasters during AOI creation. The two rasters, though not used in BAGIS, are required data layers when converting an FGDB AOI to a Weasel-compatible AOI.
+
+4) Use both elevation and proximity rules to define site representation in the Site Scenario tool.
+
+5) Disabled the Update Weasel Info button in the AOI Utility dialog window when no AOI is specified.
+
+6) Reworked on the AOI Stream tool to prevent the "Unable to create the output stream shapefile" error message that was caused by the FGDB filelock. The work-around is to use the stream shapefile as the display layer. The FGDB stream featureclass is only used in the "Generate Maps" tool.
+
+7) Fixed the esriDataSourcesRaster.GdalDriver error by replacing the IExtractionOp with IExtractionOp2.
+
+8) Updated chart titles, axis labels, and map cartography per Gus' request
+
+To-do-list:
+
+1) When users selected not to convert a weasel AOI/BASIN, the Basin Tool didn't exit and prohibits the user to create a File GDB version of the surface and aoi GDB in the BASIN folder.
+
+================================================
+BAGIS Version 2.0g released on July 4, 2013
+
+1) Generate Excel table when snotel/snow course names not correctly reported in the excel table. This was caused by an ArcGIS bug that was unable to perform attribute query for some attribute records. Update to ArcGIS 10.0 SP5 resolved the issue.
+
+2) Fixed the code so that Excel graphics for BAGIS range analysis are no longer obscured.
+
+3) Added remarks on the Buffer Distance setting when generating AOI. The remarks also instruct how to set the buffer distance for clipping the PRISM layers.
+
+================================================
+BAGIS Version 2.0f released on June 24, 2013
+
+1) Additional process status notifications added to inform the users on the AOI generating progress.
+
+2) Fixed a bug that created "divided by zero" error during run-time on the Generate Maps dialog. The bug might prevent the Generate Maps dialog to open when a previous analysis was done on the AOI.
+
+3) Fixed some typos on the GUI.
+
+4) Added DEM smoothing functions in BASIN Tool.
+
+5) AOI utility originally reported DEM statistics for all cells in the DEM. It now reports DEM statistics for cells within AOI boundaries only.
+
+6) Fixed the inconsistency in elevation units displayed in the Generate Maps dialog.
+
+7) Fixed range analysis on the "Tables" function in the Generate Maps dialog. It now generates the correct Excel tables.
+
+8) Added units metadata to filled_dem, slope, and PRISM precipitation (for AOI only) rasters when basins and AOIs are created.
+
+9) Add a new tool - "Creating an AOI using an existing shapefile" that allows the use of user-provided arbitrary shape to generate an "AOI".
+
+10) Generate Maps menu can be activated even when the AOI doesn't have SNOTEL and/or snow course layers.
+
+
+================================================
+BAGIS Version 2.0e released on May 30, 2013
+
+1) Bugs in AOI generating subroutine were fixed.
+
+2) The units of DEM, slope, and PRISM precipitation depth are recorded in the AOI creation process.
+
+3) BAGIS slope layer is calculated in % degree.
+
+================================================
+BAGIS Version 2.0d released on May 22, 2013
+
+1) Bugs in the PRISM clipping subroutine were fixed.
+
+2) Improved the stability of the subroutines to remove BASIN and AOI's surface.gdb and aoi.gdb folders when deleting a BASIN or an AOI.
+
+3) Allows BAGIS to generate AOIs without having SNOTEL, Snow Course, and PRISM data.
+
+4) GUI inconsistencies in several dialog windows were fixed.
+
+================================================
+BAGIS Version 2.0c released on April 30, 2013
+
+1) BAGIS is ArcGIS 10.1 compatible in this release.
+
+2) BAGIS now checks if ArcGIS Spatial Analyst exists and activates it if it exists.
+
+3) The function to set the default projection was updated to be compatible with ArcGIS 10.1. 
+
+4) Subroutines for clipping shapefiles to AOIs were updated so that the shapefiles can be correctly clipped to File Geodatabase.
+
+5) GUI inconsistencies in several dialog windows were fixed.
+
+================================================
+BAGIS Version 2.0b released on April 14, 2013
+
+1) Improve error handling capability of the program when the settings parameters are incorrect.
+
+2) Fixed bugs in Basin Info and AOI Utilities so that the dem statistics can be read correctly.
+
+3) Improve usability of the program by changing (removing) the behavior of the progress bar.
+
+================================================
+BAGIS Version 2.0a released on Jan 7, 2013
+
+1) The action of "Add Ref Layers" was improved so that in addition to our standard three reference layers, Pour point layer is added to the map to facilitate DEM extent selection. The layer's name for this shapefile in TOC is "Gauge Stations" (symbology is adjusted so that forecast points are sufficiently visible over the other layers)
+
+2) Better error/exception handling routines are implemented so that BAGIS can recover (and reset itself) from an error.
+
+3) The selected pourpoint in the corresponding list (Pour Points Form) is now distinguishable from other points by adding selection functionality (the color is changed to light blue similar to ArcGIS selection style)
+
+4) AOI reference area value is correctly read from the gauge station attribute table. Accurate reference area related to each selected pour point is now reported on the popup message as well as in the pour point attribute table. When no reference AOI area information is available for a selected pour point, the Create AOI tool shows "Not Specified", instead of 0, as the reference area.
+
+5) A BASIN created in BAGIS V1 (i.e., VBA version) or in Weasel can now be used in V2. Options to automatically convert the BASIN to File GDB are available. If the BASIN is an AOI or contains AOIS, then the existing DEM cannot be modified.
+
+6) BAGIS Ver 2.0 now reads the definition file (basinanalyst.def) created in Ver 1.0.
+
+7) Various tweaks/modifications on the code to handle error messages correctly and more informatively.
+
+8) Fix the snap raster setting for creating BASINs and AOIs, so that the created vectors and rasters align to the DEM pixel boundaries.
+
+9) Map frame name is set to the correct name (Basin Analysis) to prevent a warning message when generating AOI maps.
+
+10) Allows users to generate 4, 8, or 16 aspect directions in AOI maps and tables analysis in the Generate Maps tool.
