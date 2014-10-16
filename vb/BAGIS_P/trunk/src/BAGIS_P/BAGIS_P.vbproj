@@ -1,0 +1,619 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3F36DB0F-3FC3-4618-A3D6-915C688958FD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>BAGIS_P</RootNamespace>
+    <AssemblyName>BAGIS_P</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>BAGIS_P.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>BAGIS_P.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ESRI.ArcGIS.ADF.Connection.Local, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.ArcMapUI, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Carto, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Catalog, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.CatalogUI, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.DataSourcesFile, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.DataSourcesGDB, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.DataSourcesRaster, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Desktop.AddIns, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Display, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Framework, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.GeoAnalyst, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Geodatabase, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Geometry, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Geoprocessing, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.GeoprocessingUI, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.SpatialAnalyst, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.System, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.SystemUI, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Version, Version=10.2.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buttons\BtnExportToAscii.vb" />
+    <Compile Include="Buttons\BtnParameterDescription.vb" />
+    <Compile Include="Forms\BagisPExtension.vb" />
+    <Compile Include="Buttons\BtnExportParameters.vb" />
+    <Compile Include="Buttons\BtnExportParametersOms.vb" />
+    <Compile Include="Buttons\BtnHelp.vb" />
+    <Compile Include="Buttons\BtnAbout.vb" />
+    <Compile Include="Buttons\BtnDataManager.vb" />
+    <Compile Include="Buttons\BtnLocalDataManager.vb" />
+    <Compile Include="Buttons\BtnParameterViewer.vb" />
+    <Compile Include="Buttons\BtnPublicMethodEditor.vb" />
+    <Compile Include="Buttons\BtnPublicProfileBuilder.vb" />
+    <Compile Include="Buttons\BtnModel.vb" />
+    <Compile Include="Buttons\BtnLocalProfileBuilder.vb" />
+    <Compile Include="Buttons\BtnSubAOIIdTool.vb" />
+    <Compile Include="Buttons\BtnTimberlineTool.vb" />
+    <Compile Include="Buttons\BtnViewLog.vb" />
+    <Compile Include="Config.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Config.esriaddinx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmExportProfile.Designer.vb">
+      <DependentUpon>FrmExportProfile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmExportProfile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmExportToAscii.Designer.vb">
+      <DependentUpon>FrmExportToAscii.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmExportToAscii.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmEditHruParameters.Designer.vb">
+      <DependentUpon>FrmEditHruParameters.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmEditHruParameters.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmExportParametersOms.Designer.vb">
+      <DependentUpon>FrmExportParametersOms.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmExportParametersOms.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmAbout.Designer.vb">
+      <DependentUpon>FrmAbout.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmAbout.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmClipDataSource.Designer.vb">
+      <DependentUpon>FrmClipDataSource.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmClipDataSource.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmDataUnits.Designer.vb">
+      <DependentUpon>FrmDataUnits.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmDataUnits.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmEditParameters.Designer.vb">
+      <DependentUpon>FrmEditParameters.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmEditParameters.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmExportParameters.Designer.vb">
+      <DependentUpon>FrmExportParameters.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmExportParameters.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmParameterTable.Designer.vb">
+      <DependentUpon>FrmParameterTable.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmParameterTable.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmParameterViewer.Designer.vb">
+      <DependentUpon>FrmParameterViewer.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmParameterViewer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmResetToolboxPath.Designer.vb">
+      <DependentUpon>FrmResetToolboxPath.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmResetToolboxPath.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmSelectProfile.Designer.vb">
+      <DependentUpon>FrmSelectProfile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmSelectProfile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmAddData.Designer.vb">
+      <DependentUpon>FrmAddData.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmAddData.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmAddMethod.Designer.vb">
+      <DependentUpon>FrmAddMethod.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmAddMethod.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmDataManager.Designer.vb">
+      <DependentUpon>FrmDataManager.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmDataManager.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmGroupProfile.Designer.vb">
+      <DependentUpon>FrmGroupProfile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmGroupProfile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmEditMethod.Designer.vb">
+      <DependentUpon>FrmEditMethod.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmEditMethod.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmProfileBuilder.Designer.vb">
+      <DependentUpon>FrmProfileBuilder.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmProfileBuilder.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmSelectAoi.Designer.vb">
+      <DependentUpon>FrmSelectAoi.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmSelectAoi.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmSubAoiId.Designer.vb">
+      <DependentUpon>FrmSubAoiId.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmSubAoiId.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmTimberlineTool.Designer.vb">
+      <DependentUpon>FrmTimberlineTool.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmTimberlineTool.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\IdentifyTool.vb" />
+    <Compile Include="Help\FrmHelp.Designer.vb">
+      <DependentUpon>FrmHelp.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Help\FrmHelp.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MethodModule.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Objects\ExportProfile.vb" />
+    <Compile Include="Objects\HruProfileStatus.vb" />
+    <Compile Include="Objects\Parameter.vb" />
+    <Compile Include="Objects\ParameterTable.vb" />
+    <Compile Include="Objects\Settings.vb" />
+    <Compile Include="Objects\DataSource.vb" />
+    <Compile Include="Objects\SubAOI.vb" />
+    <Compile Include="ParameterModule.vb" />
+    <Compile Include="ProfileModule.vb" />
+    <Compile Include="ToolboxModule.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\FrmExportProfile.resx">
+      <DependentUpon>FrmExportProfile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmExportToAscii.resx">
+      <DependentUpon>FrmExportToAscii.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmEditHruParameters.resx">
+      <DependentUpon>FrmEditHruParameters.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmExportParametersOms.resx">
+      <DependentUpon>FrmExportParametersOms.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmAbout.resx">
+      <DependentUpon>FrmAbout.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmClipDataSource.resx">
+      <DependentUpon>FrmClipDataSource.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmDataUnits.resx">
+      <DependentUpon>FrmDataUnits.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmEditParameters.resx">
+      <DependentUpon>FrmEditParameters.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmExportParameters.resx">
+      <DependentUpon>FrmExportParameters.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmParameterTable.resx">
+      <DependentUpon>FrmParameterTable.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmParameterViewer.resx">
+      <DependentUpon>FrmParameterViewer.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmResetToolboxPath.resx">
+      <DependentUpon>FrmResetToolboxPath.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmSelectProfile.resx">
+      <DependentUpon>FrmSelectProfile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmAddData.resx">
+      <DependentUpon>FrmAddData.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmAddMethod.resx">
+      <DependentUpon>FrmAddMethod.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmDataManager.resx">
+      <DependentUpon>FrmDataManager.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmEditMethod.resx">
+      <DependentUpon>FrmEditMethod.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmGroupProfile.resx">
+      <DependentUpon>FrmGroupProfile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmProfileBuilder.resx">
+      <DependentUpon>FrmProfileBuilder.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmSelectAoi.resx">
+      <DependentUpon>FrmSelectAoi.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmSubAoiId.resx">
+      <DependentUpon>FrmSubAoiId.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmTimberlineTool.resx">
+      <DependentUpon>FrmTimberlineTool.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Help\FrmHelp.resx">
+      <DependentUpon>FrmHelp.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Config.esriaddinx">
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <Generator>ArcGISAddInHostGenerator</Generator>
+      <LastGenOutput>Config.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </AddInContent>
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BAGIS_P.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnModel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnGroupProfile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\GenericYellowLeftArrow32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\GenericYellowRightArrow32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnDataLayerManager.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnParameterManager.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnAddFileName.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnLocalDataManager.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnPublicMethodEditor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnLocalMethodEditor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnParameterViewer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnAbout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnHelp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnViewLog.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\aspect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\black2white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\basic_random.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\elevation1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\elevation2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\precipitation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\slope.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnExportParameters.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnSubAOIIdTool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnTimberlineTool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\FrmTimberlineTool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IdentifyTool16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\IdentifyTool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnExportParametersOms.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\BtnExportToAscii.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ExportProfile.xsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <AddInContent Include="Images\BtnParameterDescription.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BAGIS_ClassLibrary\BAGIS_ClassLibrary.vbproj">
+      <Project>{8FE020D2-CC5B-444E-A34B-8D8CEB39250D}</Project>
+      <Name>BAGIS_ClassLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>6</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <ZipFileExtension>esriAddIn</ZipFileExtension>
+    <AddInTargetProduct>Desktop</AddInTargetProduct>
+    <AddInTargetVersion>10.0</AddInTargetVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DocumentationFile>BAGIS_P.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DocumentationFile>BAGIS_P.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\ESRI\ESRI.ArcGIS.AddIns.targets" Condition="Exists('$(MSBuildExtensionsPath)\ESRI\ESRI.ArcGIS.AddIns.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  -->
+  <Target Name="AfterBuild">
+    <!-- Gives build warning when add-in targets file is not found. -->
+    <Warning Text="Unable to create .esriAddin; missing ESRI ArcGIS Add-in SDK component(s)." Condition="!Exists('$(MSBuildExtensionsPath)\ESRI\ESRI.ArcGIS.AddIns.targets')" />
+  </Target>
+  <ProjectExtensions>
+    <!-- Default ESRI add-in properties -->
+    <ESRIAddInProperties>
+      <Host>ArcMap</Host>
+    </ESRIAddInProperties>
+  </ProjectExtensions>
+</Project>
