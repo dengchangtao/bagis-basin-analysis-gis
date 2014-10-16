@@ -1,0 +1,5 @@
+1. Add note to FrmEditHruParameters indicating that only non-BAGIS-P parameters are listed
+2. Sort data sources alphabetically in Method Editor list
+3. Make Data Manager window longer
+4. Add validation to make sure temperature units are defined if they are used in a method
+5. Add export to ASCII function
