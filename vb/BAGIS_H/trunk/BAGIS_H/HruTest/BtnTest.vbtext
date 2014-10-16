@@ -1,0 +1,180 @@
+﻿Imports ESRI.ArcGIS.esriSystem
+Imports ESRI.ArcGIS.Geodatabase
+Imports ESRI.ArcGIS.DataSourcesRaster
+Imports ESRI.ArcGIS.GeoAnalyst
+Imports ESRI.ArcGIS.SpatialAnalyst
+Imports ESRI.ArcGIS.DataSourcesGDB
+
+Public Class BtnTest
+    Inherits ESRI.ArcGIS.Desktop.AddIns.Button
+
+    Public Sub New()
+
+    End Sub
+
+    Protected Overrides Sub OnClick()
+        Dim path As String = "C:\Docs\Lesley\UCO_RioG_SantaFe_R_nr_SantaFe_092010\output\zones\z33\z33.gdb"
+        Dim fName As String = GRID
+        Dim sName As String = "grid2"
+        Dim cName As String = "catTemp"
+        'BA_CreateRasterCatalog("C:\Docs\Lesley\UCO_RioG_SantaFe_R_nr_SantaFe_092010", "aoi_v", path, cName)
+        'Dim dataset As IGeoDataset = BA_OpenRasterFromGDB(path, fName)
+        'If dataset IsNot Nothing Then
+        '    '    Dim success As Short = BA_SaveRasterDatasetGDB(dataset, path, "GRID", sName)
+        '    Dim success As Short = BA_SaveRasterDatasetToCatalog(path, cName, dataset)
+        'End If
+        'BA_RemoveTemporaryRasters(path)
+        'UnableToSaveToGdb()
+        'TestBA_AddRasFilter()
+        Dim gdbName As String = "gdb1.gdb"
+        SaveFilterToGDB(gdbName)
+    End Sub
+
+    Protected Overrides Sub OnUpdate()
+
+    End Sub
+
+    Public Sub UnableToSaveToGdb()
+        Dim gdb1 As String = "TestGdb1"
+        Dim gdb2 As String = "TestGdb2"
+        Dim outputFile As String = "temp1"
+        Dim path As String = "C:\Docs\Lesley\UCO_RioG_SantaFe_R_nr_SantaFe_092010\output\zones"
+        Dim inPath As String = "C:\Docs\Lesley\UCO_RioG_SantaFe_R_nr_SantaFe_092010\layers\"
+        Dim inFile As String = "cov_den"
+        Dim inGdbFile As String = "tmpcov_den"
+        Dim pOutputRaster As IGeoDataset = Nothing
+        Dim pEnv As IRasterAnalysisEnvironment = Nothing
+
+        'gdb1
+        BA_CreateFileGdb(path, gdb1 & ".gdb")
+        'BA_CopyRaster(inPath & inFile, path & "\TestGdb1.gdb\" & inGdbFile)
+        'Dim blahDataset As IGeoDataset = BA_OpenRasterFromFile(inPath, inFile)
+        Dim inputDataset As IGeoDataset = BA_OpenRasterFromGDB(path & "\TestGdb1.gdb", inGdbFile)
+        Dim pNeighborhoodOp As INeighborhoodOp = New RasterNeighborhoodOp
+        ' Set the analysis mask
+
+        'pEnv = CType(pNeighborhoodOp, IRasterAnalysisEnvironment) 'Explicit cast
+        'Dim maskFeatureClass As IFeatureClass = BA_OpenFeatureClassFromFile(maskFolder, maskFile)
+        'Dim maskGeodataset As IGeoDataset = CType(maskFeatureClass, IGeoDataset)
+        'pEnv.Mask = maskGeodataset
+
+        Dim pRasterNeighborhood As IRasterNeighborhood = New RasterNeighborhood
+        ' Configure raster neighborhood
+        pRasterNeighborhood.SetRectangle(5, 5, esriGeoAnalysisUnitsEnum.esriUnitsCells)
+        ' Explicit cast to access RasterAnalysis Environment
+        pOutputRaster = pNeighborhoodOp.FocalStatistics(inputDataset, esriGeoAnalysisStatisticsEnum.esriGeoAnalysisStatsMean, pRasterNeighborhood, True)
+        BA_SaveRasterDatasetGDB(pOutputRaster, path & "\TestGdb1.gdb", BA_RASTER_FORMAT, outputFile)
+
+        'BA_SaveRasterDataset(pOutputRaster, path, outputFile)
+        'gdb2
+        'BA_CreateFileGdb(path, gdb2 & ".gdb")
+        'inputDataset = BA_OpenRasterFromFile(demFile, demFile)
+        'pNeighborhoodOp = New RasterNeighborhoodOp
+        'pRasterNeighborhood = New RasterNeighborhood
+        'pRasterNeighborhood.SetRectangle(5, 5, esriGeoAnalysisUnitsEnum.esriUnitsCells)
+        'pOutputRaster = pNeighborhoodOp.FocalStatistics(inputDataset, esriGeoAnalysisStatisticsEnum.esriGeoAnalysisStatsMean, pRasterNeighborhood, True)
+        'BA_SaveRasterDatasetGDB(pOutputRaster, path & "\TestGdb2.gdb", BA_RASTER_FORMAT, outputFile)
+
+    End Sub
+
+    Public Sub SaveFilterToGDB(ByVal gdbName As String)
+        Dim aoiPath As String = "C:\Docs\Lesley\UCO_RioG_SantaFe_R_nr_SantaFe_092010"
+        Dim zonesPath As String = aoiPath & "\output\zones"
+        Dim gdbPath As String = zonesPath & "\" & gdbName
+        Dim inputPath As String = aoiPath & "\layers"
+        Dim inputName As String = "cov_den"
+        Dim maskName As String = "aoi_v"
+        Dim inputGDS As IGeoDataset = Nothing
+        Dim maskGDS As IGeoDataset = Nothing
+        Dim filterGDS As IGeoDataset = Nothing
+        Dim pEnv As IRasterAnalysisEnvironment = Nothing
+        Dim gdbWorkspaceFactory As IWorkspaceFactory = New FileGDBWorkspaceFactoryClass()
+        Dim outputName = "filter1"
+
+        'Create GDB
+        BA_CreateFileGdb2(zonesPath, gdbName)
+
+        'Open raster input from grid file
+        inputGDS = BA_OpenRasterFromFile(inputPath, inputName)
+        maskGDS = BA_OpenFeatureClassFromFile(aoiPath, maskName)
+
+        'Configure raster analysis environment
+        Dim pNeighborhoodOp As INeighborhoodOp = New RasterNeighborhoodOp
+        pEnv = CType(pNeighborhoodOp, IRasterAnalysisEnvironment)  ' Explicit cast
+        pEnv.Mask = maskGDS
+        ' Set the analysis extent to match the mask
+        Dim extentProvider As Object = CType(maskGDS.Extent, Object)
+        pEnv.SetExtent(esriRasterEnvSettingEnum.esriRasterEnvValue, extentProvider)
+        Dim outWorkspace As IWorkspace = gdbWorkspaceFactory.OpenFromFile(gdbPath, 0)
+        pEnv.OutWorkspace = outWorkspace
+
+        'Run the filter
+        Dim pRasterNeighborhood As IRasterNeighborhood = New RasterNeighborhood
+        pRasterNeighborhood.SetRectangle(5, 5, esriGeoAnalysisUnitsEnum.esriUnitsCells)
+        filterGDS = pNeighborhoodOp.FocalStatistics(inputGDS, esriGeoAnalysisStatisticsEnum.esriGeoAnalysisStatsMean, pRasterNeighborhood, True)
+
+        'Save output to GDB
+        Try
+            If filterGDS IsNot Nothing Then
+                Dim saveAs As ISaveAs2 = TryCast(filterGDS, ISaveAs2)
+                saveAs.SaveAs(outputName, outWorkspace, "GDB")
+            End If
+            BA_SaveRasterDataset(filterGDS, zonesPath, outputName)
+        Catch ex As Exception
+            Debug.Print(ex.Message)
+        End Try
+
+
+    End Sub
+
+    Public Sub TestBA_AddRasFilter()
+        Dim path As String = "C:\Docs\Lesley\UCO_RioG_SantaFe_R_nr_SantaFe_092010\output\zones"
+        Dim gdb1 As String = "TestGdb1.gdb"
+        BA_CreateFileGdb(path, gdb1)
+        Dim inFilePath As String = "C:\Docs\Lesley\UCO_RioG_SantaFe_R_nr_SantaFe_092010\layers\"
+        Dim inFile As String = "cov_den"
+        Dim outFilePath As String = path & "\" & gdb1
+        Dim outFile As String = "r001_1"
+        Dim maskFolder As String = "C:\Docs\Lesley\UCO_RioG_SantaFe_R_nr_SantaFe_092010\"
+        Dim maskFile As String = "aoi_v"
+        BA_AddRasFilter(inFilePath, inFile, outFilePath, outFile, maskFolder, _
+                        maskFile, 5, 5, esriGeoAnalysisStatisticsEnum.esriGeoAnalysisStatsMean, 5)
+    End Sub
+
+    Private Function BA_CreateFileGdb2(ByVal Path As String, ByVal strName As String) As BA_ReturnCode
+        ' Instantiate a file geodatabase workspace factory and create a file geodatabase.
+        ' The Create method returns a workspace name object.
+        Dim workspaceFactory As IWorkspaceFactory = New FileGDBWorkspaceFactory
+        Dim workspaceName As IWorkspaceName = Nothing
+        Dim name As IName = Nothing
+        Dim workspace As IWorkspace = Nothing
+        Try
+            ' Check for existence of gdb by trapping the error generated when it doesn't exist
+            Dim gdbExists As Boolean
+            Try
+                Dim gdbPath As String = Path & "\" & strName
+                workspace = workspaceFactory.OpenFromFile(gdbPath, 0)
+                gdbExists = True
+            Catch ex As Exception
+                'Do nothing; gdbExists is initialized to false by VB
+            End Try
+            If Not gdbExists Then
+                workspaceName = workspaceFactory.Create(Path, strName, Nothing, 0)
+                ' Cast the workspace name object to the IName interface and open the workspace.
+                name = CType(workspaceName, IName)
+                workspace = CType(name.Open(), IWorkspace)
+            End If
+            Return BA_ReturnCode.Success
+        Catch ex As Exception
+            MsgBox("BA_CreateFileGdb Exception: " & ex.Message)
+            Return BA_ReturnCode.UnknownError
+        Finally
+            'ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(workspaceFactory)
+            ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(workspaceName)
+            ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(name)
+            ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(workspace)
+        End Try
+
+    End Function
+
+End Class
