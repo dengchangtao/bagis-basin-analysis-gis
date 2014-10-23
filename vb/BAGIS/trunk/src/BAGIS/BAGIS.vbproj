@@ -564,13 +564,6 @@
     <AddInContent Include="Images\setPourPointtool.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BAGIS_ClassLibrary\BAGIS_ClassLibrary.vbproj">
-      <Project>{DA894C59-5DA0-44DD-B8A6-89110BB0830B}</Project>
-      <Name>BAGIS_ClassLibrary</Name>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <AddInContent Include="Images\frmSiteScenario.png" />
   </ItemGroup>
   <ItemGroup>
@@ -581,6 +574,12 @@
     <Content Include="Images\GenericYellowLeftArrow32.png" />
     <Content Include="Images\GenericYellowRightArrow32.png" />
     <AddInContent Include="Images\SelectSiteTool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\BAGIS_ClassLibrary\trunk\src\BAGIS_ClassLibrary.vbproj">
+      <Project>{DA894C59-5DA0-44DD-B8A6-89110BB0830B}</Project>
+      <Name>BAGIS_ClassLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
