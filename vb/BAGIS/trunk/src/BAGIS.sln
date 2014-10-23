@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BAGIS", "BAGIS\BAGIS.vbproj", "{6FF293B8-121F-4620-999C-29E43145AC68}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BAGIS_ClassLibrary", "BAGIS_ClassLibrary\BAGIS_ClassLibrary.vbproj", "{DA894C59-5DA0-44DD-B8A6-89110BB0830B}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BAGIS_ClassLibrary", "..\..\..\BAGIS_ClassLibrary\trunk\src\BAGIS_ClassLibrary.vbproj", "{DA894C59-5DA0-44DD-B8A6-89110BB0830B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
