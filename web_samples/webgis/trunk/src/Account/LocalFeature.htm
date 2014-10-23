@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Local feature class example</title>
+
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css"/>
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css"/>
+    <link rel="stylesheet" href="../Styles/psu.css"/>
+
+    <style type="text/css">
+        html, body     
+        {
+            height: 100%;    
+            margin: 0;    
+            overflow: hidden;    
+            padding: 0;
+        }
+    </style>
+
+    <script src="http://js.arcgis.com/3.9/" type="text/javascript" djConfig="parseOnLoad: true"></script>
+
+        <script type="text/javascript">
+        dojo.require("dojo.parser");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.TabContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("esri.map");
+        dojo.require("esri.dijit.Legend");
+        dojo.require("dojo._base.array");
+        dojo.require("dojo.on");
+        dojo.require("dojo.query");
+        dojo.require("esri.layers.FeatureLayer");
+        dojo.require("esri.SpatialReference");
+
+        var map;
+        var selectedLayers;
+        var listStore;
+        var visible = [];
+
+        // SEP-09-2014: I have tried to display a shapefile that was uploaded on the main analysis page on the Map.htm page with no success
+        // Tabling for now but wanted to save the code samples up so I could take it up at a later date.
+        // The key I believe is creating a featureCollection from a featureSet and feeding this into a featureLayer
+        // Some sample code is below -- Lesley
+
+        function init() {
+            var extent = new esri.geometry.Extent({ "xmin": -13865913.123, "ymin": 5113179.256099999, "xmax": -13144935.387400001, "ymax": 5893291.693599999, "spatialReference": { "wkid": 3395} });
+            map = new esri.Map("map", { "sliderOrientation": "vertical", "extent": extent });
+            var aoiUrl = "http://atlas.geog.pdx.edu/arcgis/rest/services/USACE/USACE_admin_maps/MapServer";
+            var aoiLayer = new esri.layers.ArcGISDynamicMapServiceLayer(aoiUrl);
+            aoiLayer.setVisibleLayers([6]);
+            map.addLayer(aoiLayer);
+
+            var legend = new esri.dijit.Legend({ map: map }, "legendDiv");
+            legend.startup();
+        }
+
+        function loadAoiLayer(featureSet) {
+            if (featureSet != null) {
+                var geometries = [];
+                for (var i = 0; i < featureSet.features.length; i++) {
+                    fGeometry = featureSet.features[i].geometry;
+                    geometries.push(fGeometry);
+                }
+                var geometries2 = [];
+                for (var i = 0; i < localFeatureSet.features.length; i++) {
+                    fGeometry = localFeatureSet.features[i].geometry;
+                    geometries2.push(fGeometry);
+                }
+
+                geometryService.simplify(geometries2, function (simplifiedGeometries) {
+                    alert('simplify');
+                    var outSR = new esri.SpatialReference(4326);
+                    var params = new esri.tasks.ProjectParameters();
+                    params.geometries = simplifiedGeometries;
+                    params.outSR = outSR;
+                    params.inSR = localFeatureSet.features[0].geometry.spatialReference;
+                    geometryService.project(params, function (projectedFeatures) {
+                        alert("success");
+                        var featureCollection = {
+                            layerDefinition: {
+                                "geometryType": projectedFeatures.geometryType,
+                                "fields": projectedFeatures.fields,
+                                "drawingInfo": {
+                                    "renderer": {
+                                        "type": "simple",
+                                        "symbol": {
+                                            "type": "esriSFS",
+                                            "style": "esriSFSSolid",
+                                            "color": [115, 76, 0, 255],
+                                            "outline": {
+                                                "type": "esriSLS",
+                                                "style": "esriSLSSolid",
+                                                "color": [110, 110, 110, 255],
+                                                "width": 1
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            featureSet: projectedFeatures
+                        };
+                        var featureLayer = new esri.layers.FeatureLayer(featureCollection, {
+                            mode: esri.layers.FeatureLayer.MODE_ONDEMAND
+                        });
+                        map.addLayer(featureLayer);
+                    }, errorHandler);
+                }, errorHandler);
+            }
+        }
+
+        // http://gis.stackexchange.com/questions/8791/featurelayer-creating-in-javascript-arcgis-api
+        function addPointLayer() {
+            var jsonFS = {
+                "displayFieldName": "Name",
+                "fieldAliases": {
+                    "Name": "Name"
+                },
+                "geometryType": "esriGeometryPoint",
+                "spatialReference": {
+                    "wkid": 4326
+                },
+                "fields": [{
+                    "name": "Name",
+                    "type": "esriFieldTypeString",
+                    "alias": "Name",
+                    "length": 255
+                }],
+                "features": [{
+                    "attributes": {
+                        "Name": "CHINA: YUNNAN PROVINCE; VIETNAM: HANOI"
+                    },
+                    "geometry": {
+                        "x": -10602460.248958504,
+                        "y": 4716882.997019428
+                    }
+                }]
+            };
+            var fs = new esri.tasks.FeatureSet(jsonFS);
+
+            var featureCollection = {
+                layerDefinition: {
+                    "geometryType": "esriGeometryPoint",
+                    "fields": [
+            {
+                "name": "Name",
+                "type": "esriFieldTypeString",
+                "alias": "Name"
+            }
+            ]
+                },
+                featureSet: fs
+            };
+
+            var localFeatureLayer = new esri.layers.FeatureLayer(featureCollection, {
+                mode: esri.layers.FeatureLayer.MODE_ONDEMAND
+            });
+            alert("created feature layer");
+            map.addLayer(localFeatureLayer);
+        }
+
+        function errorHandler(err) {
+            alert(err);
+        }
+
+        dojo.ready(init);
+
+        </script>
+</head>
+<body class="claro">
+    <!-- BorderContainer tutorial: http://dojotoolkit.org/documentation/tutorials/1.6/dijit_layout/-->
+    <div id="appLayout" class="demoLayout"
+         data-dojo-type="dijit.layout.BorderContainer"            
+         data-dojo-props="design: 'headline'">            
+        <div id = "map" class="centerPanel"
+             data-dojo-type="dijit.layout.ContentPane"                
+             data-dojo-props="region: 'center'">                
+
+        </div>
+          
+        <div id="leftCol" class="edgePanel"
+             data-dojo-type="dijit.layout.TabContainer"            
+             data-dojo-props="region: 'left', splitter: true, tabPosition: 'bottom'">
+            <div
+                data-dojo-type="dijit.layout.ContentPane"
+                data-dojo-props="title: 'Legend'">
+                <div id="legendDiv"></div>
+            </div>
+            <div
+                data-dojo-type="dijit.layout.ContentPane"
+                data-dojo-props="title: 'Toggle Layers'">
+                <h4>Toggle Layers</h4>
+                Layer List : </br><span id="layer_list"></span>
+            </div>
+        </div>         
+    </div>
+</body>
+</html>

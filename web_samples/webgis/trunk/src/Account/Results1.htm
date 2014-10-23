@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Results</title>
+
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css"/>
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css"/>
+    <link rel="stylesheet" href="../Styles/psu.css"/>
+
+    <script src="http://js.arcgis.com/3.9/" type="text/javascript" djConfig="parseOnLoad: true"></script>
+    <script type="text/javascript">
+
+        dojo.require("dojo.parser");
+        dojo.require("dojox.grid.DataGrid");
+        dojo.require("dojo.data.ItemFileWriteStore");
+
+
+        function init() {
+            var store1 = window.opener.store1;
+            if (typeof store1 !== "undefined" && store1 !== null) {
+                //Bind data store to grid
+                grid.setStore(store1);
+            }
+
+            // Get timestamp from parent and display on page
+            dojo.byId('time-stamp').innerHTML = window.opener.timestamp;
+            localAoi = window.opener.document.getElementById("localAoi").checked
+            if (localAoi == true) {
+                dojo.byId('web-aoi-div').style.display = 'none';
+                dojo.byId('local-aoi-div').style.display = 'block';
+            }
+            else {
+                dojo.byId('web-aoi-div').style.display = 'block';
+                dojo.byId('local-aoi-div').style.display = 'none';
+                // Get webgis aoi layer name from parent and display on page
+                dojo.byId('aoi-name').innerHTML = window.opener.webAoiLayer;
+                // Get aoi mapService name from parent and display on page
+                dojo.byId('map-service-url').innerHTML = window.opener.document.getElementById("map-service-url").value
+                // Get query statement from parent and display on page
+                dojo.byId('query-statement').innerHTML = window.opener.queryStatement;
+            }
+
+        }
+
+        dojo.ready(init);
+    </script>
+</head>
+<body>
+    <p class="style1">Query Results</p>
+        <table style="width:925px;" class="style3">
+            <tr>
+                <td>
+                    <span style="font-weight:bold;">Date & Time: </span><span id="time-stamp" ></span>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="web-aoi-div">
+                        <span style="font-weight:bold;">AOI map service:</span></br>
+                        Name: <span id="aoi-name"></span></br>
+                        Feature Type: polygon</br> <!-- note: hard-coding feature type to polygon as aoi's must be polygon -->
+                        URL: <span id="map-service-url"></span></br>
+                        Index Column Query Statement: <span id="query-statement"></span>
+                    </div>
+                    <div id="local-aoi-div">
+                        <span style="font-weight:bold;">Aoi set to local feature</span>
+                    </div> 
+                </td>
+            </tr>
+        </table>
+        <table data-dojo-type="dojox.grid.DataGrid" jsid="grid" id="grid" sortInfo="1" style="height:300px; width:925px; font-size:small;">
+          <thead>
+            <tr>
+              <th field="name" width="150px">Name</th>
+              <th field="url" width="450px">Url</th>
+              <th field="featureType" width="100px">Feature Type</th>
+              <th field="total" width="100px">Total</th>
+              <th field="units" width="90px">Units</th>
+            </tr>
+          </thead>
+        </table>
+
+</body>
+</html>

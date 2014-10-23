@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Selected Data Layers</title>
+
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css"/>
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css"/>
+    <link rel="stylesheet" href="../Styles/psu.css"/>
+
+    <style type="text/css">
+        html, body     
+        {
+            height: 100%;    
+            margin: 0;    
+            overflow: hidden;    
+            padding: 0;
+        }
+    </style>
+
+    <script src="http://js.arcgis.com/3.9/" type="text/javascript" djConfig="parseOnLoad: true"></script>
+
+    <script type="text/javascript">
+        dojo.require("dojo.parser");
+        dojo.require("dijit.layout.BorderContainer");
+        dojo.require("dijit.layout.TabContainer");
+        dojo.require("dijit.layout.ContentPane");
+        dojo.require("esri.map");
+        dojo.require("esri.dijit.Legend");
+        dojo.require("dojo._base.array");
+        dojo.require("dojo.on");
+        dojo.require("dojo.query");
+        dojo.require("esri.layers.FeatureLayer");
+        dojo.require("esri.SpatialReference");
+
+        var map;
+        var selectedLayers;
+        var listStore;
+        var visible = [];
+        var localAoi;
+        var webAoiLayer;
+
+        function init() {
+
+            //Get extent of aoi and itemfilereadstore from parent window
+            var aoiGeometry = window.opener.aoiGeometry;
+            //Get list store with map service information from parent window
+            listStore = window.opener.listStore;
+            //Get selected layer id's from parent window
+            selectedLayers = window.opener.selectedLayers;
+            //Check the parent window to see if a local AOI has been used
+            localAoi = window.opener.document.getElementById("localAoi").checked
+            if (localAoi == true) {
+                dojo.byId('header-content').innerHTML = "AOI layers are not displayed for local AOI's"
+            }
+            else {
+                //Get the name of the selected web AOI layer from the parent so we can display
+                dojo.byId('header-content').innerHTML = "AOI map service layer: " + window.opener.webAoiLayer;
+            }
+            //var extent = new esri.geometry.Extent({ "xmin": -2520000.00, "ymin": -455000.00, "xmax": 2400000.00, "ymax": 1000000.00, "spatialReference": { "wkid": 102003} });
+            map = new esri.Map("map", { "sliderOrientation": "vertical", "extent": aoiGeometry.getExtent() });
+            loadSelectedLayers();
+
+            var legend = new esri.dijit.Legend({ map: map }, "legendDiv");
+            legend.startup();
+            addLocalAoiWarning();
+        }
+
+        function loadSelectedLayers() {
+            dojo.forEach(selectedLayers,
+                function (aLayer) {
+                    listStore.fetchItemByIdentity({
+                        identity: aLayer,
+                        onItem: function (item) {
+                            url = listStore.getValue(item, "MapServiceUrl");
+                            var objUrl = parseMapUrl(url, "/");
+                            var aLayer = new esri.layers.ArcGISDynamicMapServiceLayer(objUrl.mapServUrl);
+                            aLayer.setVisibleLayers([objUrl.idxLayer]);
+                            // https://developers.arcgis.com/javascript/jshelp/inside_events.html search for ArcGISDynamicMapServiceLayer "load" 
+                            if (aLayer.loaded) {
+                                buildLayerList({ "layer": aLayer });
+                            } else {
+                                aLayer.on("load", buildLayerList);
+                            }
+                            map.addLayer(aLayer);
+                        }
+                    })
+                }
+            )
+        }
+
+        function parseMapUrl(url, sep) {
+            var res = url.split(sep);
+            // Object to hold the url and the index number
+            var objUrl = new Object();
+            objUrl.idxLayer = res[res.length - 1];
+            var mapServUrl = "";
+            for (var i = 0; i < res.length - 1; i++) {
+                mapServUrl = mapServUrl + sep + res[i];
+                //Trim leading separator character
+                trimUrl = mapServUrl.substring(1, mapServUrl.length);
+            }
+            objUrl.mapServUrl = trimUrl;
+            return objUrl;
+        }
+
+        function buildLayerList(evt) {
+            var items = dojo._base.array.map(evt.layer.visibleLayers, function (id, index) {
+                var info = evt.layer.layerInfos[id];
+                var key = evt.layer.id + "_" + info.id;  //composite key: layer_id + layerInfo_Id
+                return "<input type='checkbox' class='list_item'" + ("checked=checked") + "' id='" + key + "'' /><label for='" + key + "'>" + info.name + "</label><br>";
+            });
+            var ll = dojo.byId("layer_list");
+            ll.innerHTML += items;
+            dojo.on(ll, "click", updateLayerVisibility);
+        }
+
+        function updateLayerVisibility() {
+            var inputs = dojo.query(".list_item");
+            dojo._base.array.forEach(inputs, function (input) {
+                var res = input.id.split("_");
+                //alert("layer name: " + res[0] + "visible layer: " + res[1]);
+                var aLayer = map.getLayer(res[0]);
+                visible = [];
+                if (input.checked) {
+                    visible.push(res[1]);
+                }
+                else {
+                    visible.push(-1);
+                }
+                aLayer.setVisibleLayers(visible);
+            });
+        }
+
+        function addLocalAoiWarning() {
+            var font = new esri.symbol.Font();
+            font.setSize("12pt");
+            font.setWeight(esri.symbol.Font.WEIGHT_BOLD);
+
+            var textSymbol = new esri.symbol.TextSymbol("Here be dragons");
+            textSymbol.setColor(new dojo.Color([128, 0, 0]));
+            textSymbol.setAlign(esri.symbol.TextSymbol.ALIGN_START);
+            textSymbol.setAngle(15);
+            textSymbol.setFont(font);
+
+            var x = map.extent.xmin;
+            var y = map.extent.ymax;
+            //var pt = new esri.geometry.Point(x, y, map.spatialReference);
+            var centerPt = map.extent.getCenter();
+            var gra = new esri.Graphic(centerPt, textSymbol);
+            map.graphics.add(gra); 
+        }
+
+        function errorHandler(err) {
+            alert(err);
+        }
+
+        dojo.ready(init);
+    </script>
+</head>
+<body class="claro">
+    <!-- BorderContainer tutorial: http://dojotoolkit.org/documentation/tutorials/1.6/dijit_layout/-->
+    <div id="appLayout" class="demoLayout"
+         data-dojo-type="dijit.layout.BorderContainer"            
+         data-dojo-props="design: 'headline'">
+        <div class="headPanel"
+            data-dojo-type="dijit.layout.ContentPane"
+            data-dojo-props="region: 'top'"><span style="opacity:1; font-weight:bold;" id="header-content">Placeholder</span>
+        </div>            
+        <div id = "map" class="centerPanel"
+             data-dojo-type="dijit.layout.ContentPane"                
+             data-dojo-props="region: 'center'">                
+
+        </div>
+          
+        <div id="leftCol" class="edgePanel"
+             data-dojo-type="dijit.layout.TabContainer"            
+             data-dojo-props="region: 'left', splitter: true, tabPosition: 'bottom'">
+            <div
+                data-dojo-type="dijit.layout.ContentPane"
+                data-dojo-props="title: 'Legend'">
+                <div id="legendDiv"></div>
+            </div>
+            <div
+                data-dojo-type="dijit.layout.ContentPane"
+                data-dojo-props="title: 'Toggle Layers'">
+                <h4>Toggle Layers</h4>
+                Layer List : </br><span id="layer_list"></span>
+            </div>
+        </div>         
+    </div>
+</body>
+</html>
