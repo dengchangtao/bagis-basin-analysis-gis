@@ -102,6 +102,11 @@ Public Class WebservicesData
         Else
             ws.Shape = Nothing
         End If
+        If Not IsDBNull(reader.GetValue(11)) Then
+            ws.ServiceType = reader.GetString(11)
+        Else
+            ws.ServiceType = Nothing
+        End If
         Return ws
     End Function
 
@@ -122,6 +127,7 @@ Public Class WebservicesData
                 row.Add("Password", Trim(ws.Password))
             End If
             row.Add("Shape", Trim(ws.Shape))
+            row.Add("ServiceType", Trim(ws.ServiceType))
             rows.Add(row)
         Next
         Return serializer.Serialize(rows)
@@ -208,7 +214,7 @@ Public Class WebservicesData
     Public Function UpdateWebservice(ByVal Id As Int32, DisplayName As String,
                                      ByVal MapServiceUrl As String, ByVal IndexColumn As String, _
                                      ByVal UserName As String, ByVal Password As String, _
-                                     ByVal HasPassword As Boolean, ByVal Shape As String) As Integer
+                                     ByVal HasPassword As Boolean, ByVal Shape As String, ByVal ServiceType As String) As Integer
 
         If String.IsNullOrEmpty(DisplayName) Then _
           Throw New ArgumentException("DisplayName cannot be null or an empty string.")
@@ -222,7 +228,7 @@ Public Class WebservicesData
         Dim cmd As SqlCommand = New SqlCommand("UPDATE Webservices " & _
                                             "  SET DisplayName=@DisplayName, MapServiceUrl=@MapServiceUrl, " & _
                                             "  IndexColumn=@IndexColumn, Username=@Username, Password=@Password, " & _
-                                            "  Shape=@Shape, DateModified=@DateModified WHERE Id=@Id", conn)
+                                            "  Shape=@Shape, ServiceType=@ServiceType, DateModified=@DateModified WHERE Id=@Id", conn)
 
         cmd.Parameters.Add("@DisplayName", SqlDbType.VarChar).Value = DisplayName
         cmd.Parameters.Add("@MapServiceUrl", SqlDbType.VarChar).Value = MapServiceUrl
@@ -247,6 +253,7 @@ Public Class WebservicesData
             cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value
         End If
         cmd.Parameters.Add("@Shape", SqlDbType.VarChar).Value = Shape
+        cmd.Parameters.Add("@ServiceType", SqlDbType.VarChar).Value = ServiceType
         cmd.Parameters.Add("@DateModified", SqlDbType.VarChar).Value = DateModified
         cmd.Parameters.Add("@Id", SqlDbType.Int).Value = Id
 
@@ -329,7 +336,8 @@ Public Class WebservicesData
 
     Public Function InsertWebService(ByVal DisplayName As String, ByVal MapServiceUrl As String, _
                                      ByVal IndexColumn As String, ByVal UserName As String, _
-                                     ByVal Password As String, ByVal Shape As String) As Integer
+                                     ByVal Password As String, ByVal Shape As String, _
+                                     ByVal ServiceType As String) As Integer
         If String.IsNullOrEmpty(DisplayName) Then _
             Throw New ArgumentException("DisplayName cannot be null or an empty string.")
         If String.IsNullOrEmpty(MapServiceUrl) Then _
@@ -339,8 +347,8 @@ Public Class WebservicesData
 
         Dim conn As SqlConnection = New SqlConnection(_connectionString)
         Dim cmd As SqlCommand = New SqlCommand("INSERT INTO Webservices " & _
-                                            "  (ID, DisplayName, MapServiceUrl, IndexColumn, Username, Password, Shape, DateCreated, DateModified) " & _
-                                            "  Values(@ID, @DisplayName, @MapServiceUrl, @IndexColumn, @Username, @Password, @Shape," & _
+                                            "  (ID, DisplayName, MapServiceUrl, IndexColumn, Username, Password, Shape, ServiceType, DateCreated, DateModified) " & _
+                                            "  Values(@ID, @DisplayName, @MapServiceUrl, @IndexColumn, @Username, @Password, @Shape, @ServiceType," & _
                                             " @DateCreated, @DateModified) ", conn)
 
         Dim ID As Integer = GetNextId()
@@ -365,6 +373,12 @@ Public Class WebservicesData
         Else
             cmd.Parameters.Add("@Shape", SqlDbType.VarChar).Value = Shape
         End If
+        If String.IsNullOrEmpty(ServiceType) Then
+            cmd.Parameters.Add("@ServiceType", SqlDbType.VarChar).Value = DBNull.Value
+        Else
+            cmd.Parameters.Add("@ServiceType", SqlDbType.VarChar).Value = ServiceType
+        End If
+
         Dim rightNow As DateTime = DateTime.Now
         cmd.Parameters.Add("@DateCreated", SqlDbType.DateTime).Value = rightNow
         cmd.Parameters.Add("@DateModified", SqlDbType.DateTime).Value = rightNow

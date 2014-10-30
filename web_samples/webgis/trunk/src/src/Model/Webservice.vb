@@ -7,6 +7,7 @@
     Private _userName As String
     Private _password As String
     Private _shape As String
+    Private _serviceType As String
     Private _dateCreated As Date
     Private _dateModified As Nullable(Of Date)
     Private _deleted As Boolean
@@ -73,6 +74,15 @@
         End Get
         Set(value As String)
             _shape = value
+        End Set
+    End Property
+
+    Public Property ServiceType As String
+        Get
+            Return _serviceType
+        End Get
+        Set(value As String)
+            _serviceType = value
         End Set
     End Property
 
