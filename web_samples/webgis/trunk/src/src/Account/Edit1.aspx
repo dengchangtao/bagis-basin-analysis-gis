@@ -53,6 +53,8 @@
                     UserNameBox.Text = ws.UserName
                     ShapeBox.Text = ws.Shape
                     ShapeBoxDisplay.Text = ws.Shape
+                    ServiceBox.Text = ws.ServiceType
+                    ServiceBoxDisplay.Text = ws.ServiceType
                     If Not String.IsNullOrEmpty(UserNameBox.Text) Then
                         BtnUpdatePassword.Style.Add("display", "inline")
                     Else
@@ -114,6 +116,8 @@
         UserNameBox.Text = Nothing
         BtnUpdatePassword.Style.Add("display", "none")
             ShapeBox.Text = Nothing
+            ShapeBoxDisplay.Text = Nothing
+            ServiceBox.Text = Nothing
             ShapeBoxDisplay.Text = Nothing
         ListBox1.ClearSelection()
         BtnDelete.Enabled = False
@@ -178,15 +182,21 @@
                 return;
             }
         }
-        var url = dojo.byId("<%= MapServiceUrlBox.ClientID %>").value
-        var indexColumn = dojo.byId("<%= IndexColumnBox.ClientID %>").value
-        queryTask = new esri.tasks.QueryTask(url);
-        query = new esri.tasks.Query();
-        query.returnGeometry = true;
-        query.where = indexColumn + " like '%'";
-        dojo.byId('<%= Msg.ClientID %>').innerHTML = '<p">Processing ...</p>';
-        queryTask.execute(query, function (result) { processResults(sType, result); }, errorHandler);
-        return false;
+        var serviceType = setServiceType();
+        if (serviceType != 'Map') {
+            return true;
+        }
+        else {
+            var url = dojo.byId("<%= MapServiceUrlBox.ClientID %>").value
+            var indexColumn = dojo.byId("<%= IndexColumnBox.ClientID %>").value
+            queryTask = new esri.tasks.QueryTask(url);
+            query = new esri.tasks.Query();
+            query.returnGeometry = true;
+            query.where = indexColumn + " like '%'";
+            dojo.byId('<%= Msg.ClientID %>').innerHTML = '<p">Processing ...</p>';
+            queryTask.execute(query, function (result) { processResults(sType, result); }, errorHandler);
+            return false;
+        }
     }
 
     function processResults(sType, results) {
@@ -246,6 +256,16 @@
         dojo.byId('<%= HasPassword.ClientID %>').value = false;
     }
 
+    function setServiceType() {
+        var url = dojo.byId("<%= MapServiceUrlBox.ClientID %>").value
+        var serviceType = "Map";
+        if (url.indexOf("ImageServer") > 0) {
+            serviceType = "Image";
+        }
+        dojo.byId('<%= ServiceBox.ClientId %>').value = serviceType;
+        return serviceType;
+    }
+
     function errorHandler(err) {
         console.log('Oops, error: ', err);
         dojo.byId('<%= Msg.ClientID %>').innerHTML = '<p>Error: ' + +'</p>';
@@ -283,6 +303,7 @@
             <asp:ControlParameter ControlID="HasPassword" Name="HasPassword" Type="boolean" />
             <asp:ControlParameter ControlID="PasswordBox" Name="Password" Type="string" />
             <asp:ControlParameter ControlID="ShapeBox" Name="Shape" Type="string" />
+            <asp:ControlParameter ControlID="ServiceBox" Name="ServiceType" Type="string" />
         </UpdateParameters>
         <DeleteParameters>
             <asp:ControlParameter name="Id" controlid="ListBox1" propertyname="SelectedValue" />
@@ -294,6 +315,7 @@
             <asp:ControlParameter ControlID="UserNameBox" Name="UserName" Type="string" />
             <asp:ControlParameter ControlID="PasswordBox" Name="Password" Type="string" />
             <asp:ControlParameter ControlID="ShapeBox" Name="Shape" Type="string" />
+            <asp:ControlParameter ControlID="ServiceBox" Name="ServiceType" Type="string" />
         </InsertParameters>
       </asp:ObjectDataSource>
 
@@ -368,11 +390,19 @@
                     </tr>
                     <tr>
                         <td>
-            <asp:Label id="label6" AssociatedControlId="ShapeBoxDisplay" Text="Feature type  " 
-                    runat="server" CssClass="style3" />
+           <asp:Label id="label6" AssociatedControlId="ShapeBoxDisplay" Text="Feature type  " 
+                     runat="server" CssClass="style3" />
             <asp:textbox id="ShapeBoxDisplay" runat="server"
                     Enabled="False" style="color:GrayText;"/> 
                         </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <asp:Label id="label5" AssociatedControlId="ServiceBoxDisplay" Text="Service type  " 
+                     runat="server" CssClass="style3" />
+            <asp:textbox id="ServiceBoxDisplay" runat="server"
+                    Enabled="False" style="color:GrayText;"/> 
+                     </td>
                     </tr>
                     <tr>
                         <td>
@@ -431,6 +461,7 @@
             <asp:textbox id="PasswordBox" runat="server" text='' style="display:none;"/>
             <asp:textbox id="HasPassword" runat="server" text='' style="display:none;"/>
             <asp:textbox id="ShapeBox" runat="server" text='' style="display:none;"/>
+            <asp:textbox id="ServiceBox" runat="server" text='' style="display:none;"/>
                <asp:Button ID="BtnCommitUpdate"
                             CommandName="Edit"
                             runAt ="server" 

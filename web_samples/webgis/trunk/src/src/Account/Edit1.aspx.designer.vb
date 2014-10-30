@@ -158,6 +158,24 @@ Partial Public Class Edit1
     Protected WithEvents ShapeBoxDisplay As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''label5 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents label5 As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''ServiceBoxDisplay control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ServiceBoxDisplay As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''label4 control.
     '''</summary>
     '''<remarks>
@@ -264,6 +282,15 @@ Partial Public Class Edit1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ShapeBox As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''ServiceBox control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ServiceBox As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''BtnCommitUpdate control.
