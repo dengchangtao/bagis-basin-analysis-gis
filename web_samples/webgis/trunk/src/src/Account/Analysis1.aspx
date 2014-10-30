@@ -40,12 +40,10 @@
 
         function init() {
             geometryService = new esri.tasks.GeometryService("http://atlas.geog.pdx.edu/arcgis/rest/services/Utilities/Geometry/GeometryServer");
-            //unzipGp = new esri.tasks.Geoprocessor("http://atlas.geog.pdx.edu/arcgis/rest/services/USACE/UnzipTest/GPServer/ZipTest");
             unzipGp = new esri.tasks.Geoprocessor("http://atlas.geog.pdx.edu/arcgis/rest/services/USACE/Unzip/GPServer/Unzip");
 
             //identify proxy page to use if the toJson payload to the geometry service is greater than 2000 characters.      
             //If this null or not available the project and lengths operation will not work.  Otherwise it will do a http post to the proxy.
-            //esriConfig.defaults.io.proxyUrl = "http://atlas.geog.pdx.edu/proxy/proxy.ashx"
             esriConfig.defaults.io.proxyUrl = "http://atlas.geog.pdx.edu/DotNet/proxy.ashx";
             esriConfig.defaults.io.alwaysUseProxy = false;
 
@@ -71,10 +69,13 @@
                 onComplete: function (items, request) {
                     dojo.forEach(items, function (item) {
                         //console.log(item);
-                        var c = dojo.doc.createElement('option');
-                        c.innerHTML = listStore.getValue(item, 'DisplayName');
-                        c.value = listStore.getValue(item, 'ID');
-                        sel.appendChild(c);
+                        // May be faster to query the listStore if this gets slow
+                        if (listStore.getValue(item, 'ServiceType') == 'Map') {
+                            var c = dojo.doc.createElement('option');
+                            c.innerHTML = listStore.getValue(item, 'DisplayName');
+                            c.value = listStore.getValue(item, 'ID');
+                            sel.appendChild(c);
+                        }
                     });
                 }
             });
