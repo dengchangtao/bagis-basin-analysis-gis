@@ -99,7 +99,6 @@
     <Content Include="Account\Register.aspx" />
     <Content Include="Account\Results1.htm" />
     <Content Include="Account\TabulateArea.aspx" />
-    <Content Include="Account\TabulateArea.htm" />
     <Content Include="EmailTemplate\CustomMail.txt" />
     <Content Include="Old\Analysis.aspx" />
     <Content Include="Old\Edit.aspx" />
