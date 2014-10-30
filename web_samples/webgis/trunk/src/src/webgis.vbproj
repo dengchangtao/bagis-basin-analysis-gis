@@ -98,6 +98,7 @@
     <Content Include="Account\MembersOnly.aspx" />
     <Content Include="Account\Register.aspx" />
     <Content Include="Account\Results1.htm" />
+    <Content Include="Account\TabulateArea.aspx" />
     <Content Include="Account\TabulateArea.htm" />
     <Content Include="EmailTemplate\CustomMail.txt" />
     <Content Include="Old\Analysis.aspx" />
@@ -175,6 +176,13 @@
     </Compile>
     <Compile Include="Account\Register.aspx.vb">
       <DependentUpon>Register.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\TabulateArea.aspx.designer.vb">
+      <DependentUpon>TabulateArea.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\TabulateArea.aspx.vb">
+      <DependentUpon>TabulateArea.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Old\Analysis.aspx.designer.vb">
