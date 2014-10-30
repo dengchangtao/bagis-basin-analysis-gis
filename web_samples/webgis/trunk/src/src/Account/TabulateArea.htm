@@ -15,6 +15,7 @@
         dojo.require("dojo.data.ItemFileWriteStore");
 
         var gp;
+        var district = 'Nashville';
 
         function init() {
             //gp = new esri.tasks.Geoprocessor("http://atlas.geog.pdx.edu/arcgis/rest/services/LANDFIRE/TabulateArea/GPServer/MyTool");
@@ -32,7 +33,7 @@
             var queryTask = new esri.tasks.QueryTask("http://atlas.geog.pdx.edu/arcgis/rest/services/USACE/USACE_admin_maps/MapServer/6");
             var query = new esri.tasks.Query();
             query.returnGeometry = true;
-            query.where = "NAME = 'Portland'";
+            query.where = "NAME = '" + district + "'";
             //execute query
             queryTask.execute(query, showResults, errorHandler);
          }
@@ -73,8 +74,7 @@
              //submit the GP Task by passing the itemID info the input parameter
              var url = dojo.byId('serviceUrl').value;
              var indexCol = 'Name';
-             var indexValue = 'Portland';
-             var params = { 'soap_url': url, 'aoi_feature_set': featureSet, 'index_column': indexCol, 'index_value': indexValue };
+             var params = { 'soap_url': url, 'aoi_feature_set': featureSet, 'index_column': indexCol, 'index_value': district, 'class_column': 'VALUE' };
              // sample format:
              // var params = { 'Input_zip_file': '{"itemID": "i7422c29e-6966-4508-a214-7deb8df2b828"}' };
              gp.submitJob(params, gpJobComplete, statusCallback, errorHandler);
@@ -85,6 +85,7 @@
         }
 
         function errorHandler(err) {
+            // ERROR 010010: Field not found. Invalid field index obtained. Means the query (indexCol/indexValue) didn't return any features
             console.log('Oops, error: ', err);
             dojo.byId('query-status').innerHTML = '<p style="color:red; font-weight:bold;}">Error message: ' + err.message + '</p>';
         }
