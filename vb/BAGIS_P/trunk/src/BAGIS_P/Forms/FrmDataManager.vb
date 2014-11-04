@@ -224,8 +224,11 @@ Public Class FrmDataManager
             Dim pCollection As DataGridViewSelectedRowCollection = DataGridView1.SelectedRows
             Dim selDataSources As IList(Of String) = New List(Of String)
             For Each pRow As DataGridViewRow In pCollection
-                Dim key As String = CStr(pRow.Cells(idx_Name).Value)
-                selDataSources.Add(key)
+                Dim aoiData As Boolean = CBool(pRow.Cells(idx_IsAoi).Value)
+                If Not aoiData Then
+                    Dim key As String = CStr(pRow.Cells(idx_Name).Value)
+                    selDataSources.Add(key)
+                End If
             Next
             Dim frmClipDataSource As FrmClipDataSource = New FrmClipDataSource(m_dataTable, selDataSources)
             frmClipDataSource.ShowDialog()
