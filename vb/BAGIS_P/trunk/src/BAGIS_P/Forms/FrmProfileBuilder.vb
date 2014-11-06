@@ -1180,6 +1180,15 @@ Public Class FrmProfileBuilder
                 'pStepProg.Show()
                 'progressDialog2.ShowDialog()
                 'pStepProg.Step()
+                LblStatus.Text = "Verifying attribute table for AOI"
+                Dim success As BA_ReturnCode = BA_ReturnCode.UnknownError
+                success = VerifyAOIAttributeTable()
+                If success <> BA_ReturnCode.Success Then
+                    MessageBox.Show("Unable to verify attribute for AOI: " & m_aoi.Name, "Bad attribute table", MessageBoxButtons.OK, _
+                        MessageBoxIcon.Error)
+                    Exit Sub
+                End If
+
                 LblStatus.Text = "Checking target geodatabase..."
                 Dim mList As List(Of String) = m_selProfile.MethodNames
                 If mList IsNot Nothing AndAlso mList.Count > 0 Then
@@ -1189,7 +1198,6 @@ Public Class FrmProfileBuilder
                     'Create params.gdb in hru if it doesn't exist; This is where we store the analysis data layers
                     Dim hruPath As String = BA_GetHruPath(m_aoi.FilePath, PublicPath.HruDirectory, selHruName)
                     Dim hruParamPath As String = hruPath & BA_EnumDescription(PublicPath.BagisParamGdb)
-                    Dim success As BA_ReturnCode = BA_ReturnCode.UnknownError
                     If Not BA_Folder_ExistsWindowsIO(hruParamPath) Then
                         Dim gdbName As String = BA_GetBareName(hruParamPath)
                         success = BA_CreateFileGdb(hruPath, gdbName)
@@ -1733,4 +1741,32 @@ Public Class FrmProfileBuilder
             Debug.Print(ex.Message)
         End Try
     End Sub
+
+    Private Function VerifyAOIAttributeTable() As BA_ReturnCode
+        Dim pBandCollection As IRasterBandCollection = Nothing
+        Dim pRasterBand As IRasterBand = Nothing
+        Dim returnVal As BA_ReturnCode = BA_ReturnCode.UnknownError
+        Try
+            'Check to be sure the target is a single-band thematic raster; Cannot build an attribute table otherwise
+            Dim inputFolder As String = BA_GeodatabasePath(TxtAoiPath.Text, GeodatabaseNames.Aoi)
+            Dim inputFile As String = BA_GetBareName(BA_EnumDescription(PublicPath.AoiGrid))
+            pBandCollection = CType(BA_OpenRasterFromGDB(inputFolder, inputFile), IRasterBandCollection)
+            pRasterBand = pBandCollection.Item(0)
+            Dim inputATT As Boolean = False
+            pRasterBand.HasTable(inputATT)
+            If inputATT = False Then
+                Dim inputName = inputFolder & "\" & inputFile
+                returnVal = BA_BuildRasterAttributeTable(inputName, True)
+            Else
+                returnVal = BA_ReturnCode.Success
+            End If
+            Return returnVal
+        Catch ex As Exception
+            Debug.Print("VerifyAOIAttributeTable Exception: " & ex.Message)
+            Return BA_ReturnCode.UnknownError
+        Finally
+            pBandCollection = Nothing
+            pRasterBand = Nothing
+        End Try
+    End Function
 End Class
