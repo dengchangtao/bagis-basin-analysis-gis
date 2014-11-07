@@ -279,7 +279,6 @@ Partial Class FrmEditMethod
         Me.Controls.Add(Me.TxtToolboxName)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.TxtMethod)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Name = "FrmEditMethod"
         Me.ShowIcon = False
         Me.Text = "Method editor"

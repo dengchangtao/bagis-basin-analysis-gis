@@ -617,7 +617,7 @@ Public Class FrmEditMethod
             BtnApply.Location = New System.Drawing.Point(696, yPos)
             BtnResetToolboxPath.Location = New System.Drawing.Point(8, yPos)
         End If
-        Me.Height = yPos + 60
+        Me.Height = yPos + 70
     End Sub
 
     Private Function ValidateParameters() As BA_ReturnCode
