@@ -22,6 +22,7 @@ Public Class FrmSelectProfile
         Dim bExt As BagisPExtension = BagisPExtension.GetExtension
         Dim settingsPath As String = bExt.SettingsPath
         Dim profilesFolder As String = BA_GetPublicProfilesPath(settingsPath)
+        BA_ValidateProfileNames(profilesFolder)
         Dim profileList As List(Of Profile) = BA_LoadProfilesFromXml(profilesFolder)
         If profileList IsNot Nothing Then
             m_profileTable = New Hashtable

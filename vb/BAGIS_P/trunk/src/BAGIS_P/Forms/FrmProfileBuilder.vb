@@ -379,6 +379,14 @@ Public Class FrmProfileBuilder
                     m_profileTable.Item(pName) = m_selProfile
                 Else
                     'We are creating a new profile
+                    Dim existingProfile As Profile = m_profileTable(pName)
+                    If existingProfile IsNot Nothing Then
+                        Dim errMsg As String = "A profile already exists with this name. Please enter a unique name."
+                        MessageBox.Show(errMsg, "Duplicate name", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        TxtProfileName.Focus()
+                        Exit Sub
+                    End If
+                    'We are creating a new profile
                     Dim id As Integer = GetNextProfileId()
                     'Determine the profile class based on the form
                     Dim newProfileClass As ProfileClass = ProfileClass.BA_Public
@@ -449,6 +457,7 @@ Public Class FrmProfileBuilder
             profilesFolder = BA_GetPublicProfilesPath(settingsPath)
         End If
         If Not String.IsNullOrEmpty(profilesFolder) Then
+            BA_ValidateProfileNames(profilesFolder)
             Dim profileList As List(Of Profile) = BA_LoadProfilesFromXml(profilesFolder)
             If profileList IsNot Nothing Then
                 For Each nextProfile In profileList
