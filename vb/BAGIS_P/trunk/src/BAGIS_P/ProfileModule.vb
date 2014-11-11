@@ -38,6 +38,7 @@ Module ProfileModule
                 Dim obj As Object = SerializableData.Load(pFile.FullName, GetType(Profile))
                 If obj IsNot Nothing Then
                     Dim pProfile As Profile = CType(obj, Profile)
+                    pProfile.XmlFileName = pFile.Name
                     allProfiles.Add(pProfile)
                 End If
             Next
@@ -383,6 +384,27 @@ Module ProfileModule
             sb.Append("Error message: " & e.Message)
         End If
         Return sb.ToString
+    End Function
+
+    Public Function BA_ValidateProfileNames(ByVal profilesFolder As String) As BA_ReturnCode
+        Dim profileList As List(Of Profile) = BA_LoadProfilesFromXml(profilesFolder)
+        If profileList IsNot Nothing Then
+            ' Put all profiles in a Hashtable with profileName as the key
+            Dim profileTable As Hashtable = New Hashtable
+            For Each nextProfile In profileList
+                profileTable(nextProfile.Name) = nextProfile
+            Next
+            ' If the hashtable is smaller than the list, we have duplicates
+            If profileList.Count > profileTable.Keys.Count Then
+                'Rename each profile to match its xml file name
+                For Each nextProfile In profileList
+                    Dim pName As String = Path.GetFileNameWithoutExtension(nextProfile.XmlFileName)
+                    nextProfile.Name = pName
+                    nextProfile.Save(BA_BagisPXmlPath(profilesFolder, pName))
+                Next
+            End If
+        End If
+        Return BA_ReturnCode.Success
     End Function
 
 End Module
