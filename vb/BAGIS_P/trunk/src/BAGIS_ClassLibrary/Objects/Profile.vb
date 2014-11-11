@@ -12,6 +12,7 @@ Public Class Profile
     Dim m_profileClass As ProfileClass
     Dim m_description As String
     Dim m_version As String
+    Dim m_xmlFileName As String
     Dim m_methodNames As List(Of String)
 
     ' Required for de-serialization. Do not use.
@@ -74,6 +75,16 @@ Public Class Profile
         End Get
         Set(ByVal value As String)
             m_version = value
+        End Set
+    End Property
+
+    'XML file name: profile source
+    Public Property XmlFileName() As String
+        Get
+            Return m_xmlFileName
+        End Get
+        Set(ByVal value As String)
+            m_xmlFileName = value
         End Set
     End Property
 
