@@ -1,7 +1,7 @@
 ﻿Public Module ConstantsModule
 
     'Class library version; Update with each change to class library
-    Public Const BA_CLASS_LIBRARY_VERSION As String = "L032"
+    Public Const BA_CLASS_LIBRARY_VERSION As String = "L033"
 
     ' Used with BA_QueryAttributeTable to customize query
     Public Const BA_STRING_ATTRIBUTE As String = "string_attribute"
