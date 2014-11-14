@@ -321,8 +321,23 @@ Public Class FrmSequentialId
                                         'Created updated vector representation
                                         vReturnVal = BA_Raster2PolygonShapefileFromPath(selectedItem.Value, vOutputPath, False)
                                         If vReturnVal = 1 Then
-                                            vReturnVal = BA_AddShapeAreaToAttrib(vOutputPath)
+                                            'This method returns a 0 if it succeeds instead of 1
+                                            If BA_AddShapeAreaToAttrib(vOutputPath) = 0 Then
+                                                vReturnVal = 1
+                                            Else
+                                                vReturnVal = -1
+                                            End If
                                         End If
+                                    End If
+                                    'Handle failure(s) with vector file if they occurred
+                                    If vReturnVal <> 1 Then
+                                        'Delete new grid so we can restore the old one
+                                        BA_RemoveRasterFromGDB(hruFolder, hruFile)
+                                        'Restore old grid
+                                        BA_RenameRasterInGDB(hruFolder, oldGrid, hruFile)
+                                        MessageBox.Show("An error occurred while trying to assign sequential ID numbers. Please restart ArcMap and try again.", "File locked", _
+                                                        MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                        Exit Sub
                                     End If
                                     pStepProg.Step()
                                     'Delecte old grid if user doesn't want to keep it
