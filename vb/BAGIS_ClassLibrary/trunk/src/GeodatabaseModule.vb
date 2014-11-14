@@ -621,6 +621,10 @@ Public Module GeodatabaseModule
             MessageBox.Show("BA_RenameRasterInGDB() Exception: " & ex.Message)
             Return BA_ReturnCode.UnknownError
         Finally
+            pInputDataset = Nothing
+            pDataset = Nothing
+            GC.WaitForPendingFinalizers()
+            GC.Collect()
             ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pInputDataset)
             ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pDataset)
         End Try
