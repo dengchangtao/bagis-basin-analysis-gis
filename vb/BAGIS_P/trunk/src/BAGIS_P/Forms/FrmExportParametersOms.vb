@@ -207,8 +207,14 @@ Public Class FrmExportParametersOms
 
     Private Sub BtnEditParameters_Click(sender As System.Object, e As System.EventArgs) Handles BtnEditParameters.Click
         If TxtParameterTemplate.Text.Length > 1 Then
-            Dim frmEditParameters As FrmEditParameters = New FrmEditParameters(Me, m_paramsTable, m_tablesTable, TxtParameterTemplate.Text)
-            frmEditParameters.ShowDialog()
+            Try
+                Dim frmEditParameters As FrmEditParameters = New FrmEditParameters(Me, m_paramsTable, m_tablesTable, TxtParameterTemplate.Text)
+                frmEditParameters.ShowDialog()
+            Catch ex As Exception
+                Debug.Print("FrmEditParameters initialization Exception: " & ex.Message)
+                MessageBox.Show("The selected parameter template could not be read by BAGIS-P. Please select another template.", "Invalid Template", _
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         Else
             MessageBox.Show("Please select a template to edit.", "No template selected", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If

@@ -128,6 +128,10 @@ Module ParameterModule
             End If
             Return hTable
         Catch ex As Exception
+            Dim errMsg As String = "An error occurred while reading the template file: " & fullPath & " on or about " & _
+                "line number: " & parser.LineNumber & "."
+            Windows.Forms.MessageBox.Show(errMsg, "Error reading template", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Error)
+            Debug.Print("Error occurred on line number " & parser.LineNumber)
             Debug.Print("BA_GetParameterMap Exception: " & ex.Message)
             Return Nothing
         Finally
@@ -266,7 +270,11 @@ Module ParameterModule
             Loop
             Return hTable
         Catch ex As Exception
-            Debug.Print("BA_GetTableMap: " & ex.Message)
+            Dim errMsg As String = "An error occurred while reading the template file: " & fullPath & " on or about " & _
+                "line number: " & parser.LineNumber & "."
+            Windows.Forms.MessageBox.Show(errMsg, "Error reading template", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Error)
+            Debug.Print("Error occurred on line number " & parser.LineNumber)
+            Debug.Print("BA_GetTableMap Exception: " & ex.Message)
             Return Nothing
         Finally
             parser.Close()
@@ -1344,13 +1352,13 @@ Module ParameterModule
         End Try
     End Function
 
-    Public Function BA_ReadNhruParams(ByVal templatePath As String, ByVal token As String, ByVal hruCount As Integer, _
+    Public Function BA_ReadNhruParams(ByVal fullPath As String, ByVal token As String, ByVal hruCount As Integer, _
                                       ByVal reqSpatialParameters As IList(Of String), _
                                       ByVal missingSpatialParameters As IList(Of String), ByVal missingValue As Integer) As Hashtable
         Dim parser As TextFieldParser = Nothing
         Dim pTable As Hashtable = New Hashtable
         Try
-            parser = New TextFieldParser(templatePath)
+            parser = New TextFieldParser(fullPath)
             parser.SetDelimiters({"" & token & ""})
             parser.HasFieldsEnclosedInQuotes = True
             Do While parser.EndOfData = False
@@ -1461,7 +1469,11 @@ Module ParameterModule
             Loop
             Return pTable
         Catch ex As Exception
-            Debug.Print("BA_ReadSpatialParams: " & ex.Message)
+            Dim errMsg As String = "An error occurred while reading the template file: " & fullPath & " on or about " & _
+                "line number: " & parser.LineNumber & "."
+            Windows.Forms.MessageBox.Show(errMsg, "Error reading template", Windows.Forms.MessageBoxButtons.OK, Windows.Forms.MessageBoxIcon.Error)
+            Debug.Print("Error occurred on line number " & parser.LineNumber)
+            Debug.Print("BA_ReadNhruParams: " & ex.Message)
             Return pTable
         Finally
             parser.Close()
