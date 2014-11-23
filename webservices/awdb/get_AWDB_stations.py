@@ -47,7 +47,7 @@ FDS_NAME = "AWDB"  # set to None to write to DB root, not dataset
 WDSL = "http://www.wcc.nrcs.usda.gov/awdbWebService/services?WSDL"
 
 # NRCS AWDB network codes to download
-NETWORKS = ["SNTL", "SNOW", "USGS"]
+NETWORKS = ["SNTL", "SNOW", "USGS", "COOP"]
 #NETWORKS = ["SNOW"]
 
 
@@ -222,7 +222,15 @@ def get_multiple_stations_thread(stations, outQueue, queueLock, recursiveCall=0)
         with queueLock:
             outQueue.put((MESSAGE_CODE, 15, e))
             outQueue.put((MESSAGE_CODE, 15, traceback.format_exc()))
-        return 150
+    except URLError as e:
+        if "Errno 10060" in e:  # this is a connection error -- time out or no response
+            with queueLock:
+                outQueue.put((MESSAGE_CODE, 15, e))
+                outQueue.put((MESSAGE_CODE, 15, "Error connecting to server. Retrying..."))
+        else:
+            with queueLock:
+                outQueue.put((MESSAGE_CODE, 15, e))
+                outQueue.put((MESSAGE_CODE, 15, traceback.format_exc()))
 
     if data:
         for station in data:
