@@ -49,8 +49,8 @@ FTP_WORKSPACE = r"C:\inetpub\ftproot\SNODAS_SWE"
 TEMP_WORKSPACE = r"C:\GIS\GIS_Data\SNODAS\TEMPPROCESSING"
 
 # mosaic dataset consts
-MOSAIC_GDB = r"C:\Users\jkeifer\Documents\MosaicTesting\MosaicTest.gdb"
-MOSAIC_DATASET_NAME = "SWE_test2"
+MOSAIC_GDB = r"C:\GIS\GIS_Data\SNODAS\SWE_mosaic.gdb"
+MOSAIC_DATASET_NAME = "SNODAS_SWE"
 MOSAICDS = os.path.join(MOSAIC_GDB, MOSAIC_DATASET_NAME)
 MOSAIC_FIELDS = ("Name", "Time")
 
@@ -61,7 +61,10 @@ ADMIN_USER = "AtlasAdmin"
 ADMIN_PSWD = "CSARAtlas459"
 
 # image service settings
-IMAGE_SERVICE = "SWE_test/SWE_test2.ImageServer"
+IMAGE_SERVICE = "SNODAS/SNODAS_SWE_TimeAware.ImageServer"
+LEGACY_MAPSERVICE = "SNODAS/SWE_SNODAS.MapServer"
+LEGACY_MAPSERVICE_IMG = r"C:\GIS\GIS_Data\SNODAS\SWE\SWE_SNODAS.img"
+LEGACY_MAPSERIVCE_SOURCE_TXT = "C:/inetpub/wwwroot/SNODAS/SNODASWebService_SourceData.txt"
 
 # logging
 AGS_DYNAMIC_WORKSPACE = "SWE_SNODAS"
@@ -225,7 +228,7 @@ def remove_negative_values(infile, outfile):
 
     Output:   outfile -- returns the outfile filepath for convenience
     """
-    #temp = "in_memory/temp"  # FOR UNSIGNED INT
+    temp = "in_memory/temp"  # REQUIRED TO CHANGE RASTER FORMAT
     
     # Check out the ArcGIS Spatial Analyst extension license
     arcpy.CheckOutExtension("Spatial")
@@ -235,14 +238,14 @@ def remove_negative_values(infile, outfile):
     outCon2 = Con(outCon < 0, 0, outCon) # replace negative values with 0
 
     # save the output to disk
-    # NOTE: IN 32-BIT SIGNED INT FORMAT
-    outCon2.save(outfile)  # COMMENT OUR THIS LIKE FOR UNSIGNED INT
+    #outCon2.save(outfile)  # THIS LINE SAVES IN ORIGINAL 32-BIT SIGNED INT FORMAT
 
     # save the output to memory 
-    #outCon2.save(temp)  # FOR UNSIGNED INT
+    outCon2.save(temp)
 
-    # TO GET UNSIGNED INT FORMAT, USE THE FOLLOWING LINE AND MAKE REQUSITE CHANGES TO FUNCTION
-    #arcpy.CopyRaster_management(temp, outfile, pixel_type="16_BIT_UNSIGNED", nodata_value=32767)
+    # save the output to the disk
+    # FOR UNSIGNED INT FORMAT, CHANGE pixel_type="16_BIT_UNSIGNED", nodata_value=32767
+    arcpy.CopyRaster_management(temp, outfile, pixel_type="16_BIT_SIGNED", nodata_value=-32768)
     
     return outfile
     
@@ -332,6 +335,7 @@ def archive_sourcefile(filepath):
     shutil.move(filepath, ARCHIVE_WORKSPACE)
 
 
+# --------------------------- REMOVE --------------------------------
 def OLDMETHOD_update_webservice_sourcedata(sourceimgfile):
     """
     Uses the old shared geoprocessing service to update the SWE MapService
@@ -347,7 +351,59 @@ def OLDMETHOD_update_webservice_sourcedata(sourceimgfile):
     while result.status < 4:
         time.sleep(0.2)
     print(sourceimgfile + " is set as the source data of SNODAS web service.")
+# ------------------------- END REMOVE ------------------------------
 
+
+def update_legacy_mapservice(newimage):
+    """
+    Updates the legacy SWE mapservice by replacing the SWE_SNODAS.img file and updating the .txt file
+
+    Required: newimage -- the path to the new img file replacing the old img file
+
+    Output:   None
+    """
+    from arcpyExt import agsAdmin
+
+    overwriteSetting = env.overwriteOutput
+    env.overwriteOutput = True
+
+    try:
+        try:
+            agsconnection = agsAdmin.AgsAdmin.connectWithoutToken(SERVER_ADDRESS, SERVER_PORT, ADMIN_USER, ADMIN_PSWD)
+            agsconnection.stopService(LEGACY_MAPSERVICE)
+        except Exception as e:
+            logger.debug(e)
+            logger.debug(traceback.format_exc())
+            raise Exception("Could not successfully stop the map service {0}.".format(LEGACY_MAPSERVICE))
+
+        try:
+            arcpy.Copy_management(newimage, LEGACY_MAPSERVICE_IMG)
+        except Exception as e:
+            logger.debug(e)
+            logger.debug(traceback.format_exc())
+            raise Exception("Could not successfully copy {0} to {1}.".format(newimage, LEGACY_MAPSERVICE_IMG))
+
+        try:
+            with open(LEGACY_MAPSERIVCE_SOURCE_TXT, 'w') as f:
+                f.write(os.path.basename(newimage))
+        except Exception as e:
+            logger.debug(e)
+            logger.debug(traceback.format_exc())
+            raise Exception("Could not update the map service source layer text file {0}.".format(LEGACY_MAPSERIVCE_SOURCE_TXT))
+
+    except Exception as e:
+        logger.debug("Failed to update the legacy mapservice.")
+        raise e
+    finally:
+        env.overwriteOutput = overwriteSetting
+
+        try:
+            agsconnection.startService(LEGACY_MAPSERVICE)
+        except Exception as e:
+            logger.debug(e)
+            logger.debug(traceback.format_exc())
+            raise Exception("Could not successfully start the map service {0}.".format(LEGACY_MAPSERVICE))
+        
 
 def strip_raster_date_from_name(name):
     """
@@ -402,8 +458,8 @@ def update_image_service():
         agsconnection.stopService(IMAGE_SERVICE)
         agsconnection.startService(IMAGE_SERVICE)
     except Exception as e:
-        logging.debug(e)
-        raise Exception("Could not successfully update the image service {0}.".format(IMAGE_SERVICE))    
+        logger.debug(e)
+        raise Exception("Could not successfully update the image service {0}.".format(IMAGE_SERVICE))
     
 
 # ------------------- MAIN ---------------------
@@ -434,12 +490,11 @@ def main():
             originalext += os.path.splitext(filename)[1]
             filename = os.path.splitext(filename)[0]
 
+        # check to see if file has already been processed (file of same name in archived)
         if glob.glob(os.path.join(ARCHIVE_WORKSPACE, fullfilename)):
-            # TODO: implement whatever needs to happen if file is already in archive.
             # assume that files are revisions; overwrite all old files.
             logger.info("File already processed; overwriting.")
-            replaced = True
-            #continue
+            replaced = True  # flag to provide different processing flow if replacement
 
         if SWE_FILE_CODE in f:
             swe_name = get_date_of_SWE_data(f)
@@ -571,14 +626,23 @@ def main():
                 logger.error("Error: " + errormsg)
                 pass
 
-            # update the web service
+            # update the web services
             try:
-                logger.info("Updating the web service and mosaic...")
                 if not replaced:
+                    logger.info("Updating the legacy map service...")
                     # do not want to update MapService or raster list if replacement data
                     add_to_SWE_list(projectedname)
-                    OLDMETHOD_update_webservice_sourcedata(outfile)
-                    pass
+                    update_legacy_mapservice(outfile)
+            except Exception as e:
+                logger.debug(e)
+                logger.debug(traceback.format_exc())
+                logger.debug(arcpy.GetMessages())
+                errormsg = "Failed to update the legacy map service service."
+                logger.error("File conversion stopped. Status: " + errormsg)
+                continue
+            
+            try:
+                logger.info("Updating the SWE mosaic dataset...")
                 add_to_mosaic_dataset(outfile)
                 updates += 1
             except Exception as e:
