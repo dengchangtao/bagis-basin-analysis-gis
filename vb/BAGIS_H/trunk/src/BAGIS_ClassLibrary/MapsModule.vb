@@ -780,10 +780,7 @@ Public Module MapsModule
         Dim cell_size As Double
 
         'get cell size
-        Dim raster_res As Double
-        Dim pRasterStats As IRasterStatistics = BA_GetRasterStatsGDB(filepath & "\" & FileName, raster_res)
-        'pRasterStats used only to get raster_res; Release memory
-        pRasterStats = Nothing
+        Dim raster_res As Double = BA_CellSize(filepath, FileName)
 
         If raster_res <= 0 Then raster_res = 1
         cell_size = raster_res * raster_res

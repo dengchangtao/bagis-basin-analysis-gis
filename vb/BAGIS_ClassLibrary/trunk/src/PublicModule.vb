@@ -2193,4 +2193,43 @@ Optional ByVal hasPaddingBackSlach As Boolean = False) As String
         End Try
     End Function
 
+    ' Calculate raster cellsize from an input GeoDataset
+    Public Function BA_CellSize(ByVal folderPath As String, ByVal fileName As String) As Double
+        Dim pGeoDataset As IGeoDataset = Nothing
+        Dim pRasterDataset As IRasterDataset = New RasterDataset
+        Dim pRasterBand As IRasterBand = Nothing
+        Dim pRasterBandCollection As IRasterBandCollection = Nothing
+        Dim pRasterP As IRasterProps = Nothing
+        Try
+            ' Open IGeodataset
+            Dim wType As WorkspaceType = BA_GetWorkspaceTypeFromPath(folderPath)
+            If wType = WorkspaceType.Geodatabase Then
+                pGeoDataset = BA_OpenRasterFromGDB(folderPath, fileName)
+            Else
+                pGeoDataset = BA_OpenRasterFromFile(folderPath, fileName)
+            End If
+            ' Extract IRasterBand from input IGeoDataSet
+            pRasterDataset = CType(pGeoDataset, IRasterDataset) ' Explicit cast
+            pRasterBandCollection = pRasterDataset
+            pRasterBand = pRasterBandCollection.Item(0)
+
+            ' Get resolution from IRasterBand and calculate cellsize
+            pRasterP = pRasterBand
+            Dim pPnt As IPnt = New DblPnt
+            pPnt = pRasterP.MeanCellSize
+            Return (pPnt.X + pPnt.Y) / 2
+        Catch ex As Exception
+            MsgBox("BA_CellSize Exception: " & ex.Message)
+            Return 0
+        Finally
+            pGeoDataset = Nothing
+            pRasterDataset = Nothing
+            pRasterBand = Nothing
+            pRasterBandCollection = Nothing
+            pRasterP = Nothing
+            GC.WaitForPendingFinalizers()
+            GC.Collect()
+        End Try
+    End Function
+
 End Module
