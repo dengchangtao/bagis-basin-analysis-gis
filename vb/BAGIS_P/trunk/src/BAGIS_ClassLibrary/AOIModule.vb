@@ -28,7 +28,6 @@ Public Module AOIModule
         'UBOUND - esriFieldTypeDouble: for lower bound
 
         Dim raster_res As Double
-        Dim pRasterStats As IRasterStatistics = Nothing
         Dim pRDataset As IGeoDataset = Nothing
         Dim pBandCol As IRasterBandCollection = Nothing
         Dim pRasterBand As IRasterBand = Nothing
@@ -38,8 +37,7 @@ Public Module AOIModule
 
         Try
             'call to get cellsize;
-            'pRasterStats = BA_GetRasterStats(filepath & "\" & FileName, raster_res)
-            pRasterStats = BA_GetRasterStatsGDB(filepath & "\" & FileName, raster_res)
+            raster_res = BA_CellSize(filepath, FileName)
 
             If raster_res <= 0 Then raster_res = 1
             Dim cell_size As Double = raster_res * raster_res
@@ -99,7 +97,6 @@ Public Module AOIModule
             MessageBox.Show("BA_ReadReclassRasterAttribute Exception: " & ex.Message)
             Return BA_ReturnCode.UnknownError
         Finally
-            ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pRasterStats)
             ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pRow)
             ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pCursor)
             ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pTable)

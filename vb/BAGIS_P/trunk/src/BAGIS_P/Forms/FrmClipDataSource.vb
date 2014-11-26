@@ -32,7 +32,6 @@ Public Class FrmClipDataSource
         Dim DataPath As String
         Dim pFilter As IGxObjectFilter = New GxFilterContainers
         Dim bagisPExt As BagisPExtension = BagisPExtension.GetExtension
-        Dim rasterStats As IRasterStatistics = Nothing
 
         Try
             'initialize and open mini browser
@@ -60,20 +59,15 @@ Public Class FrmClipDataSource
                 If AlreadyOnList(aoiName) = False Then
                     Dim pAoi As Aoi = New Aoi(aoiName, DataPath, Nothing, bagisPExt.version)
                     'Get the cell size of this aoi using the filled dem
-                    Dim demPath As String = BA_GeodatabasePath(pAoi.FilePath, GeodatabaseNames.Surfaces, True) & BA_EnumDescription(MapsFileName.filled_dem_gdb)
-                    Dim aoiCellSize As Double
+                    Dim aoiCellSize As Double = BA_CellSize(BA_GeodatabasePath(pAoi.FilePath, GeodatabaseNames.Surfaces), BA_EnumDescription(MapsFileName.filled_dem_gdb))
                     Dim clipCellSize As Double
-                    rasterStats = BA_GetRasterStatsGDB(demPath, aoiCellSize)
                     For Each dsName As String In m_selDataSources
                         Dim dataSource As DataSource = m_dataTable(dsName)
                         '---check the cell size of the aoi against the clip data source if the clip is a raster---
                         If dataSource.LayerType = LayerType.Raster Then
-                            Dim workType As WorkspaceType = BA_GetWorkspaceTypeFromPath(dataSource.Source)
-                            If workType = WorkspaceType.Geodatabase Then
-                                rasterStats = BA_GetRasterStatsGDB(dataSource.Source, clipCellSize)
-                            Else
-                                rasterStats = BA_GetRasterStats(dataSource.Source, clipCellSize)
-                            End If
+                            Dim folderPath As String = "PleaseReturn"
+                            Dim fileName As String = BA_GetBareName(dataSource.Source, folderPath)
+                            clipCellSize = BA_CellSize(folderPath, FileName)
                         End If
                         'If the cell size is different
                         Dim clipDataSet As Boolean = True
@@ -134,8 +128,6 @@ Public Class FrmClipDataSource
             ManageClipAndRemoveButtons()
         Catch ex As Exception
             MessageBox.Show("BtnSelectAoi_Click Exception: " & ex.Message)
-        Finally
-            rasterStats = Nothing
         End Try
     End Sub
 
@@ -157,7 +149,6 @@ Public Class FrmClipDataSource
         ' Create/configure a step progressor
         Dim pStepProg As IStepProgressor = Nothing
         Dim progressDialog2 As IProgressDialog2 = Nothing
-        Dim rasterStats As IRasterStatistics = Nothing
         BtnClip.Enabled = False
         BtnAddAoi.Enabled = False
         BtnRemove.Enabled = False
@@ -279,18 +270,13 @@ Public Class FrmClipDataSource
                                         End If
 
                                         'Get the cell size of this aoi using the filled dem
-                                        Dim demPath As String = BA_GeodatabasePath(aoiPath, GeodatabaseNames.Surfaces, True) & BA_EnumDescription(MapsFileName.filled_dem_gdb)
-                                        Dim aoiCellSize As Double
+                                        Dim aoiCellSize As Double = BA_CellSize(BA_GeodatabasePath(aoiPath, GeodatabaseNames.Surfaces), BA_EnumDescription(MapsFileName.filled_dem_gdb))
                                         Dim clipCellSize As Double
-                                        rasterStats = BA_GetRasterStatsGDB(demPath, aoiCellSize)
                                         'check the cell size of the aoi against the clip data source if the clip is a raster
                                         If pDS.LayerType = LayerType.Raster Then
-                                            Dim workType As WorkspaceType = BA_GetWorkspaceTypeFromPath(pDS.Source)
-                                            If workType = WorkspaceType.Geodatabase Then
-                                                rasterStats = BA_GetRasterStatsGDB(pDS.Source, clipCellSize)
-                                            Else
-                                                rasterStats = BA_GetRasterStats(pDS.Source, clipCellSize)
-                                            End If
+                                            Dim folderPath As String = "PleaseReturn"
+                                            Dim fileName As String = BA_GetBareName(pDS.Source, folderPath)
+                                            clipCellSize = BA_CellSize(folderPath, fileName)
                                         End If
                                         'If the cell sizes are different, we need to resample the result of the clip
                                         If aoiCellSize <> clipCellSize Then
@@ -334,7 +320,6 @@ Public Class FrmClipDataSource
                 pStepProg = Nothing
                 progressDialog2.HideDialog()
                 progressDialog2 = Nothing
-                rasterStats = Nothing
                 BtnCancel.Enabled = True
                 BtnAddAoi.Enabled = True
             End If

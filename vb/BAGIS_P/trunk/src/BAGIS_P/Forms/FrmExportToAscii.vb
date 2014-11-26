@@ -65,10 +65,8 @@ Public Class FrmExportToAscii
                 Dim profilesFolder As String = BA_GetLocalProfilesDir(DataPath)
                 m_profileList = BA_LoadProfilesFromXml(profilesFolder)
 
-                Dim cellSize As Double = 0
                 Dim surfacesFolder As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Surfaces)
-                Dim demPath As String = surfacesFolder & "\" & BA_EnumDescription(MapsFileName.filled_dem_gdb)
-                Dim rasterStats As ESRI.ArcGIS.DataSourcesRaster.IRasterStatistics = BA_GetRasterStatsGDB(demPath, cellSize)
+                Dim cellSize As Double = BA_CellSize(surfacesFolder, BA_EnumDescription(MapsFileName.filled_dem_gdb))
                 Dim linearUnit As ESRI.ArcGIS.Geometry.ILinearUnit = BA_GetLinearUnitOfProjectedRaster(surfacesFolder, BA_EnumDescription(MapsFileName.filled_dem_gdb))
                 Dim unitLabel As String = "Unknown"
                 If linearUnit.Name = "Meter" Then
@@ -125,9 +123,9 @@ Public Class FrmExportToAscii
             End If
             TxtOutputFolder1.Text = BA_GetHruPath(m_aoi.FilePath, PublicPath.HruDirectory, selItem.Name)
             TxtHruOutputName.Text = selItem.Name & BA_FILE_EXT_TEXT
-            Dim cellSize As Double = 0
+
             Dim hruGdbPath As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, selItem.Name)
-            Dim rasterStats As ESRI.ArcGIS.DataSourcesRaster.IRasterStatistics = BA_GetRasterStatsGDB(hruGdbPath & "\" & GRID, cellSize)
+            Dim cellSize As Double = BA_CellSize(hruGdbPath, GRID)
             Dim linearUnit As ESRI.ArcGIS.Geometry.ILinearUnit = BA_GetLinearUnitOfProjectedRaster(hruGdbPath, GRID)
             Dim unitLabel As String = "Unknown"
             If linearUnit.Name = "Meter" Then
