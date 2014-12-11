@@ -126,33 +126,53 @@ Public Class FrmExportParametersOms
 
     Private Sub BtnSetTemplate_Click(sender As System.Object, e As System.EventArgs) Handles BtnSetTemplate.Click
         If OpenFileDialog1.ShowDialog = DialogResult.OK Then
-            Dim validParamFile As Boolean = False
-            Try
-                Using sr As StreamReader = File.OpenText(OpenFileDialog1.FileName)
-                    If sr.Peek <> 0 Then
-                        Dim firstLine As String = sr.ReadLine
-                        If Not String.IsNullOrEmpty(firstLine) Then
-                            Dim firstChars As String = firstLine.Substring(0, 2)
-                            If firstChars = SECTION_FLAG Then
-                                validParamFile = True
-                            End If
-                        End If
-                    End If
-                End Using
-            Catch ex As Exception
-                Debug.Print("BtnSetTemplate_Click Exception: " & ex.Message)
-            End Try
-            If validParamFile = True Then
-                TxtParameterTemplate.Text = OpenFileDialog1.FileName
-                'TxtDescription.Text = "Descr: East Fork Carson River, CA" & vbCrLf & "Modified: Wed Aug 29 17:41:47 MDT 2012 " & vbCrLf _
-                '                    & "Version: 1.7 " & vbCrLf & "Created: Tue Aug 21 16:02:12 MDT 2012"
-                GetTemplateDetails()
-            Else
-                MessageBox.Show("The file you selected is not a valid template.", "Invalid template", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                TxtParameterTemplate.Text = Nothing
-            End If
+            SetTemplate(OpenFileDialog1.FileName)
         End If
     End Sub
+
+    Private Sub BtnDefaultTemplate_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnDefaultTemplate.Click
+        Dim bExt As BagisPExtension = BagisPExtension.GetExtension
+        Dim settingsPath As String = bExt.SettingsPath
+        Dim profilesFolder As String = BA_GetPublicProfilesPath(settingsPath)
+        Dim templatepath As String = profilesFolder & BA_EnumDescription(PublicPath.DefaultParameterTemplate)
+        If Not BA_File_ExistsWindowsIO(templatepath) Then
+            Dim errMsg As String = "The default parameter template could not be located. "
+            errMsg += "BAGIS-P is looking for the template at " & templatepath & "."
+            MessageBox.Show(errMsg, "Default template not found", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Else
+            SetTemplate(templatepath)
+        End If
+    End Sub
+
+    Private Function SetTemplate(ByVal pathToFile As String) As BA_ReturnCode
+        Dim validParamFile As Boolean = False
+        Try
+            Using sr As StreamReader = File.OpenText(pathToFile)
+                If sr.Peek <> 0 Then
+                    Dim firstLine As String = sr.ReadLine
+                    If Not String.IsNullOrEmpty(firstLine) Then
+                        Dim firstChars As String = firstLine.Substring(0, 2)
+                        If firstChars = SECTION_FLAG Then
+                            validParamFile = True
+                        End If
+                    End If
+                End If
+            End Using
+        Catch ex As Exception
+            Debug.Print("SetTemplate Exception: " & ex.Message)
+        End Try
+        If validParamFile = True Then
+            TxtParameterTemplate.Text = pathToFile
+            'TxtDescription.Text = "Descr: East Fork Carson River, CA" & vbCrLf & "Modified: Wed Aug 29 17:41:47 MDT 2012 " & vbCrLf _
+            '                    & "Version: 1.7 " & vbCrLf & "Created: Tue Aug 21 16:02:12 MDT 2012"
+            GetTemplateDetails()
+            Return BA_ReturnCode.Success
+        Else
+            MessageBox.Show("The file you selected is not a valid template.", "Invalid template", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            TxtParameterTemplate.Text = Nothing
+        End If
+        Return BA_ReturnCode.UnknownError
+    End Function
 
     Private Sub BtnSetOutput_Click(sender As System.Object, e As System.EventArgs) Handles BtnSetOutput.Click
         Try
@@ -344,6 +364,7 @@ Public Class FrmExportParametersOms
         Dim hruParamPath As String = hruPath & BA_EnumDescription(PublicPath.BagisParamGdb)
         Dim tableName As String = CStr(LstProfiles.SelectedItem) & BA_PARAM_TABLE_SUFFIX
         Dim success As Boolean = VerifyParameterValuesInTable(hruParamPath, tableName, True)
+        Dim retVal As BA_ReturnCode = BA_ReturnCode.Success
 
         If success = True Then
             If m_spatialParamsTable Is Nothing Then
@@ -353,21 +374,39 @@ Public Class FrmExportParametersOms
             End If
             BA_ExportParameterFile(TxtOutputFolder.Text, TxtDescription.Text, TxtVersion.Text, m_paramsTable, m_tablesTable, hruParamPath, _
                                    tableName, CInt(TxtNHru.Text), m_spatialParamsTable, missingData, m_radplSpatialParameters)
-            'Export Geodatabase file to shapefile
-            Dim targetFolder As String = "Please Return"
-            Dim targetFile As String = BA_GetBareName(TxtOutputFolder.Text, targetFolder)
-            'Strip extension from parameter file name so we can add the .shp
-            If Not String.IsNullOrEmpty(targetFile) Then
-                Dim idxExtension As Integer = targetFile.IndexOf(".")
-                If idxExtension > 0 Then
-                    targetFile = targetFile.Substring(0, idxExtension)
+            Dim zipFolder As String = Nothing
+            If CkExportZipped.Checked = True Then
+                'Export Geodatabase file to shapefile
+                Dim targetFolder As String = "Please Return"
+                Dim targetFile As String = BA_GetBareName(TxtOutputFolder.Text, targetFolder)
+                Dim tempBagisFolder As String = "BagisZip"
+                'Delete tempBagisFolder if it exists to make sure we don't have old data
+                If BA_Folder_ExistsWindowsIO(targetFolder & tempBagisFolder) Then
+                    BA_Remove_Folder(targetFolder & tempBagisFolder)
                 End If
+                zipFolder = BA_CreateFolder(targetFolder, tempBagisFolder)
+                'Strip extension from parameter file name so we can add the .shp
+                If Not String.IsNullOrEmpty(targetFile) Then
+                    Dim idxExtension As Integer = targetFile.IndexOf(".")
+                    If idxExtension > 0 Then
+                        targetFile = targetFile.Substring(0, idxExtension)
+                    End If
+                End If
+                Dim hruGdbName As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, selItem.Name)
+                Dim vName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruZonesVector), False)
+                retVal = BA_ConvertGDBToShapefile(hruGdbName, vName, zipFolder, targetFile)
+                'Copy the parameter file into the tempBagisFolder
+                File.Copy(TxtOutputFolder.Text, zipFolder & "\" & BA_GetBareName(TxtOutputFolder.Text), True)
+                'Zip up the folder
+                Dim zipFileName As String = BA_StandardizeShapefileName(targetFile, False) & ".zip"
+                retVal = BA_ZipFolder(zipFolder, zipFileName)
             End If
-            Dim hruGdbName As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, selItem.Name)
-            Dim vName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruZonesVector), False)
-            BA_ConvertGDBToShapefile(hruGdbName, vName, targetFolder, targetFile)
-            MessageBox.Show("Parameter file export complete. A shapefile with the geometry has been copied to the same folder.", _
-                            "File export", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+            If success = True And retVal = BA_ReturnCode.Success Then
+                BA_Remove_Folder(zipFolder)
+                MessageBox.Show("Parameter file export complete !", _
+                                "File export", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
         End If
     End Sub
 

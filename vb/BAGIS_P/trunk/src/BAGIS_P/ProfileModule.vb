@@ -35,11 +35,13 @@ Module ProfileModule
             Dim allDirectories As FileInfo() = dirInfo.GetFiles
             Dim allProfiles As List(Of Profile) = New List(Of Profile)
             For Each pFile As FileInfo In allDirectories
-                Dim obj As Object = SerializableData.Load(pFile.FullName, GetType(Profile))
-                If obj IsNot Nothing Then
-                    Dim pProfile As Profile = CType(obj, Profile)
-                    pProfile.XmlFileName = pFile.Name
-                    allProfiles.Add(pProfile)
+                If Path.GetExtension(pFile.FullName) = BA_FILE_EXT_XML Then
+                    Dim obj As Object = SerializableData.Load(pFile.FullName, GetType(Profile))
+                    If obj IsNot Nothing Then
+                        Dim pProfile As Profile = CType(obj, Profile)
+                        pProfile.XmlFileName = pFile.Name
+                        allProfiles.Add(pProfile)
+                    End If
                 End If
             Next
             Return allProfiles

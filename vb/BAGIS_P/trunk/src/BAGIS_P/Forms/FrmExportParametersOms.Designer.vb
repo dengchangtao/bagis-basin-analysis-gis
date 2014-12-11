@@ -55,6 +55,8 @@ Partial Class FrmExportParametersOms
         Me.BtnEditHruParameters = New System.Windows.Forms.Button()
         Me.TxtDescription = New System.Windows.Forms.TextBox()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.BtnDefaultTemplate = New System.Windows.Forms.Button()
+        Me.CkExportZipped = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'TxtAoiPath
@@ -180,7 +182,7 @@ Partial Class FrmExportParametersOms
         'BtnSetTemplate
         '
         Me.BtnSetTemplate.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSetTemplate.Location = New System.Drawing.Point(723, 43)
+        Me.BtnSetTemplate.Location = New System.Drawing.Point(723, 8)
         Me.BtnSetTemplate.Name = "BtnSetTemplate"
         Me.BtnSetTemplate.Size = New System.Drawing.Size(147, 25)
         Me.BtnSetTemplate.TabIndex = 84
@@ -262,10 +264,10 @@ Partial Class FrmExportParametersOms
         Me.Label7.ForeColor = System.Drawing.Color.Black
         Me.Label7.Location = New System.Drawing.Point(166, 218)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(540, 16)
+        Me.Label7.Size = New System.Drawing.Size(549, 16)
         Me.Label7.TabIndex = 92
-        Me.Label7.Text = "The output file is saved as a plain text ASCII file in OMS parameter file format." & _
-    ""
+        Me.Label7.Text = "The output file is saved as a plain text ASCII file in eWSF parameter file format" & _
+            "."
         '
         'LstProfiles
         '
@@ -381,13 +383,38 @@ Partial Class FrmExportParametersOms
         Me.TextBox1.Size = New System.Drawing.Size(650, 15)
         Me.TextBox1.TabIndex = 105
         Me.TextBox1.Text = "HRU parameter values not calculated by BAGIS-P will be copied from the parameter " & _
-    "template"
+            "template"
+        '
+        'BtnDefaultTemplate
+        '
+        Me.BtnDefaultTemplate.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnDefaultTemplate.Location = New System.Drawing.Point(723, 43)
+        Me.BtnDefaultTemplate.Name = "BtnDefaultTemplate"
+        Me.BtnDefaultTemplate.Size = New System.Drawing.Size(147, 25)
+        Me.BtnDefaultTemplate.TabIndex = 106
+        Me.BtnDefaultTemplate.Text = "Default Template"
+        Me.BtnDefaultTemplate.UseVisualStyleBackColor = True
+        '
+        'CkExportZipped
+        '
+        Me.CkExportZipped.AutoSize = True
+        Me.CkExportZipped.Checked = True
+        Me.CkExportZipped.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CkExportZipped.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CkExportZipped.Location = New System.Drawing.Point(726, 216)
+        Me.CkExportZipped.Name = "CkExportZipped"
+        Me.CkExportZipped.Size = New System.Drawing.Size(147, 20)
+        Me.CkExportZipped.TabIndex = 107
+        Me.CkExportZipped.Text = "Save a zipped copy"
+        Me.CkExportZipped.UseVisualStyleBackColor = True
         '
         'FrmExportParametersOms
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(880, 361)
+        Me.Controls.Add(Me.CkExportZipped)
+        Me.Controls.Add(Me.BtnDefaultTemplate)
         Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.TxtDescription)
         Me.Controls.Add(Me.BtnEditHruParameters)
@@ -459,4 +486,6 @@ Partial Class FrmExportParametersOms
     Friend WithEvents BtnEditHruParameters As System.Windows.Forms.Button
     Friend WithEvents TxtDescription As System.Windows.Forms.TextBox
     Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
+    Friend WithEvents BtnDefaultTemplate As System.Windows.Forms.Button
+    Friend WithEvents CkExportZipped As System.Windows.Forms.CheckBox
 End Class
