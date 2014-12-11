@@ -59,4 +59,5 @@ Public Enum PublicPath
     <Description("\ExportProfile.xsl")> ExportProfileXsl
     <Description("\ExportProfile.xml")> ExportProfileXml
     <Description("\export_report.html")> ExportReportHtml
+    <Description("\BAGIS_Parameters.csv")> DefaultParameterTemplate
 End Enum
