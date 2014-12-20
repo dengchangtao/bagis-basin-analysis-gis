@@ -100,11 +100,7 @@
     <Content Include="Account\Results1.htm" />
     <Content Include="Account\TabulateArea.aspx" />
     <Content Include="EmailTemplate\CustomMail.txt" />
-    <Content Include="Old\Analysis.aspx" />
-    <Content Include="Old\Edit.aspx" />
-    <Content Include="Old\Map.htm" />
     <Content Include="PasswordRecovery.aspx" />
-    <Content Include="Old\Results.htm" />
     <Content Include="Styles\psu.css" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
@@ -184,26 +180,12 @@
       <DependentUpon>TabulateArea.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
-    <Compile Include="Old\Analysis.aspx.designer.vb">
-      <DependentUpon>Analysis.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Old\Analysis.aspx.vb">
-      <DependentUpon>Analysis.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
-    </Compile>
     <Compile Include="Default.aspx.vb">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.designer.vb">
       <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Old\Edit.aspx.designer.vb">
-      <DependentUpon>Edit.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Old\Edit.aspx.vb">
-      <DependentUpon>Edit.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
