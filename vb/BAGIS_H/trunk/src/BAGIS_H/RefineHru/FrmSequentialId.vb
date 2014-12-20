@@ -216,7 +216,7 @@ Public Class FrmSequentialId
                 hruGDS = BA_OpenRasterFromGDB(hruFolder, hruFile)
                 If hruGDS IsNot Nothing Then
                     Dim memTable As Hashtable = New Hashtable
-                    Dim newId As Integer = 1
+                    'Dim newId As Integer = 1
                     pRasterBandColl = CType(hruGDS, IRasterBandCollection)
                     pRasterBand = pRasterBandColl.Item(0)
                     pTable = pRasterBand.AttributeTable
@@ -232,117 +232,123 @@ Public Class FrmSequentialId
                         pTable.AddField(pField)
                         idxNewId = pTable.FindField(BA_FIELD_NEW_HRU_ID)
                     End If
-                    'Open a cursor on the grid
-                    pCursor = pTable.Update(Nothing, False)
-                    pRow = pCursor.NextRow
-                    'Look at each record
-                    Do Until pRow Is Nothing
-                        Dim oldValue As String = Convert.ToString(pRow.Value(idxValue))
-                        If memTable(oldValue) Is Nothing Then
-                            Dim txtItem As ReclassTextItem = New ReclassTextItem(oldValue, CStr(newId))
-                            memTable(oldValue) = txtItem
-                            'Populate newId column
-                            pRow.Value(idxNewId) = newId
-                        Else
-                            Dim txtItem As ReclassTextItem = memTable(oldValue)
-                            'Populate newId column
-                            pRow.Value(idxNewId) = Convert.ToInt16(txtItem.OutputValue)
-                        End If
-                        'Store record
-                        pCursor.UpdateRow(pRow)
-                        'Increment id by 1
-                        newId += 1
-                        'Next record
+                    'Calculate stream order hru id's and store in a table
+                    Dim idTable As Hashtable = CreateStreamOrderTable(pItem.Name)
+                    Dim hruGdbName As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, pItem.Name)
+                    If idTable IsNot Nothing Then
+                        'Open a cursor on the grid
+                        pCursor = pTable.Update(Nothing, False)
                         pRow = pCursor.NextRow
-                    Loop
-                    Dim itemArray(memTable.Keys.Count - 1) As ReclassTextItem
-                    Dim idx As Integer = 0
-                    'Put Reclass items in array so we can use them for the reclass
-                    For Each pKey As String In memTable.Keys
-                        itemArray(idx) = memTable(pKey)
-                        idx += 1
-                    Next
-                    pStepProg.Step()
-                    Dim snapRasterPath As String = BA_GeodatabasePath(TxtAoiPath.Text, GeodatabaseNames.Aoi) & BA_EnumDescription(PublicPath.AoiGrid)
-                    Dim success As BA_ReturnCode = BA_ReclassifyRasterFromReclassTextItems(selectedItem.Value, BA_FIELD_VALUE, _
-                                                    itemArray, hruFolder & "\" & tempGrid, snapRasterPath)
-                    If success = BA_ReturnCode.Success Then
-                        'Copy attribute fields from old grid to new grid
-                        tempGDS = BA_OpenRasterFromGDB(hruFolder, tempGrid)
-                        Dim idxSource As IList(Of Integer) = New List(Of Integer)
-                        Dim idxTarget As IList(Of Integer) = New List(Of Integer)
-                        If tempGDS IsNot Nothing Then
-                            tempBandColl = CType(tempGDS, IRasterBandCollection)
-                            tempBand = tempBandColl.Item(0)
-                            tempTable = tempBand.AttributeTable
-                            'Start at 3 because the first three columns are OID, Value, and Count
-                            For i As Integer = 3 To gridFields.FieldCount - 1
-                                Dim sourceField As IField = gridFields.Field(i)
-                                If i < idxNewId Then
-                                    Dim targetField As IFieldEdit = New Field
-                                    targetField.Name_2 = sourceField.Name
-                                    targetField.Length_2 = sourceField.Length
-                                    targetField.AliasName_2 = sourceField.AliasName
-                                    targetField.Type_2 = sourceField.Type
-                                    tempTable.AddField(targetField)
-                                    idxSource.Add(i)
-                                    idxTarget.Add(tempTable.FindField(sourceField.Name))
-                                End If
-                            Next
-                            pStepProg.Step()
-                            'Copy attributes from old to new grid
-                            targetCursor = tempTable.Update(Nothing, False)
-                            targetRow = targetCursor.NextRow
-                            Do Until targetRow Is Nothing
-                                queryFilter.WhereClause = BA_FIELD_NEW_HRU_ID & " = " & targetRow.Value(idxValue)
-                                Dim sourceCursor As ICursor = pTable.Search(queryFilter, False)
-                                Dim sourceRow As IRow = sourceCursor.NextRow
-                                If sourceRow IsNot Nothing Then
-                                    For nextIdx As Integer = 0 To idxSource.Count - 1
-                                        Dim fld1 As Integer = idxSource(nextIdx)
-                                        Dim fld2 As Integer = idxTarget(nextIdx)
-                                        targetRow.Value(fld2) = sourceRow.Value(fld1)
-                                    Next
-                                End If
-                                targetCursor.UpdateRow(targetRow)
+                        'Look at each record
+                        Do Until pRow Is Nothing
+                            Dim oldValue As String = Convert.ToString(pRow.Value(idxValue))
+                            Dim newId As String = Convert.ToString(idTable(oldValue))
+                            If memTable(oldValue) Is Nothing Then
+                                Dim txtItem As ReclassTextItem = New ReclassTextItem(oldValue, CStr(newId))
+                                memTable(oldValue) = txtItem
+                                'Populate newId column
+                                pRow.Value(idxNewId) = newId
+                            Else
+                                Dim txtItem As ReclassTextItem = memTable(oldValue)
+                                'Populate newId column
+                                pRow.Value(idxNewId) = Convert.ToInt16(txtItem.OutputValue)
+                            End If
+                            'Store record
+                            pCursor.UpdateRow(pRow)
+                            'Increment id by 1
+                            newId += 1
+                            'Next record
+                            pRow = pCursor.NextRow
+                        Loop
+                        Dim itemArray(memTable.Keys.Count - 1) As ReclassTextItem
+                        Dim idx As Integer = 0
+                        'Put Reclass items in array so we can use them for the reclass
+                        For Each pKey As String In memTable.Keys
+                            itemArray(idx) = memTable(pKey)
+                            idx += 1
+                        Next
+                        pStepProg.Step()
+                        Dim snapRasterPath As String = BA_GeodatabasePath(TxtAoiPath.Text, GeodatabaseNames.Aoi) & BA_EnumDescription(PublicPath.AoiGrid)
+                        Dim success As BA_ReturnCode = BA_ReclassifyRasterFromReclassTextItems(selectedItem.Value, BA_FIELD_VALUE, _
+                                                        itemArray, hruFolder & "\" & tempGrid, snapRasterPath)
+                        If success = BA_ReturnCode.Success Then
+                            'Copy attribute fields from old grid to new grid
+                            tempGDS = BA_OpenRasterFromGDB(hruFolder, tempGrid)
+                            Dim idxSource As IList(Of Integer) = New List(Of Integer)
+                            Dim idxTarget As IList(Of Integer) = New List(Of Integer)
+                            If tempGDS IsNot Nothing Then
+                                tempBandColl = CType(tempGDS, IRasterBandCollection)
+                                tempBand = tempBandColl.Item(0)
+                                tempTable = tempBand.AttributeTable
+                                'Start at 3 because the first three columns are OID, Value, and Count
+                                For i As Integer = 3 To gridFields.FieldCount - 1
+                                    Dim sourceField As IField = gridFields.Field(i)
+                                    If i < idxNewId Then
+                                        Dim targetField As IFieldEdit = New Field
+                                        targetField.Name_2 = sourceField.Name
+                                        targetField.Length_2 = sourceField.Length
+                                        targetField.AliasName_2 = sourceField.AliasName
+                                        targetField.Type_2 = sourceField.Type
+                                        tempTable.AddField(targetField)
+                                        idxSource.Add(i)
+                                        idxTarget.Add(tempTable.FindField(sourceField.Name))
+                                    End If
+                                Next
+                                pStepProg.Step()
+                                'Copy attributes from old to new grid
+                                targetCursor = tempTable.Update(Nothing, False)
                                 targetRow = targetCursor.NextRow
-                            Loop
-                            pStepProg.Step()
-                            'Copy old grid to different location "oldGrid"
-                            success = BA_RenameRasterInGDB(hruFolder, hruFile, oldGrid)
-                            If success = BA_ReturnCode.Success Then
-                                'Copy new grid to standard grid location "grid"
-                                success = BA_RenameRasterInGDB(hruFolder, tempGrid, hruFile)
+                                Do Until targetRow Is Nothing
+                                    queryFilter.WhereClause = BA_FIELD_NEW_HRU_ID & " = " & targetRow.Value(idxValue)
+                                    Dim sourceCursor As ICursor = pTable.Search(queryFilter, False)
+                                    Dim sourceRow As IRow = sourceCursor.NextRow
+                                    If sourceRow IsNot Nothing Then
+                                        For nextIdx As Integer = 0 To idxSource.Count - 1
+                                            Dim fld1 As Integer = idxSource(nextIdx)
+                                            Dim fld2 As Integer = idxTarget(nextIdx)
+                                            targetRow.Value(fld2) = sourceRow.Value(fld1)
+                                        Next
+                                    End If
+                                    targetCursor.UpdateRow(targetRow)
+                                    targetRow = targetCursor.NextRow
+                                Loop
+                                pStepProg.Step()
+                                'Copy old grid to different location "oldGrid"
+                                success = BA_RenameRasterInGDB(hruFolder, hruFile, oldGrid)
                                 If success = BA_ReturnCode.Success Then
-                                    Dim vOutputPath As String = BA_StandardizePathString(hruFolder, True) & BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False)
-                                    'Delete existing vector representation
-                                    Dim vReturnVal As Short = BA_Remove_ShapefileFromGDB(hruFolder, BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False))
-                                    If vReturnVal = 1 Then
-                                        'Created updated vector representation
-                                        vReturnVal = BA_Raster2PolygonShapefileFromPath(selectedItem.Value, vOutputPath, False)
+                                    'Copy new grid to standard grid location "grid"
+                                    success = BA_RenameRasterInGDB(hruFolder, tempGrid, hruFile)
+                                    If success = BA_ReturnCode.Success Then
+                                        Dim vOutputPath As String = BA_StandardizePathString(hruFolder, True) & BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False)
+                                        'Delete existing vector representation
+                                        Dim vReturnVal As Short = BA_Remove_ShapefileFromGDB(hruFolder, BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False))
                                         If vReturnVal = 1 Then
-                                            'This method returns a 0 if it succeeds instead of 1
-                                            If BA_AddShapeAreaToAttrib(vOutputPath) = 0 Then
-                                                vReturnVal = 1
-                                            Else
-                                                vReturnVal = -1
+                                            'Created updated vector representation
+                                            vReturnVal = BA_Raster2PolygonShapefileFromPath(selectedItem.Value, vOutputPath, False)
+                                            If vReturnVal = 1 Then
+                                                'This method returns a 0 if it succeeds instead of 1
+                                                If BA_AddShapeAreaToAttrib(vOutputPath) = 0 Then
+                                                    vReturnVal = 1
+                                                Else
+                                                    vReturnVal = -1
+                                                End If
                                             End If
                                         End If
-                                    End If
-                                    'Handle failure(s) with vector file if they occurred
-                                    If vReturnVal <> 1 Then
-                                        'Delete new grid so we can restore the old one
-                                        BA_RemoveRasterFromGDB(hruFolder, hruFile)
-                                        'Restore old grid
-                                        BA_RenameRasterInGDB(hruFolder, oldGrid, hruFile)
-                                        MessageBox.Show("An error occurred while trying to assign sequential ID numbers. Please restart ArcMap and try again.", "File locked", _
-                                                        MessageBoxButtons.OK, MessageBoxIcon.Error)
-                                        Exit Sub
-                                    End If
-                                    pStepProg.Step()
-                                    'Delecte old grid if user doesn't want to keep it
-                                    If CkMakeCopy.Checked = False Then
-                                        BA_RemoveRasterFromGDB(hruFolder, oldGrid)
+                                        'Handle failure(s) with vector file if they occurred
+                                        If vReturnVal <> 1 Then
+                                            'Delete new grid so we can restore the old one
+                                            BA_RemoveRasterFromGDB(hruFolder, hruFile)
+                                            'Restore old grid
+                                            BA_RenameRasterInGDB(hruFolder, oldGrid, hruFile)
+                                            MessageBox.Show("An error occurred while trying to assign sequential ID numbers. Please restart ArcMap and try again.", "File locked", _
+                                                            MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                            Exit Sub
+                                        End If
+                                        pStepProg.Step()
+                                        'Delecte old grid if user doesn't want to keep it
+                                        If CkMakeCopy.Checked = False Then
+                                            BA_RemoveRasterFromGDB(hruFolder, oldGrid)
+                                        End If
                                     End If
                                 End If
                             End If
@@ -374,9 +380,56 @@ Public Class FrmSequentialId
             targetCursor = Nothing
             targetRow = Nothing
             queryFilter = Nothing
-
             GC.WaitForPendingFinalizers()
             GC.Collect()
         End Try
     End Sub
+
+    Private Function CreateStreamOrderTable(ByVal hruName As String) As Hashtable
+        Dim tempTableName As String = "streamOrderTbl"
+        Dim snapRasterPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Aoi, True) & BA_EnumDescription(AOIClipFile.AOIExtentCoverage)
+        Dim flowAccumPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Surfaces, True) & BA_EnumDescription(MapsFileName.flow_accumulation_gdb)
+        Dim hruGdbName As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, hruName)
+        Dim vName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruZonesVector), False)
+        Dim success As BA_ReturnCode = BA_ZonalStatisticsAsTable(hruGdbName, vName, BA_FIELD_HRU_ID, flowAccumPath, _
+                                                                 hruGdbName, tempTableName, snapRasterPath, StatisticsTypeString.MAXIMUM)
+        Dim idTable As Hashtable = Nothing
+        Dim pTable As ITable = Nothing
+        Dim tableSort As ITableSort = New TableSort
+        Dim cursor As ICursor = Nothing
+        Dim pRow As IRow = Nothing
+        Try
+            pTable = BA_OpenTableFromGDB(hruGdbName, tempTableName)
+            tableSort.Table = pTable
+            tableSort.Fields = StatisticsFieldName.MAX.ToString
+            tableSort.Sort(Nothing)
+            cursor = tableSort.Rows
+            Dim idxHruId As Integer = cursor.Fields.FindField(BA_FIELD_HRU_ID)
+            Dim idxMaxId As Integer = cursor.Fields.FindField(StatisticsFieldName.MAX.ToString)
+            pRow = cursor.NextRow
+            Dim streamId As Integer = 1
+            'Instantiate hash to store new Id's; A tableSort cursor cannot perform updates :-(
+            idTable = New Hashtable
+            Do Until pRow Is Nothing
+                Dim hruId As String = CStr(pRow.Value(idxHruId))
+                Dim value As Integer = streamId
+                idTable(hruId) = value
+                streamId += 1
+                pRow = cursor.NextRow
+            Loop
+            'Delete temporary statistics table
+            BA_Remove_TableFromGDB(hruGdbName, tempTableName)
+            Return idTable
+        Catch ex As Exception
+            MsgBox("CreateStreamOrderTable Exception: " + ex.Message)
+            Return idTable
+        Finally
+            pTable = Nothing
+            tableSort = Nothing
+            cursor = Nothing
+            pRow = Nothing
+            GC.WaitForPendingFinalizers()
+            GC.Collect()
+        End Try
+    End Function
 End Class
