@@ -63,7 +63,7 @@ Public Class FrmHelp
                 Case BA_HelpTopics.ZonalStatistics
                     description = "Zonal Statistics Tool generates zonal statistics on a set of user-selected input layers using an HRU zone layer to define the zones. The zonal statistics are added to the HRU's attribute table."
                 Case BA_HelpTopics.SequentialId
-                    description = "Sequential HRU ID Tool generates sequential ID numbers for the HRU zone dataset. This is required to use the data as input to PRMS/OMS."
+                    description = "Sequential HRU ID Tool generates sequential ID numbers for the HRU zone dataset. The ID numbers are generated descending in steam links order (the higher the stream link value, the lower the id). This tool may be used to format data for input to the PRMS model."
                 Case Else
                     description = "Help information not available."
             End Select

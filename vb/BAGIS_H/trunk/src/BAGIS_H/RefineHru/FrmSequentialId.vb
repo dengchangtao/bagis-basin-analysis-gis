@@ -255,8 +255,6 @@ Public Class FrmSequentialId
                             End If
                             'Store record
                             pCursor.UpdateRow(pRow)
-                            'Increment id by 1
-                            newId += 1
                             'Next record
                             pRow = pCursor.NextRow
                         Loop
@@ -353,11 +351,13 @@ Public Class FrmSequentialId
                                 End If
                             End If
                         End If
+                        MessageBox.Show("Sequential HRU ID numbers have been calculated", "Sequential HRU ID numbers", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Else
+                        MessageBox.Show("An error occurred while calculating sequential HRU ID numbers", "Sequential HRU ID numbers", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     End If
                 End If
                 pStepProg.Step()
             Next
-            MessageBox.Show("Sequential HRU ID numbers have been calculated ", "Sequential HRU ID numbers", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Catch ex As Exception
             MsgBox("BtnApply_Click: " + ex.Message)
         Finally
@@ -390,8 +390,8 @@ Public Class FrmSequentialId
         Dim snapRasterPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Aoi, True) & BA_EnumDescription(AOIClipFile.AOIExtentCoverage)
         Dim flowAccumPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Surfaces, True) & BA_EnumDescription(MapsFileName.flow_accumulation_gdb)
         Dim hruGdbName As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, hruName)
-        Dim vName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruZonesVector), False)
-        Dim success As BA_ReturnCode = BA_ZonalStatisticsAsTable(hruGdbName, vName, BA_FIELD_HRU_ID, flowAccumPath, _
+        Dim vName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False)
+        Dim success As BA_ReturnCode = BA_ZonalStatisticsAsTable(hruGdbName, vName, BA_FIELD_ID, flowAccumPath, _
                                                                  hruGdbName, tempTableName, snapRasterPath, StatisticsTypeString.MAXIMUM)
         Dim idTable As Hashtable = Nothing
         Dim pTable As ITable = Nothing
@@ -404,7 +404,7 @@ Public Class FrmSequentialId
             tableSort.Fields = StatisticsFieldName.MAX.ToString
             tableSort.Sort(Nothing)
             cursor = tableSort.Rows
-            Dim idxHruId As Integer = cursor.Fields.FindField(BA_FIELD_HRU_ID)
+            Dim idxHruId As Integer = cursor.Fields.FindField(BA_FIELD_ID)
             Dim idxMaxId As Integer = cursor.Fields.FindField(StatisticsFieldName.MAX.ToString)
             pRow = cursor.NextRow
             Dim streamId As Integer = 1
@@ -421,7 +421,7 @@ Public Class FrmSequentialId
             BA_Remove_TableFromGDB(hruGdbName, tempTableName)
             Return idTable
         Catch ex As Exception
-            MsgBox("CreateStreamOrderTable Exception: " + ex.Message)
+            Debug.Print("CreateStreamOrderTable Exception: " + ex.Message)
             Return idTable
         Finally
             pTable = Nothing
