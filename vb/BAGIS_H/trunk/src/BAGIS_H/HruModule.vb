@@ -1079,31 +1079,40 @@ Module HruModule
                                                   ByVal hruOutputPath As String, _
                                                   ByVal cellSize As Double, _
                                                   ByVal snapRasterPath As String) As BA_ReturnCode
+
+        Dim success As BA_ReturnCode = BA_ReturnCode.UnknownError
         'add HRUID_CO and HRUID_NC fields to the Vector file
         If BA_AddCTAndNonCTToAttrib(vOutputPath) <> BA_ReturnCode.Success Then
             Throw New Exception("Error adding CT and NonCT to Shape file.")
         End If
 
+        Dim vOutputFileName As String = BA_GetBareName(vOutputPath)
         If allowNonContiguous = False Then
             'Delete initial grid so we can overwrite it
             Dim gridName As String = BA_EnumDescription(PublicPath.HruGrid)
             gridName = gridName.Remove(0, 1) 'remove the backslash
-            BA_RemoveRasterFromGDB(hruOutputPath, gridName)
+            Dim retVal As Integer = BA_RemoveRasterFromGDB(hruOutputPath, gridName)
 
-            'Convert the feature class to raster in final grid file
-            Dim outRasterPath As String = hruOutputPath & BA_EnumDescription(PublicPath.HruGrid)
-            BA_Feature2RasterGP(vOutputPath, outRasterPath, BA_FIELD_HRUID_CO, cellSize, snapRasterPath)
+            If retVal = 1 Then
+                'Convert the feature class to raster in final grid file
+                Dim outRasterPath As String = hruOutputPath & BA_EnumDescription(PublicPath.HruGrid)
+                success = BA_Feature2RasterGP(vOutputPath, outRasterPath, BA_FIELD_HRUID_CO, cellSize, snapRasterPath)
+                If success = BA_ReturnCode.Success Then
+                    'Ensure that the grid_code in grid_v matches the grid that was generated during BA_Feature2RasterGP
+                    BA_UpdateGridCodeForContig(hruOutputPath, vOutputFileName)
+                End If
+            End If
         Else
-            Dim vOutputFileName As String = BA_GetBareName(vOutputPath)
             Dim polyFileName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruPolyVector), False)
-            Dim success As BA_ReturnCode = BA_RenameFeatureClassInGDB(hruOutputPath, vOutputFileName, polyFileName)
+            success = BA_RenameFeatureClassInGDB(hruOutputPath, vOutputFileName, polyFileName)
             If success = BA_ReturnCode.Success Then
-                BA_Dissolve(hruOutputPath & "\" & polyFileName, BA_FIELD_HRUID_NC, vOutputPath)
-                BA_UpdateRequiredColumns(hruOutputPath, vOutputFileName)
+                success = BA_Dissolve(hruOutputPath & "\" & polyFileName, BA_FIELD_HRUID_NC, vOutputPath)
+                If success = BA_ReturnCode.Success Then
+                    BA_UpdateRequiredColumns(hruOutputPath, vOutputFileName)
+                End If
             End If
         End If
-
-        Return BA_ReturnCode.Success
+        Return success
     End Function
 
     'Adds reclass attribute descriptions to the output of the LULC template
@@ -1175,7 +1184,52 @@ Module HruModule
                 pFeature = pCursor.NextFeature
             Loop
         Catch ex As Exception
-            MsgBox("UpdateGridCodeValues Exception" & ex.Message)
+            MsgBox("BA_UpdateRequiredColumns Exception" & ex.Message)
+        Finally
+            ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(fc)
+            ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pCursor)
+            ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pFeature)
+        End Try
+
+    End Sub
+
+    ' Copy values from hruid_co to grid_code field 
+    ' for compability with rest of app; Used for contig zones where we have to 
+    ' dissolve/regenerate the grid layer
+    Public Sub BA_UpdateGridCodeForContig(ByVal featClassPath, ByVal featClassName)
+        Dim fc As IFeatureClass = Nothing
+        Dim pCursor As IFeatureCursor = Nothing
+        Dim pFeature As IFeature = Nothing
+
+        Try
+            fc = BA_OpenFeatureClassFromGDB(featClassPath, featClassName)
+            Dim idxGridCd As Integer = fc.FindField(BA_FIELD_GRIDCODE_GDB)
+            'Try alternate name for grid_code for compatibility with later versions of ArcMap
+            If idxGridCd < 0 Then
+                idxGridCd = fc.FindField(BA_FIELD_GRIDCODE)
+            End If
+
+            If idxGridCd < 0 Then
+                Dim pFieldCont As IFieldEdit = New Field
+                With pFieldCont
+                    .Type_2 = esriFieldType.esriFieldTypeInteger
+                    .Name_2 = BA_FIELD_GRIDCODE_GDB
+                End With
+                fc.AddField(pFieldCont)
+                idxGridCd = fc.FindField(BA_FIELD_GRIDCODE_GDB)
+            End If
+
+            Dim idxCo As Short = fc.FindField(BA_FIELD_HRUID_CO)
+
+            pCursor = fc.Update(Nothing, False)
+            pFeature = pCursor.NextFeature
+            Do While Not pFeature Is Nothing
+                pFeature.Value(idxGridCd) = pFeature.Value(idxCo)
+                pCursor.UpdateFeature(pFeature)
+                pFeature = pCursor.NextFeature
+            Loop
+        Catch ex As Exception
+            MsgBox("BA_UpdateGridCodeForContig Exception" & ex.Message)
         Finally
             ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(fc)
             ESRI.ArcGIS.ADF.ComReleaser.ReleaseCOMObject(pCursor)

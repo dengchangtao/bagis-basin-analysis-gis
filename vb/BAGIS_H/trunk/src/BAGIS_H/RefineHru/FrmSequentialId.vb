@@ -251,7 +251,7 @@ Public Class FrmSequentialId
                             Else
                                 Dim txtItem As ReclassTextItem = memTable(oldValue)
                                 'Populate newId column
-                                pRow.Value(idxNewId) = Convert.ToInt16(txtItem.OutputValue)
+                                 pRow.Value(idxNewId) = Convert.ToInt16(txtItem.OutputValue)
                             End If
                             'Store record
                             pCursor.UpdateRow(pRow)
@@ -391,7 +391,7 @@ Public Class FrmSequentialId
         Dim flowAccumPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Surfaces, True) & BA_EnumDescription(MapsFileName.flow_accumulation_gdb)
         Dim hruGdbName As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, hruName)
         Dim vName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False)
-        Dim success As BA_ReturnCode = BA_ZonalStatisticsAsTable(hruGdbName, vName, BA_FIELD_ID, flowAccumPath, _
+        Dim success As BA_ReturnCode = BA_ZonalStatisticsAsTable(hruGdbName, vName, BA_FIELD_GRIDCODE_GDB, flowAccumPath, _
                                                                  hruGdbName, tempTableName, snapRasterPath, StatisticsTypeString.MAXIMUM)
         Dim idTable As Hashtable = Nothing
         Dim pTable As ITable = Nothing
@@ -404,7 +404,7 @@ Public Class FrmSequentialId
             tableSort.Fields = StatisticsFieldName.MAX.ToString
             tableSort.Sort(Nothing)
             cursor = tableSort.Rows
-            Dim idxHruId As Integer = cursor.Fields.FindField(BA_FIELD_ID)
+            Dim idxHruId As Integer = cursor.Fields.FindField(BA_FIELD_GRIDCODE_GDB)
             Dim idxMaxId As Integer = cursor.Fields.FindField(StatisticsFieldName.MAX.ToString)
             pRow = cursor.NextRow
             Dim streamId As Integer = 1
