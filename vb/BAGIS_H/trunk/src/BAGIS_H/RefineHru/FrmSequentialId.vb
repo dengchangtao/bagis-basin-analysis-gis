@@ -391,20 +391,30 @@ Public Class FrmSequentialId
         Dim flowAccumPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Surfaces, True) & BA_EnumDescription(MapsFileName.flow_accumulation_gdb)
         Dim hruGdbName As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, hruName)
         Dim vName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False)
-        Dim success As BA_ReturnCode = BA_ZonalStatisticsAsTable(hruGdbName, vName, BA_FIELD_GRIDCODE_GDB, flowAccumPath, _
-                                                                 hruGdbName, tempTableName, snapRasterPath, StatisticsTypeString.MAXIMUM)
+        Dim fldGridCode As String = BA_FIELD_GRIDCODE_GDB
+        Dim fc As IFeatureClass = Nothing
         Dim idTable As Hashtable = Nothing
         Dim pTable As ITable = Nothing
         Dim tableSort As ITableSort = New TableSort
         Dim cursor As ICursor = Nothing
         Dim pRow As IRow = Nothing
         Try
+            fc = BA_OpenFeatureClassFromGDB(hruGdbName, vName)
+            Dim idxGridCd As Integer = fc.FindField(fldGridCode)
+            'Try alternate name for grid_code for compatibility with later versions of ArcMap
+            If idxGridCd < 0 Then
+                idxGridCd = fc.FindField(BA_FIELD_GRIDCODE)
+                fldGridCode = BA_FIELD_GRIDCODE
+            End If
+
+            Dim success As BA_ReturnCode = BA_ZonalStatisticsAsTable(hruGdbName, vName, fldGridCode, flowAccumPath, _
+                                                                     hruGdbName, tempTableName, snapRasterPath, StatisticsTypeString.MAXIMUM)
             pTable = BA_OpenTableFromGDB(hruGdbName, tempTableName)
             tableSort.Table = pTable
             tableSort.Fields = StatisticsFieldName.MAX.ToString
             tableSort.Sort(Nothing)
             cursor = tableSort.Rows
-            Dim idxHruId As Integer = cursor.Fields.FindField(BA_FIELD_GRIDCODE_GDB)
+            Dim idxHruId As Integer = cursor.Fields.FindField(fldGridCode)
             Dim idxMaxId As Integer = cursor.Fields.FindField(StatisticsFieldName.MAX.ToString)
             pRow = cursor.NextRow
             Dim streamId As Integer = 1
@@ -424,6 +434,7 @@ Public Class FrmSequentialId
             Debug.Print("CreateStreamOrderTable Exception: " + ex.Message)
             Return idTable
         Finally
+            fc = Nothing
             pTable = Nothing
             tableSort = Nothing
             cursor = Nothing
