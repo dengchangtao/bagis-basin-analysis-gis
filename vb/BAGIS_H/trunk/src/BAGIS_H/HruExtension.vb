@@ -6,7 +6,7 @@ Public Class HruExtension
     Inherits ESRI.ArcGIS.Desktop.AddIns.Extension
 
     Private Shared s_extension As HruExtension
-    Private m_version As String = " 1.4.0"
+    Private m_version As String = " 1.5.0"
     Private m_templateVersion As String = "3.0"
     Private m_aoi As Aoi
     Private m_currentTool As ESRI.ArcGIS.Framework.ICommandItem

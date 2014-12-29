@@ -2,11 +2,11 @@
   <Name>BAGIS_H</Name>
   <AddInID>{fd496308-7438-4baa-a08e-05ff7656c16c}</AddInID>
   <Description>Hydrological Response Unit (HRU) Delineation Tool</Description>
-  <Version>1.3.0</Version>
+  <Version>1.5.0</Version>
   <Image>Images\ClassLibraryAddin.png</Image>
   <Author>Lesley Bross, Richa Jain, and Geoffrey Duh</Author>
   <Company>Portland State University</Company>
-  <Date>7/9/2013</Date>
+  <Date>12/29/2014</Date>
   <Targets>
     <Target name="Desktop" version="10.0" />
   </Targets>
