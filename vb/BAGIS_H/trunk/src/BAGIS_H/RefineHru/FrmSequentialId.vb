@@ -312,43 +312,45 @@ Public Class FrmSequentialId
                                 Loop
                                 pStepProg.Step()
                                 'Copy old grid to different location "oldGrid"
-                                success = BA_RenameRasterInGDB(hruFolder, hruFile, oldGrid)
-                                If success = BA_ReturnCode.Success Then
-                                    'Copy new grid to standard grid location "grid"
-                                    success = BA_RenameRasterInGDB(hruFolder, tempGrid, hruFile)
-                                    If success = BA_ReturnCode.Success Then
-                                        Dim vOutputPath As String = BA_StandardizePathString(hruFolder, True) & BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False)
-                                        'Delete existing vector representation
-                                        Dim vReturnVal As Short = BA_Remove_ShapefileFromGDB(hruFolder, BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False))
-                                        If vReturnVal = 1 Then
-                                            'Created updated vector representation
-                                            vReturnVal = BA_Raster2PolygonShapefileFromPath(selectedItem.Value, vOutputPath, False)
-                                            If vReturnVal = 1 Then
-                                                'This method returns a 0 if it succeeds instead of 1
-                                                If BA_AddShapeAreaToAttrib(vOutputPath) = 0 Then
-                                                    vReturnVal = 1
-                                                Else
-                                                    vReturnVal = -1
-                                                End If
-                                            End If
-                                        End If
-                                        'Handle failure(s) with vector file if they occurred
-                                        If vReturnVal <> 1 Then
-                                            'Delete new grid so we can restore the old one
-                                            BA_RemoveRasterFromGDB(hruFolder, hruFile)
-                                            'Restore old grid
-                                            BA_RenameRasterInGDB(hruFolder, oldGrid, hruFile)
+                                'success = BA_RenameRasterInGDB(hruFolder, hruFile, oldGrid)
+                                'If success = BA_ReturnCode.Success Then
+                                'Copy new grid to standard grid location "grid"
+                                'success = BA_RenameRasterInGDB(hruFolder, tempGrid, hruFile)
+                                'If success = BA_ReturnCode.Success Then
+                                Dim vOutputPath As String = BA_StandardizePathString(hruFolder, True) & BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False)
+                                'Delete existing vector representation
+                                Dim vReturnVal As Short = BA_Remove_ShapefileFromGDB(hruFolder, BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruVector), False))
+                                If vReturnVal = 1 Then
+                                    'Created updated vector representation
+                                    vReturnVal = BA_Raster2PolygonShapefileFromPath(hruFolder & "\" & tempGrid, vOutputPath, False)
+                                    If vReturnVal = 1 Then
+                                        'This method returns a 0 if it succeeds instead of 1
+                                        If BA_AddShapeAreaToAttrib(vOutputPath) = 0 Then
+                                            vReturnVal = 1
+                                        Else
+                                            vReturnVal = -1
                                             MessageBox.Show("An error occurred while trying to assign sequential ID numbers. Please restart ArcMap and try again.", "File locked", _
                                                             MessageBoxButtons.OK, MessageBoxIcon.Error)
                                             Exit Sub
                                         End If
-                                        pStepProg.Step()
-                                        'Delecte old grid if user doesn't want to keep it
-                                        If CkMakeCopy.Checked = False Then
-                                            BA_RemoveRasterFromGDB(hruFolder, oldGrid)
-                                        End If
                                     End If
                                 End If
+                                'Rename rasters
+                                If vReturnVal = 1 Then
+                                    'Copy old grid to different location "oldGrid"
+                                    success = BA_RenameRasterInGDB(hruFolder, hruFile, oldGrid)
+                                    If success = BA_ReturnCode.Success Then
+                                        'Copy new grid to standard grid location "grid"
+                                        success = BA_RenameRasterInGDB(hruFolder, tempGrid, hruFile)
+                                    End If
+                                End If
+                                pStepProg.Step()
+                                'Delecte old grid if user doesn't want to keep it
+                                If CkMakeCopy.Checked = False Then
+                                    BA_RemoveRasterFromGDB(hruFolder, oldGrid)
+                                End If
+                                'End If
+                                'End If
                             End If
                         End If
                         MessageBox.Show("Sequential HRU ID numbers have been calculated", "Sequential HRU ID numbers", MessageBoxButtons.OK, MessageBoxIcon.Information)
