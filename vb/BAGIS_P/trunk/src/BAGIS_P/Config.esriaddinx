@@ -2,11 +2,11 @@
   <Name>BAGIS_P</Name>
   <AddInID>{1d026ddc-9aa9-4e39-84ac-7bb57a97d4b2}</AddInID>
   <Description>Generate parameters from BAGIS-H for model</Description>
-  <Version>1.1.0</Version>
+  <Version>1.2.0</Version>
   <Image>Images\BAGIS_P.png</Image>
   <Author>Lesley Bross and Geoffrey Duh</Author>
   <Company>Portland State University</Company>
-  <Date>11/12/2014</Date>
+  <Date>1/7/2015</Date>
   <Targets>
     <Target name="Desktop" version="10.0" />
   </Targets>

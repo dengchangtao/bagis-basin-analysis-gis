@@ -6,7 +6,7 @@ Public Class BagisPExtension
     Inherits ESRI.ArcGIS.Desktop.AddIns.Extension
 
     Private Shared s_extension As BagisPExtension
-    Private m_version As String = " 1.1.0"
+    Private m_version As String = " 1.2.0"
     Private m_classLibraryVersion As String = BA_CLASS_LIBRARY_VERSION
     Private m_aoi As Aoi
     Private m_settingsPath As String
