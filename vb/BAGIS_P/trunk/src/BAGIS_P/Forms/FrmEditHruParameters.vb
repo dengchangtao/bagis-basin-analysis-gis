@@ -45,7 +45,7 @@ Public Class FrmEditHruParameters
             End If
 
             ' Open the parameters table so we can populate the ERAMS_ID and HRU_ID before we populate the parameters
-            ' Sorted by ERAMS ID
+            ' Sorted by HRU ID
             Dim selItem As LayerListItem = TryCast(m_parentForm.LstHruLayers.SelectedItem, LayerListItem)
             Dim hruPath As String = BA_GetHruPath(m_parentForm.TxtAoiPath.Text, PublicPath.HruDirectory, selItem.Name)
             Dim hruParamPath As String = hruPath & BA_EnumDescription(PublicPath.BagisParamGdb)
@@ -54,7 +54,7 @@ Public Class FrmEditHruParameters
                 Dim tableName As String = selProfile & BA_PARAM_TABLE_SUFFIX
                 paramTable = BA_OpenTableFromGDB(hruParamPath, tableName)
                 If paramTable IsNot Nothing Then
-                    Dim idxERamsId As Integer = paramTable.FindField(BA_FIELD_ERAMS_ID)
+                    'Dim idxERamsId As Integer = paramTable.FindField(BA_FIELD_ERAMS_ID)
                     Dim idxHruId As Integer = paramTable.FindField(BA_FIELD_HRU_ID)
                     pCursor = paramTable.Search(Nothing, False)
                     pRow = pCursor.NextRow
@@ -63,12 +63,12 @@ Public Class FrmEditHruParameters
                         Dim item As New DataGridViewRow
                         item.CreateCells(GrdParam)
                         '---populate the ERAMS_ID ---
-                        Dim eRamsId As Long = CLng(pRow.Value(idxERamsId))
-                        Dim dgvColumn As DataGridViewColumn = GrdParam.Columns(BA_FIELD_ERAMS_ID)
-                        item.Cells(dgvColumn.Index).Value = eRamsId
+                        'Dim eRamsId As Long = CLng(pRow.Value(idxERamsId))
+                        'Dim dgvColumn As DataGridViewColumn = GrdParam.Columns(BA_FIELD_ERAMS_ID)
+                        'item.Cells(dgvColumn.Index).Value = eRamsId
                         '---populate the HRU_ID ---
                         Dim hruId As Long = CLng(pRow.Value(idxHruId))
-                        dgvColumn = GrdParam.Columns(BA_FIELD_HRU_ID)
+                        Dim dgvColumn As DataGridViewColumn = GrdParam.Columns(BA_FIELD_HRU_ID)
                         item.Cells(dgvColumn.Index).Value = hruId
                         '---add the row---
                         GrdParam.Rows.Add(item)

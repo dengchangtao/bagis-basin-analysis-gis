@@ -139,7 +139,7 @@ Public Class FrmParameterViewer
             'Remove all columns except for the OMS_ID
             For i As Integer = GrdParam.Columns.Count - 1 To 0 Step -1
                 Dim pCol As DataGridViewColumn = GrdParam.Columns(i)
-                If pCol.Name.ToUpper <> BA_FIELD_ERAMS_ID Then
+                If pCol.Name.ToUpper <> BA_FIELD_HRU_ID Then
                     GrdParam.Columns.Remove(pCol)
                 End If
             Next
@@ -154,7 +154,8 @@ Public Class FrmParameterViewer
                     paramTable = BA_OpenTableFromGDB(hruParamPath, tableName)
                     If paramTable IsNot Nothing Then
                         pFields = paramTable.Fields
-                        Dim idxERamsId As Integer = paramTable.FindField(BA_FIELD_ERAMS_ID)
+                        'Dim idxERamsId As Integer = paramTable.FindField(BA_FIELD_ERAMS_ID)
+                        Dim idxHruId As Integer = paramTable.FindField(BA_FIELD_HRU_ID)
                         AddColumnsToTable(pFields)
                         pCursor = paramTable.Search(Nothing, False)
                         pRow = pCursor.NextRow
@@ -162,14 +163,16 @@ Public Class FrmParameterViewer
                             '---create a row---
                             Dim item As New DataGridViewRow
                             item.CreateCells(GrdParam)
-                            '---populate the ERAMS_ID ---
-                            Dim eRamsId As Long = CLng(pRow.Value(idxERamsId))
-                            Dim dgvColumn As DataGridViewColumn = GrdParam.Columns(BA_FIELD_ERAMS_ID)
-                            item.Cells(dgvColumn.Index).Value = eRamsId
+                            '---populate the HRU_ID ---
+                            'Dim eRamsId As Long = CLng(pRow.Value(idxERamsId))
+                            Dim hruId As Long = CLng(pRow.Value(idxHruId))
+                            'Dim dgvColumn As DataGridViewColumn = GrdParam.Columns(BA_FIELD_ERAMS_ID)
+                            Dim dgvColumn As DataGridViewColumn = GrdParam.Columns(BA_FIELD_HRU_ID)
+                            'item.Cells(dgvColumn.Index).Value = eRamsId
+                            item.Cells(dgvColumn.Index).Value = hruId
                             For j As Integer = 1 To pFields.FieldCount - 1
                                 Dim nextField As IField = pRow.Fields.Field(j)
-                                If nextField.Type <> esriFieldType.esriFieldTypeOID And nextField.Name <> BA_FIELD_HRU_ID And _
-                                    nextField.Name <> BA_FIELD_ERAMS_ID Then
+                                If nextField.Type <> esriFieldType.esriFieldTypeOID And nextField.Name <> BA_FIELD_HRU_ID Then
                                     dgvColumn = GrdParam.Columns(nextField.Name)
                                     If pRow.Value(j) IsNot DBNull.Value Then
                                         item.Cells(dgvColumn.Index).Value = CStr(pRow.Value(j))
@@ -202,7 +205,7 @@ Public Class FrmParameterViewer
         For i As Integer = 0 To pFields.FieldCount - 1
             Dim pField As Field = pFields.Field(i)
             Dim fieldName As String = pField.Name
-            If pField.Type <> esriFieldType.esriFieldTypeOID And fieldName <> BA_FIELD_HRU_ID And fieldName <> BA_FIELD_ERAMS_ID Then
+            If pField.Type <> esriFieldType.esriFieldTypeOID And fieldName <> BA_FIELD_HRU_ID Then
                 Dim newColumn As DataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
                 newColumn.Name = fieldName
                 newColumn.HeaderText = fieldName

@@ -25,12 +25,10 @@ Partial Class FrmEditHruParameters
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmEditHruParameters))
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.GrdParam = New System.Windows.Forms.DataGridView()
         Me.BtnApply = New System.Windows.Forms.Button()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.ERAMS_ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.HRU_ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.GrdParam, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -48,7 +46,7 @@ Partial Class FrmEditHruParameters
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.GrdParam.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.GrdParam.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.GrdParam.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ERAMS_ID, Me.HRU_ID})
+        Me.GrdParam.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.HRU_ID})
         Me.GrdParam.EnableHeadersVisualStyles = False
         Me.GrdParam.Location = New System.Drawing.Point(12, 87)
         Me.GrdParam.MultiSelect = False
@@ -91,23 +89,12 @@ Partial Class FrmEditHruParameters
         Me.TextBox1.TabIndex = 88
         Me.TextBox1.Text = resources.GetString("TextBox1.Text")
         '
-        'ERAMS_ID
+        'HRU_ID
         '
         DataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
         DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         DataGridViewCellStyle2.ForeColor = System.Drawing.Color.Blue
-        Me.ERAMS_ID.DefaultCellStyle = DataGridViewCellStyle2
-        Me.ERAMS_ID.HeaderText = "ERAMS ID"
-        Me.ERAMS_ID.Name = "ERAMS_ID"
-        Me.ERAMS_ID.ReadOnly = True
-        Me.ERAMS_ID.Width = 125
-        '
-        'HRU_ID
-        '
-        DataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(224, Byte), Integer))
-        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Blue
-        Me.HRU_ID.DefaultCellStyle = DataGridViewCellStyle3
+        Me.HRU_ID.DefaultCellStyle = DataGridViewCellStyle2
         Me.HRU_ID.HeaderText = "HRU ID"
         Me.HRU_ID.Name = "HRU_ID"
         Me.HRU_ID.ReadOnly = True
@@ -133,6 +120,5 @@ Partial Class FrmEditHruParameters
     Friend WithEvents BtnApply As System.Windows.Forms.Button
     Friend WithEvents BtnClose As System.Windows.Forms.Button
     Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
-    Friend WithEvents ERAMS_ID As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents HRU_ID As System.Windows.Forms.DataGridViewTextBoxColumn
 End Class

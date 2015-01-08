@@ -488,7 +488,7 @@ Module ParameterModule
             If BA_Folder_ExistsWindowsIO(hruParamFolder) Then
                 pTable = BA_OpenTableFromGDB(hruParamFolder, hruParamFile)
                 pTableSort.Table = pTable
-                pTableSort.Fields = BA_FIELD_ERAMS_ID
+                pTableSort.Fields = BA_FIELD_HRU_ID
                 pTableSort.Sort(Nothing)
                 If pTable IsNot Nothing Then
                     'Write @T line
@@ -518,7 +518,7 @@ Module ParameterModule
                     sb.Append(HEADER_FLAG)
                     sb.Append(",")
                     'append ERAMS ID column header
-                    sb.Append(BA_FIELD_ERAMS_ID)
+                    sb.Append(BA_FIELD_HRU_ID)
                     sb.Append(",")
                     For i As Integer = 0 To pFields.FieldCount - 1
                         Dim pField As Field = pFields.Field(i)
@@ -547,9 +547,10 @@ Module ParameterModule
                     While pRow IsNot Nothing
                         'Empty cell so the table lines up
                         sb.Append(",")
-                        Dim idxERamsId As Integer = pTable.FindField(BA_FIELD_ERAMS_ID)
-                        If idxERamsId > 0 Then
-                            sb.Append(pRow.Value(idxERamsId))
+                        'Dim idxERamsId As Integer = pTable.FindField(BA_FIELD_ERAMS_ID)
+                        Dim idxHruId As Integer = pTable.FindField(BA_FIELD_HRU_ID)
+                        If idxHruId > 0 Then
+                            sb.Append(pRow.Value(idxHruId))
                         End If
                         sb.Append(",")
                         For j As Integer = 0 To pFields.FieldCount - 1
@@ -711,220 +712,220 @@ Module ParameterModule
         End Try
     End Function
 
-    Public Function BA_AppendERamsIdToFeatureClass(ByVal hruGdbFolder As String, ByVal vName As String, _
-                                                 ByVal tableName As String) As BA_ReturnCode
-        Dim pTable As ITable = Nothing
-        Dim tableSort As ITableSort = New TableSort
-        Dim cursor As ICursor = Nothing
-        Dim updateCursor As IFeatureCursor = Nothing
-        Dim pRow As IRow = Nothing
-        Dim pGeoDataset As IGeoDataset = Nothing
-        Dim pFeatureClass As IFeatureClass = Nothing
-        Dim idxERamsId As Long = -1
-        Dim idxFlowAccId As Long = -1
-        Dim omsTable As Hashtable = Nothing
-        Dim pFeature As IFeature = Nothing
-        Try
-            pGeoDataset = BA_OpenFeatureClassFromGDB(hruGdbFolder, vName)
-            If pGeoDataset IsNot Nothing Then
-                'Open grid_zones_v
-                pFeatureClass = CType(pGeoDataset, IFeatureClass)
-                'Get column index OMS_ID; If it doesn't exist, add it
-                idxERamsId = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
-                If idxERamsId < 0 Then
-                    Dim pFieldOms As IFieldEdit = New Field
-                    With pFieldOms
-                        .Type_2 = esriFieldType.esriFieldTypeInteger
-                        .Name_2 = BA_FIELD_ERAMS_ID
-                    End With
-                    pFeatureClass.AddField(pFieldOms)
-                    idxERamsId = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
-                End If
-                idxFlowAccId = pFeatureClass.FindField(BA_FIELD_FLOW_ACCUM)
-                If idxFlowAccId < 0 Then
-                    Dim pFieldAcc As IFieldEdit = New Field
-                    With pFieldAcc
-                        .Type_2 = esriFieldType.esriFieldTypeInteger
-                        .Name_2 = BA_FIELD_FLOW_ACCUM
-                    End With
-                    pFeatureClass.AddField(pFieldAcc)
-                    idxFlowAccId = pFeatureClass.FindField(BA_FIELD_FLOW_ACCUM)
-                End If
-            End If
-            pTable = BA_OpenTableFromGDB(hruGdbFolder, tableName)
-            If pTable IsNot Nothing Then
-                'Instantiate hash to store omsId's; A tableSort cursor cannot perform updates :-(
-                omsTable = New Hashtable
-                tableSort.Table = pTable
-                tableSort.Fields = StatisticsFieldName.MAX.ToString
-                tableSort.Sort(Nothing)
-                cursor = tableSort.Rows
-                Dim idxHruId As Integer = cursor.Fields.FindField(BA_FIELD_HRU_ID)
-                Dim idxMaxId As Integer = cursor.Fields.FindField(StatisticsFieldName.MAX.ToString)
-                pRow = cursor.NextRow
-                Dim omsId As Integer = 1
-                Do Until pRow Is Nothing
-                    Dim hruId As String = CStr(pRow.Value(idxHruId))
-                    Dim accumValue As Integer = pRow.Value(idxMaxId)
-                    Dim values As Integer() = {omsId, accumValue}
-                    omsTable(hruId) = values
-                    omsId += 1
-                    pRow = cursor.NextRow
-                Loop
-                If omsTable.Keys.Count > 0 Then
-                    updateCursor = pFeatureClass.Update(New QueryFilter(), False)
-                    idxHruId = updateCursor.Fields.FindField(BA_FIELD_HRU_ID)
-                    pFeature = updateCursor.NextFeature
-                    Do Until pFeature Is Nothing
-                        Dim hruId As String = Convert.ToString(pFeature.Value(idxHruId))
-                        Dim values As Integer() = omsTable(hruId)
-                        pFeature.Value(idxERamsId) = values(0)
-                        pFeature.Value(idxFlowAccId) = values(1)
-                        updateCursor.UpdateFeature(pFeature)
-                        pFeature = updateCursor.NextFeature
-                    Loop
-                End If
-            End If
-        Catch ex As Exception
-            Debug.Print("BA_AppendERamsId Exception: " & ex.Message)
-        Finally
-            pTable = Nothing
-            tableSort = Nothing
-            cursor = Nothing
-            updateCursor = Nothing
-            pRow = Nothing
-            pFeatureClass = Nothing
-            pFeature = Nothing
-            pGeoDataset = Nothing
-            GC.WaitForPendingFinalizers()
-            GC.Collect()
-        End Try
-    End Function
+    'Public Function BA_AppendERamsIdToFeatureClass(ByVal hruGdbFolder As String, ByVal vName As String, _
+    '                                             ByVal tableName As String) As BA_ReturnCode
+    '    Dim pTable As ITable = Nothing
+    '    Dim tableSort As ITableSort = New TableSort
+    '    Dim cursor As ICursor = Nothing
+    '    Dim updateCursor As IFeatureCursor = Nothing
+    '    Dim pRow As IRow = Nothing
+    '    Dim pGeoDataset As IGeoDataset = Nothing
+    '    Dim pFeatureClass As IFeatureClass = Nothing
+    '    Dim idxERamsId As Long = -1
+    '    Dim idxFlowAccId As Long = -1
+    '    Dim omsTable As Hashtable = Nothing
+    '    Dim pFeature As IFeature = Nothing
+    '    Try
+    '        pGeoDataset = BA_OpenFeatureClassFromGDB(hruGdbFolder, vName)
+    '        If pGeoDataset IsNot Nothing Then
+    '            'Open grid_zones_v
+    '            pFeatureClass = CType(pGeoDataset, IFeatureClass)
+    '            'Get column index OMS_ID; If it doesn't exist, add it
+    '            idxERamsId = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
+    '            If idxERamsId < 0 Then
+    '                Dim pFieldOms As IFieldEdit = New Field
+    '                With pFieldOms
+    '                    .Type_2 = esriFieldType.esriFieldTypeInteger
+    '                    .Name_2 = BA_FIELD_ERAMS_ID
+    '                End With
+    '                pFeatureClass.AddField(pFieldOms)
+    '                idxERamsId = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
+    '            End If
+    '            idxFlowAccId = pFeatureClass.FindField(BA_FIELD_FLOW_ACCUM)
+    '            If idxFlowAccId < 0 Then
+    '                Dim pFieldAcc As IFieldEdit = New Field
+    '                With pFieldAcc
+    '                    .Type_2 = esriFieldType.esriFieldTypeInteger
+    '                    .Name_2 = BA_FIELD_FLOW_ACCUM
+    '                End With
+    '                pFeatureClass.AddField(pFieldAcc)
+    '                idxFlowAccId = pFeatureClass.FindField(BA_FIELD_FLOW_ACCUM)
+    '            End If
+    '        End If
+    '        pTable = BA_OpenTableFromGDB(hruGdbFolder, tableName)
+    '        If pTable IsNot Nothing Then
+    '            'Instantiate hash to store omsId's; A tableSort cursor cannot perform updates :-(
+    '            omsTable = New Hashtable
+    '            tableSort.Table = pTable
+    '            tableSort.Fields = StatisticsFieldName.MAX.ToString
+    '            tableSort.Sort(Nothing)
+    '            cursor = tableSort.Rows
+    '            Dim idxHruId As Integer = cursor.Fields.FindField(BA_FIELD_HRU_ID)
+    '            Dim idxMaxId As Integer = cursor.Fields.FindField(StatisticsFieldName.MAX.ToString)
+    '            pRow = cursor.NextRow
+    '            Dim omsId As Integer = 1
+    '            Do Until pRow Is Nothing
+    '                Dim hruId As String = CStr(pRow.Value(idxHruId))
+    '                Dim accumValue As Integer = pRow.Value(idxMaxId)
+    '                Dim values As Integer() = {omsId, accumValue}
+    '                omsTable(hruId) = values
+    '                omsId += 1
+    '                pRow = cursor.NextRow
+    '            Loop
+    '            If omsTable.Keys.Count > 0 Then
+    '                updateCursor = pFeatureClass.Update(New QueryFilter(), False)
+    '                idxHruId = updateCursor.Fields.FindField(BA_FIELD_HRU_ID)
+    '                pFeature = updateCursor.NextFeature
+    '                Do Until pFeature Is Nothing
+    '                    Dim hruId As String = Convert.ToString(pFeature.Value(idxHruId))
+    '                    Dim values As Integer() = omsTable(hruId)
+    '                    pFeature.Value(idxERamsId) = values(0)
+    '                    pFeature.Value(idxFlowAccId) = values(1)
+    '                    updateCursor.UpdateFeature(pFeature)
+    '                    pFeature = updateCursor.NextFeature
+    '                Loop
+    '            End If
+    '        End If
+    '    Catch ex As Exception
+    '        Debug.Print("BA_AppendERamsId Exception: " & ex.Message)
+    '    Finally
+    '        pTable = Nothing
+    '        tableSort = Nothing
+    '        cursor = Nothing
+    '        updateCursor = Nothing
+    '        pRow = Nothing
+    '        pFeatureClass = Nothing
+    '        pFeature = Nothing
+    '        pGeoDataset = Nothing
+    '        GC.WaitForPendingFinalizers()
+    '        GC.Collect()
+    '    End Try
+    'End Function
 
-    Public Function BA_FeatureClassHasERamsId(ByVal pFolder As String, ByVal pFile As String) As Boolean
-        Dim pGeoDataset As IGeoDataset = Nothing
-        Dim pFeatureClass As IFeatureClass = Nothing
-        Dim cursor As ICursor = Nothing
-        Dim pRow As IRow = Nothing
-        Dim idxERamsId As Long = -1
+    'Public Function BA_FeatureClassHasERamsId(ByVal pFolder As String, ByVal pFile As String) As Boolean
+    '    Dim pGeoDataset As IGeoDataset = Nothing
+    '    Dim pFeatureClass As IFeatureClass = Nothing
+    '    Dim cursor As ICursor = Nothing
+    '    Dim pRow As IRow = Nothing
+    '    Dim idxERamsId As Long = -1
 
-        Try
-            pGeoDataset = BA_OpenFeatureClassFromGDB(pFolder, pFile)
-            If pGeoDataset IsNot Nothing Then
-                'Open grid_zones_v
-                pFeatureClass = CType(pGeoDataset, IFeatureClass)
-                'Get column index OMS_ID; If it doesn't exist, add it
-                idxERamsId = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
-                If idxERamsId < 0 Then
-                    Dim pFieldOms As IFieldEdit = New Field
-                    With pFieldOms
-                        .Type_2 = esriFieldType.esriFieldTypeInteger
-                        .Name_2 = BA_FIELD_ERAMS_ID
-                    End With
-                    pFeatureClass.AddField(pFieldOms)
-                    idxERamsId = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
-                Else
-                    'The column already exists
-                    cursor = pFeatureClass.Search(Nothing, Nothing)
-                    If cursor IsNot Nothing Then
-                        pRow = cursor.NextRow
-                        'And is populated so we don't need to proceed
-                        If pRow IsNot Nothing Then
-                            If Not IsDBNull(pRow.Value(idxERamsId)) AndAlso pRow.Value(idxERamsId) > 0 Then
-                                Return True
-                            End If
-                        End If
-                    End If
-                End If
-            End If
-            Return False
-        Catch ex As Exception
-            Debug.Print("BA_FeatureClassHasERamsId Exception: " & ex.Message)
-            Return False
-        Finally
-            pGeoDataset = Nothing
-            pFeatureClass = Nothing
-            cursor = Nothing
-            pRow = Nothing
-            GC.WaitForPendingFinalizers()
-            GC.Collect()
-        End Try
-    End Function
+    '    Try
+    '        pGeoDataset = BA_OpenFeatureClassFromGDB(pFolder, pFile)
+    '        If pGeoDataset IsNot Nothing Then
+    '            'Open grid_zones_v
+    '            pFeatureClass = CType(pGeoDataset, IFeatureClass)
+    '            'Get column index OMS_ID; If it doesn't exist, add it
+    '            idxERamsId = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
+    '            If idxERamsId < 0 Then
+    '                Dim pFieldOms As IFieldEdit = New Field
+    '                With pFieldOms
+    '                    .Type_2 = esriFieldType.esriFieldTypeInteger
+    '                    .Name_2 = BA_FIELD_ERAMS_ID
+    '                End With
+    '                pFeatureClass.AddField(pFieldOms)
+    '                idxERamsId = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
+    '            Else
+    '                'The column already exists
+    '                cursor = pFeatureClass.Search(Nothing, Nothing)
+    '                If cursor IsNot Nothing Then
+    '                    pRow = cursor.NextRow
+    '                    'And is populated so we don't need to proceed
+    '                    If pRow IsNot Nothing Then
+    '                        If Not IsDBNull(pRow.Value(idxERamsId)) AndAlso pRow.Value(idxERamsId) > 0 Then
+    '                            Return True
+    '                        End If
+    '                    End If
+    '                End If
+    '            End If
+    '        End If
+    '        Return False
+    '    Catch ex As Exception
+    '        Debug.Print("BA_FeatureClassHasERamsId Exception: " & ex.Message)
+    '        Return False
+    '    Finally
+    '        pGeoDataset = Nothing
+    '        pFeatureClass = Nothing
+    '        cursor = Nothing
+    '        pRow = Nothing
+    '        GC.WaitForPendingFinalizers()
+    '        GC.Collect()
+    '    End Try
+    'End Function
 
-    Public Sub BA_AppendERamsIdToParameterTable(ByVal hruGdbPath As String, ByVal tableName As String)
-        Dim pGeoDataSet As IGeoDataset = Nothing
-        Dim pFeatureClass As IFeatureClass = Nothing
-        Dim pFeatureCursor As IFeatureCursor = Nothing
-        Dim pFeature As IFeature
-        Dim pTable As ITable = Nothing
-        Dim pCursor As ICursor = Nothing
-        Dim pRow As IRow = Nothing
-        Dim xRefTable As Hashtable = Nothing
-        Try
-            pGeoDataSet = BA_OpenFeatureClassFromGDB(hruGdbPath, BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruZonesVector), False))
-            If pGeoDataSet IsNot Nothing Then
-                pFeatureClass = CType(pGeoDataSet, IFeatureClass)
-                Dim idxFCHruId As Integer = pFeatureClass.FindField(BA_FIELD_HRU_ID)
-                Dim idxFCERamsId As Integer = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
-                'If either of the source columns are missing; Stop processing
-                If idxFCHruId < 1 Or idxFCERamsId < 1 Then
-                    Debug.Print("Missing source column from feature class")
-                    Exit Sub
-                End If
-                xRefTable = New Hashtable
-                pFeatureCursor = pFeatureClass.Search(Nothing, False)
-                pFeature = pFeatureCursor.NextFeature
-                'Loop through feature class and put omsId into a reference table
-                Do Until pFeature Is Nothing
-                    Dim hruId As String = CStr(pFeature.Value(idxFCHruId))
-                    Dim omsId As Integer = pFeature.Value(idxFCERamsId)
-                    xRefTable(hruId) = omsId
-                    pFeature = pFeatureCursor.NextFeature
-                Loop
+    'Public Sub BA_AppendERamsIdToParameterTable(ByVal hruGdbPath As String, ByVal tableName As String)
+    '    Dim pGeoDataSet As IGeoDataset = Nothing
+    '    Dim pFeatureClass As IFeatureClass = Nothing
+    '    Dim pFeatureCursor As IFeatureCursor = Nothing
+    '    Dim pFeature As IFeature
+    '    Dim pTable As ITable = Nothing
+    '    Dim pCursor As ICursor = Nothing
+    '    Dim pRow As IRow = Nothing
+    '    Dim xRefTable As Hashtable = Nothing
+    '    Try
+    '        pGeoDataSet = BA_OpenFeatureClassFromGDB(hruGdbPath, BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruZonesVector), False))
+    '        If pGeoDataSet IsNot Nothing Then
+    '            pFeatureClass = CType(pGeoDataSet, IFeatureClass)
+    '            Dim idxFCHruId As Integer = pFeatureClass.FindField(BA_FIELD_HRU_ID)
+    '            Dim idxFCERamsId As Integer = pFeatureClass.FindField(BA_FIELD_ERAMS_ID)
+    '            'If either of the source columns are missing; Stop processing
+    '            If idxFCHruId < 1 Or idxFCERamsId < 1 Then
+    '                Debug.Print("Missing source column from feature class")
+    '                Exit Sub
+    '            End If
+    '            xRefTable = New Hashtable
+    '            pFeatureCursor = pFeatureClass.Search(Nothing, False)
+    '            pFeature = pFeatureCursor.NextFeature
+    '            'Loop through feature class and put omsId into a reference table
+    '            Do Until pFeature Is Nothing
+    '                Dim hruId As String = CStr(pFeature.Value(idxFCHruId))
+    '                Dim omsId As Integer = pFeature.Value(idxFCERamsId)
+    '                xRefTable(hruId) = omsId
+    '                pFeature = pFeatureCursor.NextFeature
+    '            Loop
 
-                Dim hruPath As String = "PleaseReturn"
-                Dim tempFile As String = BA_GetBareName(hruGdbPath, hruPath)
-                Dim tableFolder As String = hruPath & BA_EnumDescription(PublicPath.BagisParamGdb)
-                pTable = BA_OpenTableFromGDB(tableFolder, tableName)
-                If pTable IsNot Nothing Then
-                    Dim idxTHRUId As Integer = pTable.FindField(BA_FIELD_HRU_ID)
-                    'Check to see if the OMS_ID field exists; If it doesn't, add it
-                    Dim idxTERamsId As Integer = pTable.FindField(BA_FIELD_ERAMS_ID)
-                    If idxTERamsId < 1 Then
-                        Dim pFieldERams As IFieldEdit = New Field
-                        With pFieldERams
-                            .Type_2 = esriFieldType.esriFieldTypeInteger
-                            .Name_2 = BA_FIELD_ERAMS_ID
-                        End With
-                        pTable.AddField(pFieldERams)
-                        idxTERamsId = pTable.FindField(BA_FIELD_ERAMS_ID)
-                    End If
+    '            Dim hruPath As String = "PleaseReturn"
+    '            Dim tempFile As String = BA_GetBareName(hruGdbPath, hruPath)
+    '            Dim tableFolder As String = hruPath & BA_EnumDescription(PublicPath.BagisParamGdb)
+    '            pTable = BA_OpenTableFromGDB(tableFolder, tableName)
+    '            If pTable IsNot Nothing Then
+    '                Dim idxTHRUId As Integer = pTable.FindField(BA_FIELD_HRU_ID)
+    '                'Check to see if the OMS_ID field exists; If it doesn't, add it
+    '                Dim idxTERamsId As Integer = pTable.FindField(BA_FIELD_ERAMS_ID)
+    '                If idxTERamsId < 1 Then
+    '                    Dim pFieldERams As IFieldEdit = New Field
+    '                    With pFieldERams
+    '                        .Type_2 = esriFieldType.esriFieldTypeInteger
+    '                        .Name_2 = BA_FIELD_ERAMS_ID
+    '                    End With
+    '                    pTable.AddField(pFieldERams)
+    '                    idxTERamsId = pTable.FindField(BA_FIELD_ERAMS_ID)
+    '                End If
 
-                    pCursor = pTable.Update(Nothing, False)
-                    pRow = pCursor.NextRow
-                    Do Until pRow Is Nothing
-                        Dim hruId As String = CStr(pRow.Value(idxTHRUId))
-                        Dim omsId As Integer = xRefTable(hruId)
-                        If omsId > 0 Then
-                            pRow.Value(idxTERamsId) = omsId
-                            pCursor.UpdateRow(pRow)
-                        End If
-                        pRow = pCursor.NextRow
-                    Loop
-                End If
-            End If
-        Catch ex As Exception
-            Debug.Print("BA_AppendERamsIdToParameterTable Exception " & ex.Message)
-        Finally
-            pGeoDataSet = Nothing
-            pFeatureClass = Nothing
-            pFeatureCursor = Nothing
-            pFeature = Nothing
-            pTable = Nothing
-            pCursor = Nothing
-            pRow = Nothing
-        End Try
-    End Sub
+    '                pCursor = pTable.Update(Nothing, False)
+    '                pRow = pCursor.NextRow
+    '                Do Until pRow Is Nothing
+    '                    Dim hruId As String = CStr(pRow.Value(idxTHRUId))
+    '                    Dim omsId As Integer = xRefTable(hruId)
+    '                    If omsId > 0 Then
+    '                        pRow.Value(idxTERamsId) = omsId
+    '                        pCursor.UpdateRow(pRow)
+    '                    End If
+    '                    pRow = pCursor.NextRow
+    '                Loop
+    '            End If
+    '        End If
+    '    Catch ex As Exception
+    '        Debug.Print("BA_AppendERamsIdToParameterTable Exception " & ex.Message)
+    '    Finally
+    '        pGeoDataSet = Nothing
+    '        pFeatureClass = Nothing
+    '        pFeatureCursor = Nothing
+    '        pFeature = Nothing
+    '        pTable = Nothing
+    '        pCursor = Nothing
+    '        pRow = Nothing
+    '    End Try
+    'End Sub
 
     Public Function BA_GetParameterDescriptionPath() As String
         Dim bExt As BagisPExtension = BagisPExtension.GetExtension
@@ -1135,7 +1136,7 @@ Module ParameterModule
             End If
             Dim success As BA_ReturnCode = BA_ReplaceNoDataCellsGDB(valueFilePath, subAoiLayerName, valueFilePath, _
                                                                     tempOutput, -1, maskFolder, BA_EnumDescription(AOIClipFile.AOIExtentCoverage))
-            success = BA_ZonalStatisticsAsTable(zoneFilePath, zoneFileName, BA_FIELD_ERAMS_ID, valueFilePath & "\" & tempOutput, _
+            success = BA_ZonalStatisticsAsTable(zoneFilePath, zoneFileName, BA_FIELD_HRU_ID, valueFilePath & "\" & tempOutput, _
                                                 zoneFilePath, tableName, snapRasterPath, StatisticsTypeString.MAJORITY)
             'Remove temp file
             If BA_File_Exists(valueFilePath & "\" & tempOutput, WorkspaceType.Geodatabase, esriDatasetType.esriDTRasterDataset) Then
@@ -1149,9 +1150,9 @@ Module ParameterModule
                     subCursor = subTable.Search(Nothing, False)
                     subRow = subCursor.NextRow
                     Dim idxMajority As Integer = subTable.FindField(StatisticsFieldName.MAJORITY.ToString)
-                    Dim idxERamsId As Integer = subTable.FindField(BA_FIELD_ERAMS_ID)
+                    Dim idxHruId As Integer = subTable.FindField(BA_FIELD_HRU_ID)
                     Do Until subRow Is Nothing
-                        Dim key As String = Convert.ToString(subRow.Value(idxERamsId))
+                        Dim key As String = Convert.ToString(subRow.Value(idxHruId))
                         Dim majValue As String = Convert.ToInt32(subRow.Value(idxMajority))
                         'Only add subAOIId to table if it's valid
                         If majValue > -1 Then
@@ -1167,7 +1168,7 @@ Module ParameterModule
                         Dim tableFolder As String = hruPath & BA_GetBareName(BA_EnumDescription(PublicPath.BagisParamGdb))
                         pTable = BA_OpenTableFromGDB(tableFolder, paramTableName)
                         If pTable IsNot Nothing Then
-                            Dim idxPERamsId As Integer = pTable.FindField(BA_FIELD_ERAMS_ID)
+                            Dim idxPHruId As Integer = pTable.FindField(BA_FIELD_HRU_ID)
                             Dim idxPSubId As Integer = pTable.FindField(BA_FIELD_SUB_AOI_ID)
                             'Check to see if the SUB_AOI_ID field exists; If it doesn't, add it
                             If idxPSubId < 1 Then
@@ -1183,9 +1184,9 @@ Module ParameterModule
                             pCursor = pTable.Update(Nothing, False)
                             pRow = pCursor.NextRow
                             Do Until pRow Is Nothing
-                                Dim strOmsId As String = Convert.ToString(pRow.Value(idxPERamsId))
-                                Dim subId As Integer = idTable(strOmsId)
-                                'If OMS_ID doesn't exist in hashtable, populate with a zero
+                                Dim strHruId As String = Convert.ToString(pRow.Value(idxPHruId))
+                                Dim subId As Integer = idTable(strHruId)
+                                'If HRU_ID doesn't exist in hashtable, populate with a zero
                                 pRow.Value(idxPSubId) = subId
                                 pCursor.UpdateRow(pRow)
                                 pRow = pCursor.NextRow
@@ -1284,7 +1285,7 @@ Module ParameterModule
                 Dim hruParamGdbPath As String = BA_GetHruPath(aoiPath, PublicPath.HruDirectory, hruName) & BA_EnumDescription(PublicPath.BagisParamGdb)
                 Dim tableName As String = profileName & BA_PARAM_TABLE_SUFFIX
                 'Join the shapefile to the parameter table
-                success = BA_JoinField(outputFolder & "\" & outputFile, BA_FIELD_ERAMS_ID, hruParamGdbPath & "\" & tableName, BA_FIELD_ERAMS_ID)
+                success = BA_JoinField(outputFolder & "\" & outputFile, BA_FIELD_HRU_ID, hruParamGdbPath & "\" & tableName, BA_FIELD_HRU_ID)
                 Return success
             End If
             Return BA_ReturnCode.UnknownError
@@ -1521,7 +1522,7 @@ Module ParameterModule
 
     Private Function IncludeField(ByVal pField As IField, ByVal radplSpatialParameters As IList(Of String)) As Boolean
         If pField.Type <> esriFieldType.esriFieldTypeOID Then
-            If pField.Name <> BA_FIELD_HRU_ID And pField.Name <> BA_FIELD_ERAMS_ID Then
+            If pField.Name <> BA_FIELD_HRU_ID Then
                 If radplSpatialParameters.Contains(pField.Name) Then
                     Return False
                 Else

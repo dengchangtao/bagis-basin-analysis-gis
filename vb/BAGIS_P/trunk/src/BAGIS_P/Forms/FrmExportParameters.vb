@@ -223,7 +223,6 @@ Public Class FrmExportParameters
         If success = BA_ReturnCode.Success Then
             'Delete duplicated fields from shapefile
             success = BA_DeleteFieldFromFeatureClass(zipFolder, outputFile, BA_FIELD_HRU_ID & "_1")
-            success = BA_DeleteFieldFromFeatureClass(zipFolder, outputFile, BA_FIELD_ERAMS_ID & "_1")
         End If
         If success = BA_ReturnCode.Success Then
             'Create zipped output

@@ -855,22 +855,22 @@ Public Class FrmProfileBuilder
                     'Append OMS ID to zone shapefile if it doesn't exist
                     Dim hruGdbName As String = BA_GetHruPathGDB(m_aoi.FilePath, PublicPath.HruDirectory, selHruName)
                     Dim vName As String = BA_StandardizeShapefileName(BA_EnumDescription(PublicPath.HruZonesVector), False)
-                    Dim fClassHasERamsId As Boolean = BA_FeatureClassHasERamsId(hruGdbName, vName)
-                    If fClassHasERamsId = False Then
-                        Dim tempTableName As String = "eRamsTable"
-                        Dim snapRasterPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Aoi, True) & BA_EnumDescription(AOIClipFile.AOIExtentCoverage)
-                        Dim flowAccumPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Surfaces, True) & BA_EnumDescription(MapsFileName.flow_accumulation_gdb)
-                        success = BA_ZonalStatisticsAsTable(hruGdbName, vName, BA_FIELD_HRU_ID, flowAccumPath, _
-                                                                                 hruGdbName, tempTableName, snapRasterPath, StatisticsTypeString.MAXIMUM)
-                        If success = BA_ReturnCode.Success Then
-                            BA_AppendERamsIdToFeatureClass(hruGdbName, vName, tempTableName)
-                            'Delete temporary statistics table
-                            BA_Remove_TableFromGDB(hruGdbName, tempTableName)
-                        End If
-                    End If
+                    'Dim fClassHasERamsId As Boolean = BA_FeatureClassHasERamsId(hruGdbName, vName)
+                    'If fClassHasERamsId = False Then
+                    '    Dim tempTableName As String = "eRamsTable"
+                    '    Dim snapRasterPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Aoi, True) & BA_EnumDescription(AOIClipFile.AOIExtentCoverage)
+                    '    Dim flowAccumPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Surfaces, True) & BA_EnumDescription(MapsFileName.flow_accumulation_gdb)
+                    '    success = BA_ZonalStatisticsAsTable(hruGdbName, vName, BA_FIELD_HRU_ID, flowAccumPath, _
+                    '                                                             hruGdbName, tempTableName, snapRasterPath, StatisticsTypeString.MAXIMUM)
+                    '    If success = BA_ReturnCode.Success Then
+                    '        BA_AppendERamsIdToFeatureClass(hruGdbName, vName, tempTableName)
+                    '        'Delete temporary statistics table
+                    '        BA_Remove_TableFromGDB(hruGdbName, tempTableName)
+                    '    End If
+                    'End If
                     Dim paramTable As String = m_selProfile.Name & BA_PARAM_TABLE_SUFFIX
                     'Append ERAMS_ID to parameter table
-                    BA_AppendERamsIdToParameterTable(hruGdbName, paramTable)
+                    'BA_AppendERamsIdToParameterTable(hruGdbName, paramTable)
                     If success = BA_ReturnCode.Success Then
                         For Each mName As String In m_selProfile.MethodNames
                             Dim pMethod As Method = m_methodTable(mName)

@@ -23,8 +23,8 @@ Partial Class FrmParameterViewer
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.TxtAoiPath = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.BtnSelectAoi = New System.Windows.Forms.Button()
@@ -33,7 +33,6 @@ Partial Class FrmParameterViewer
         Me.Label1 = New System.Windows.Forms.Label()
         Me.LstProfiles = New System.Windows.Forms.ListBox()
         Me.GrdParam = New System.Windows.Forms.DataGridView()
-        Me.ERAMS_ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.BtnClose = New System.Windows.Forms.Button()
         Me.BtnEditModel = New System.Windows.Forms.Button()
         Me.BtnViewValues = New System.Windows.Forms.Button()
@@ -41,6 +40,7 @@ Partial Class FrmParameterViewer
         Me.ImgListColors = New System.Windows.Forms.ImageList(Me.components)
         Me.CboColors = New System.Windows.Forms.ComboBox()
         Me.LblError = New System.Windows.Forms.LinkLabel()
+        Me.HRU_ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.GrdParam, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -120,16 +120,16 @@ Partial Class FrmParameterViewer
         '
         Me.GrdParam.AllowUserToAddRows = False
         Me.GrdParam.AllowUserToDeleteRows = False
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.GrdParam.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.GrdParam.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.GrdParam.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.GrdParam.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ERAMS_ID})
+        Me.GrdParam.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.HRU_ID})
         Me.GrdParam.Location = New System.Drawing.Point(168, 45)
         Me.GrdParam.MultiSelect = False
         Me.GrdParam.Name = "GrdParam"
@@ -138,17 +138,6 @@ Partial Class FrmParameterViewer
         Me.GrdParam.Size = New System.Drawing.Size(618, 244)
         Me.GrdParam.TabIndex = 64
         Me.GrdParam.Visible = False
-        '
-        'ERAMS_ID
-        '
-        Me.ERAMS_ID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ERAMS_ID.DefaultCellStyle = DataGridViewCellStyle4
-        Me.ERAMS_ID.HeaderText = "ERAMS ID"
-        Me.ERAMS_ID.Name = "ERAMS_ID"
-        Me.ERAMS_ID.ReadOnly = True
-        Me.ERAMS_ID.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
-        Me.ERAMS_ID.Width = 105
         '
         'BtnClose
         '
@@ -221,6 +210,17 @@ Partial Class FrmParameterViewer
         Me.LblError.TabIndex = 86
         Me.LblError.UseCompatibleTextRendering = True
         '
+        'HRU_ID
+        '
+        Me.HRU_ID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.HRU_ID.DefaultCellStyle = DataGridViewCellStyle2
+        Me.HRU_ID.HeaderText = "HRU ID"
+        Me.HRU_ID.Name = "HRU_ID"
+        Me.HRU_ID.ReadOnly = True
+        Me.HRU_ID.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic
+        Me.HRU_ID.Width = 85
+        '
         'FrmParameterViewer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -262,6 +262,6 @@ Partial Class FrmParameterViewer
     Friend WithEvents CkDisplayLabels As System.Windows.Forms.CheckBox
     Friend WithEvents ImgListColors As System.Windows.Forms.ImageList
     Friend WithEvents CboColors As System.Windows.Forms.ComboBox
-    Friend WithEvents ERAMS_ID As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents LblError As System.Windows.Forms.LinkLabel
+    Friend WithEvents HRU_ID As System.Windows.Forms.DataGridViewTextBoxColumn
 End Class
