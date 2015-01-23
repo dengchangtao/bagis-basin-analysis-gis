@@ -6,7 +6,7 @@
   <Image>Images\ClassLibraryAddin.png</Image>
   <Author>Lesley Bross, Richa Jain, and Geoffrey Duh</Author>
   <Company>Portland State University</Company>
-  <Date>12/29/2014</Date>
+  <Date>12/30/2014</Date>
   <Targets>
     <Target name="Desktop" version="10.0" />
   </Targets>
@@ -45,6 +45,7 @@
         <Button id="Portland_State_University_BAGIS_H_BtnSequentialId" class="BtnSequentialId" message="Assign Sequential HRU ID Numbers" caption="Assign Sequential HRU ID Numbers" tip="Assign Sequential HRU ID Numbers" category="BAGIS-H" image="Images\BtnSequentialId.png" />
         <Button id="Portland_State_University_BAGIS_H_BtnToolsDataUnits" class="BtnToolsDataUnits" message="Specify data units" caption="Specify data units" tip="Specify data units" category="BAGIS-H" image="Images\BtnToolsDataUnits.png" />
         <Button id="Portland_State_University_BAGIS_H_BtnSnodas" class="BtnSnodas" message="Snodas Clip Tool (test mode)" caption="Snodas Clip Tool (test mode)" tip="Snodas Clip Tool (test mode)" category="BAGIS Tools" image="Images\BtnSnodas.png" />
+        <Button id="Portland_State_University_BAGIS_H_BtnFileModify" class="BtnFileModify" message="Modify Date Test" caption="Modify Date Test" tip="Modify Date Test" category="BAGIS Tools" image="Images\BtnFileModify.png" />
       </Commands>
       <DockableWindows>
         <DockableWindow id="ClassLibraryAddin_frmHruZone" class="frmHruZone+AddinImpl" caption="Current AOI: (Not selected)" image="Images\frmHruZone.png">
@@ -78,6 +79,7 @@
             <Button refID="Portland_State_University_BAGIS_H_BtnFileLocator" />
             <Button refID="Portland_State_University_BAGIS_H_BtnToolsDataUnits" />
             <Button refID="Portland_State_University_BAGIS_H_BtnSlopeConverter" />
+            <Button refID="Portland_State_University_BAGIS_H_BtnFileModify" />
             <!-- ToDo: This is a test button for running the Snodas export tool -->
             <!--<Button refID="Portland_State_University_BAGIS_H_BtnSnodas" /> -->
           </Items>

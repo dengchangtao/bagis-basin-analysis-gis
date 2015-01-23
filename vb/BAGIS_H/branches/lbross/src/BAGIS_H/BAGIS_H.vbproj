@@ -265,6 +265,7 @@
     <Compile Include="Other\BtnViewLog.vb" />
     <Compile Include="Other\EditTemplates\BtnEditRule.vb" />
     <Compile Include="Tools\BtnFileLocator.vb" />
+    <Compile Include="Tools\BtnFileModify.vb" />
     <Compile Include="Tools\BtnSlopeConverter.vb" />
     <Compile Include="Tools\BtnSnodas.vb" />
     <Compile Include="Tools\BtnToolsDataUnits.vb" />
@@ -816,16 +817,17 @@
     <AddInContent Include="Images\BtnSequentialId.png" />
     <AddInContent Include="Images\BtnToolsDataUnits.png" />
     <AddInContent Include="Images\BtnSnodas.png" />
+    <AddInContent Include="Images\BtnFileModify.png" />
     <Content Include="Other\LogTemplate.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BAGIS_ClassLibrary\BAGIS_ClassLibrary.vbproj">
       <Project>{DA894C59-5DA0-44DD-B8A6-89110BB0830B}</Project>
       <Name>BAGIS_ClassLibrary</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
@@ -852,6 +854,27 @@
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test1|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Test1\</OutputPath>
+    <DocumentationFile>BAGIS_H.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test1|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Test1\</OutputPath>
+    <DocumentationFile>BAGIS_H.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="$(MSBuildExtensionsPath)\ESRI\ESRI.ArcGIS.AddIns.targets" Condition="Exists('$(MSBuildExtensionsPath)\ESRI\ESRI.ArcGIS.AddIns.targets')" />
