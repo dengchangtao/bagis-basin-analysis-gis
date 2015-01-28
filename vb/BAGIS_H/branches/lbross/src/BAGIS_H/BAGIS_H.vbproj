@@ -269,6 +269,13 @@
     <Compile Include="Tools\BtnSlopeConverter.vb" />
     <Compile Include="Tools\BtnSnodas.vb" />
     <Compile Include="Tools\BtnToolsDataUnits.vb" />
+    <Compile Include="Tools\BtnWebServices.vb" />
+    <Compile Include="Tools\FrmDownloadAoiMenu.Designer.vb">
+      <DependentUpon>FrmDownloadAoiMenu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmDownloadAoiMenu.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Tools\FrmExportToGdb.Designer.vb">
       <DependentUpon>FrmExportToGdb.vb</DependentUpon>
     </Compile>
@@ -487,6 +494,12 @@
     <Compile Include="Tools\FrmToolsDataUnits.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Tools\FrmUploadAoi.Designer.vb">
+      <DependentUpon>FrmUploadAoi.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\FrmUploadAoi.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Help\FrmHelp.resx">
@@ -594,6 +607,9 @@
     <EmbeddedResource Include="RefineHru\FrmReclassZones.resx">
       <DependentUpon>FrmReclassZones.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmDownloadAoiMenu.resx">
+      <DependentUpon>FrmDownloadAoiMenu.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tools\FrmExportToGdb.resx">
       <DependentUpon>FrmExportToGdb.vb</DependentUpon>
     </EmbeddedResource>
@@ -623,6 +639,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Tools\FrmToolsDataUnits.resx">
       <DependentUpon>FrmToolsDataUnits.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tools\FrmUploadAoi.resx">
+      <DependentUpon>FrmUploadAoi.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -818,6 +837,7 @@
     <AddInContent Include="Images\BtnToolsDataUnits.png" />
     <AddInContent Include="Images\BtnSnodas.png" />
     <AddInContent Include="Images\BtnFileModify.png" />
+    <AddInContent Include="Images\BtnWebServices.png" />
     <Content Include="Other\LogTemplate.htm" />
   </ItemGroup>
   <ItemGroup>

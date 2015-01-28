@@ -15,7 +15,10 @@ Public Class BtnFileModify
     End Sub
 
     Protected Overrides Sub OnClick()
-        GetModifyDate()
+        'Dim myForm As FrmDownloadAoiMenu = New FrmDownloadAoiMenu()
+        Dim myForm As FrmUploadAoi = New FrmUploadAoi
+        myForm.ShowDialog()
+        'GetModifyDate()
     End Sub
 
     Protected Overrides Sub OnUpdate()
