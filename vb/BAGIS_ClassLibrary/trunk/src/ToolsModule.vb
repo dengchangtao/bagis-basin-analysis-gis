@@ -686,12 +686,16 @@ Public Module ToolsModule
     ' Use Resample geoprocessing tool to resample raster to specified cellSize
     ' Uses default nearest neighbor resampling algorithm
     Public Function BA_Resample_Raster(ByVal inputRaster As String, ByVal outputRaster As String, _
-                                       ByVal cellSize As Double, ByVal snapRasterPath As String) As BA_ReturnCode
+                                       ByVal cellSize As Double, ByVal snapRasterPath As String, _
+                                       ByVal resamplingType As String) As BA_ReturnCode
         Dim tool As New Resample
         Dim retCode As BA_ReturnCode = BA_ReturnCode.UnknownError
         tool.in_raster = inputRaster
         tool.out_raster = outputRaster
         tool.cell_size = cellSize
+        If Not String.IsNullOrEmpty(resamplingType) Then
+            tool.resampling_type = resamplingType
+        End If
         Try
             Dim success As Short = Execute_Geoprocessing(tool, False, snapRasterPath)
             If success > 0 Then retCode = BA_ReturnCode.Success
