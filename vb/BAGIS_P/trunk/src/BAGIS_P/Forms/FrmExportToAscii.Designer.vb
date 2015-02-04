@@ -50,6 +50,10 @@ Partial Class FrmExportToAscii
         Me.TextBox11 = New System.Windows.Forms.TextBox()
         Me.TxtDemOutputName = New System.Windows.Forms.TextBox()
         Me.TextBox13 = New System.Windows.Forms.TextBox()
+        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.CboResampleHru = New System.Windows.Forms.ComboBox()
+        Me.CboResampleDem = New System.Windows.Forms.ComboBox()
+        Me.TextBox2 = New System.Windows.Forms.TextBox()
         Me.SuspendLayout()
         '
         'TxtAoiPath
@@ -125,7 +129,7 @@ Partial Class FrmExportToAscii
         'BtnClose
         '
         Me.BtnClose.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnClose.Location = New System.Drawing.Point(625, 317)
+        Me.BtnClose.Location = New System.Drawing.Point(625, 323)
         Me.BtnClose.Name = "BtnClose"
         Me.BtnClose.Size = New System.Drawing.Size(65, 25)
         Me.BtnClose.TabIndex = 81
@@ -153,7 +157,7 @@ Partial Class FrmExportToAscii
         '
         Me.BtnExport.Enabled = False
         Me.BtnExport.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnExport.Location = New System.Drawing.Point(554, 317)
+        Me.BtnExport.Location = New System.Drawing.Point(554, 323)
         Me.BtnExport.Name = "BtnExport"
         Me.BtnExport.Size = New System.Drawing.Size(65, 25)
         Me.BtnExport.TabIndex = 91
@@ -213,10 +217,10 @@ Partial Class FrmExportToAscii
         Me.TxtHruResolution.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TxtHruResolution.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtHruResolution.ForeColor = System.Drawing.Color.Black
-        Me.TxtHruResolution.Location = New System.Drawing.Point(130, 233)
+        Me.TxtHruResolution.Location = New System.Drawing.Point(112, 232)
         Me.TxtHruResolution.Name = "TxtHruResolution"
         Me.TxtHruResolution.ReadOnly = True
-        Me.TxtHruResolution.Size = New System.Drawing.Size(107, 15)
+        Me.TxtHruResolution.Size = New System.Drawing.Size(75, 15)
         Me.TxtHruResolution.TabIndex = 106
         '
         'TextBox7
@@ -246,17 +250,17 @@ Partial Class FrmExportToAscii
         '
         Me.TextBox8.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TextBox8.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox8.Location = New System.Drawing.Point(252, 232)
+        Me.TextBox8.Location = New System.Drawing.Point(194, 232)
         Me.TextBox8.Name = "TextBox8"
         Me.TextBox8.ReadOnly = True
-        Me.TextBox8.Size = New System.Drawing.Size(121, 15)
+        Me.TextBox8.Size = New System.Drawing.Size(90, 15)
         Me.TextBox8.TabIndex = 107
         Me.TextBox8.Text = "Resample to"
         '
         'TxtHruResample
         '
         Me.TxtHruResample.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtHruResample.Location = New System.Drawing.Point(345, 230)
+        Me.TxtHruResample.Location = New System.Drawing.Point(287, 230)
         Me.TxtHruResample.Name = "TxtHruResample"
         Me.TxtHruResample.Size = New System.Drawing.Size(67, 22)
         Me.TxtHruResample.TabIndex = 109
@@ -264,7 +268,7 @@ Partial Class FrmExportToAscii
         'TxtDemResample
         '
         Me.TxtDemResample.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtDemResample.Location = New System.Drawing.Point(345, 288)
+        Me.TxtDemResample.Location = New System.Drawing.Point(287, 288)
         Me.TxtDemResample.Name = "TxtDemResample"
         Me.TxtDemResample.Size = New System.Drawing.Size(67, 22)
         Me.TxtDemResample.TabIndex = 116
@@ -285,10 +289,10 @@ Partial Class FrmExportToAscii
         '
         Me.TextBox9.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TextBox9.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox9.Location = New System.Drawing.Point(252, 292)
+        Me.TextBox9.Location = New System.Drawing.Point(194, 292)
         Me.TextBox9.Name = "TextBox9"
         Me.TextBox9.ReadOnly = True
-        Me.TextBox9.Size = New System.Drawing.Size(121, 15)
+        Me.TextBox9.Size = New System.Drawing.Size(90, 15)
         Me.TextBox9.TabIndex = 114
         Me.TextBox9.Text = "Resample to"
         '
@@ -298,10 +302,10 @@ Partial Class FrmExportToAscii
         Me.TxtDemResolution.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.TxtDemResolution.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtDemResolution.ForeColor = System.Drawing.Color.Black
-        Me.TxtDemResolution.Location = New System.Drawing.Point(130, 293)
+        Me.TxtDemResolution.Location = New System.Drawing.Point(112, 292)
         Me.TxtDemResolution.Name = "TxtDemResolution"
         Me.TxtDemResolution.ReadOnly = True
-        Me.TxtDemResolution.Size = New System.Drawing.Size(107, 15)
+        Me.TxtDemResolution.Size = New System.Drawing.Size(75, 15)
         Me.TxtDemResolution.TabIndex = 113
         '
         'TextBox11
@@ -320,7 +324,7 @@ Partial Class FrmExportToAscii
         Me.TxtDemOutputName.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtDemOutputName.Location = New System.Drawing.Point(130, 260)
         Me.TxtDemOutputName.Name = "TxtDemOutputName"
-        Me.TxtDemOutputName.Size = New System.Drawing.Size(444, 22)
+        Me.TxtDemOutputName.Size = New System.Drawing.Size(499, 22)
         Me.TxtDemOutputName.TabIndex = 111
         '
         'TextBox13
@@ -334,11 +338,55 @@ Partial Class FrmExportToAscii
         Me.TextBox13.TabIndex = 110
         Me.TextBox13.Text = "DEM ASCII name"
         '
+        'TextBox1
+        '
+        Me.TextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.TextBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TextBox1.Location = New System.Drawing.Point(368, 232)
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.ReadOnly = True
+        Me.TextBox1.Size = New System.Drawing.Size(166, 15)
+        Me.TextBox1.TabIndex = 117
+        Me.TextBox1.Text = "Resampling technique"
+        '
+        'CboResampleHru
+        '
+        Me.CboResampleHru.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CboResampleHru.FormattingEnabled = True
+        Me.CboResampleHru.Location = New System.Drawing.Point(529, 230)
+        Me.CboResampleHru.Name = "CboResampleHru"
+        Me.CboResampleHru.Size = New System.Drawing.Size(100, 24)
+        Me.CboResampleHru.TabIndex = 118
+        '
+        'CboResampleDem
+        '
+        Me.CboResampleDem.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CboResampleDem.FormattingEnabled = True
+        Me.CboResampleDem.Location = New System.Drawing.Point(529, 289)
+        Me.CboResampleDem.Name = "CboResampleDem"
+        Me.CboResampleDem.Size = New System.Drawing.Size(100, 24)
+        Me.CboResampleDem.TabIndex = 120
+        '
+        'TextBox2
+        '
+        Me.TextBox2.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.TextBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TextBox2.Location = New System.Drawing.Point(368, 291)
+        Me.TextBox2.Name = "TextBox2"
+        Me.TextBox2.ReadOnly = True
+        Me.TextBox2.Size = New System.Drawing.Size(166, 15)
+        Me.TextBox2.TabIndex = 119
+        Me.TextBox2.Text = "Resampling technique"
+        '
         'FrmExportToAscii
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(704, 355)
+        Me.Controls.Add(Me.CboResampleDem)
+        Me.Controls.Add(Me.TextBox2)
+        Me.Controls.Add(Me.CboResampleHru)
+        Me.Controls.Add(Me.TextBox1)
         Me.Controls.Add(Me.TxtDemResample)
         Me.Controls.Add(Me.TxtDemUnits)
         Me.Controls.Add(Me.TextBox9)
@@ -400,4 +448,8 @@ Partial Class FrmExportToAscii
     Friend WithEvents TextBox11 As System.Windows.Forms.TextBox
     Friend WithEvents TxtDemOutputName As System.Windows.Forms.TextBox
     Friend WithEvents TextBox13 As System.Windows.Forms.TextBox
+    Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
+    Friend WithEvents CboResampleHru As System.Windows.Forms.ComboBox
+    Friend WithEvents CboResampleDem As System.Windows.Forms.ComboBox
+    Friend WithEvents TextBox2 As System.Windows.Forms.TextBox
 End Class

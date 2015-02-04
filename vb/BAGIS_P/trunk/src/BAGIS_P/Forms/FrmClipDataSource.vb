@@ -283,7 +283,7 @@ Public Class FrmClipDataSource
                                             Dim tempFileName As String = "tmpResample"
                                             Dim tempFilePath As String = dataBinPath & "\" & tempFileName
                                             Dim snapRasterPath As String = aoiPath & BA_EnumDescription(PublicPath.AoiGrid)
-                                            success = BA_Resample_Raster(clipFullPath, tempFilePath, aoiCellSize, snapRasterPath)
+                                            success = BA_Resample_Raster(clipFullPath, tempFilePath, aoiCellSize, snapRasterPath, Nothing)
                                             'If we resampled successfully, overwrite the original clip layer with the resampled layer
                                             If success = BA_ReturnCode.Success Then
                                                 Dim retVal As Short = BA_RemoveRasterFromGDB(dataBinPath, clipFileName)

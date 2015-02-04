@@ -13,6 +13,22 @@ Public Class FrmExportToAscii
     Dim m_aoi As Aoi
     Dim m_profileList As IList(Of Profile)
 
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add items to CboResampleHru
+        CboResampleHru.Items.Add(BA_Resample_Majority)
+        CboResampleHru.Items.Add(BA_Resample_Nearest)
+        CboResampleHru.SelectedItem = BA_Resample_Majority
+        ' Add items to CboResampleDem
+        CboResampleDem.Items.Add(BA_Resample_Bilinear)
+        CboResampleDem.Items.Add(BA_Resample_Nearest)
+        CboResampleDem.Items.Add(BA_Resample_Cubic)
+        CboResampleDem.SelectedItem = BA_Resample_Bilinear
+    End Sub
+
     Private Sub BtnSelectAoi_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnSelectAoi.Click
         Dim bObjectSelected As Boolean
         Dim pGxDialog As IGxDialog = New GxDialog
@@ -220,17 +236,28 @@ Public Class FrmExportToAscii
             If Not String.IsNullOrEmpty(TxtHruResample.Text) Then
                 hruCellSize = CDbl(TxtHruResample.Text)
             End If
+            Dim tempFileName As String = "tmpResample"
             If hruCellSize > 0 Then
                 'Need to resample
-                inputDataSet = BA_OpenRasterFromGDB(hruGdbName, GRID)
-                hruDataSet = transformOp.Resample(inputDataSet, hruCellSize, esriGeoAnalysisResampleEnum.esriGeoAnalysisResampleNearest)
+                'inputDataSet = BA_OpenRasterFromGDB(hruGdbName, GRID)
+                Dim outputRaster As String = hruGdbName & "\" & tempFileName
+                Dim snapRasterPath As String = BA_GeodatabasePath(m_aoi.FilePath, GeodatabaseNames.Aoi, True) & BA_EnumDescription(AOIClipFile.AOIExtentCoverage)
+                Dim success As BA_ReturnCode = BA_Resample_Raster(hruGdbName & "\" & GRID, outputRaster, hruCellSize, snapRasterPath, CboResampleHru.SelectedItem.ToString)
+                If success = BA_ReturnCode.Success Then
+                    hruDataSet = BA_OpenRasterFromGDB(hruGdbName, tempFileName)
+                Else
+                    Throw New System.Exception("Unable to resample hru raster dataset.")
+                End If
             Else
                 'Open the dataset directly
                 hruDataSet = BA_OpenRasterFromGDB(hruGdbName, GRID)
             End If
-            inputDataSet = Nothing
             If hruDataSet IsNot Nothing Then
                 exportOp.ExportToASCII(hruDataSet, outputFolder & "\" & hruFileName)
+            End If
+            'Delete the temporary hru dataset if it exists
+            If BA_File_Exists(hruGdbName & "\" & tempFileName, WorkspaceType.Geodatabase, esriDatasetType.esriDTRasterDataset) Then
+                BA_RemoveRasterFromGDB(hruGdbName, tempFileName)
             End If
 
             If Not String.IsNullOrEmpty(TxtDemResample.Text) Then
@@ -240,7 +267,9 @@ Public Class FrmExportToAscii
             If demCellSize > 0 Then
                 'Need to resample
                 inputDataSet = BA_OpenRasterFromGDB(surfacesFolder, BA_EnumDescription(MapsFileName.filled_dem_gdb))
-                demDataSet = transformOp.Resample(inputDataSet, hruCellSize, esriGeoAnalysisResampleEnum.esriGeoAnalysisResampleNearest)
+                'Get resample method from form
+                Dim resampleEnum As esriGeoAnalysisResampleEnum = GetResampleEnum(CboResampleDem.SelectedItem.ToString)
+                demDataSet = transformOp.Resample(inputDataSet, demCellSize, resampleEnum)
             Else
                 'Open the dataset directly
                 demDataSet = BA_OpenRasterFromGDB(surfacesFolder, BA_EnumDescription(MapsFileName.filled_dem_gdb))
@@ -317,7 +346,19 @@ Public Class FrmExportToAscii
         Return True
     End Function
 
-    Private Sub TxtDemResample_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles TxtDemResample.Validating
+    Private Function GetResampleEnum(ByVal txtResample As String) As esriGeoAnalysisResampleEnum
+        Select Case txtResample
+            Case BA_Resample_Nearest
+                Return esriGeoAnalysisResampleEnum.esriGeoAnalysisResampleNearest
+            Case BA_Resample_Cubic
+                Return esriGeoAnalysisResampleEnum.esriGeoAnalysisResampleCubic
+            Case Else
+                'Per design, bilinear is the default for DEM
+                Return esriGeoAnalysisResampleEnum.esriGeoAnalysisResampleBilinear
+        End Select
+    End Function
+
+    Private Sub TxtDemResample_Validating(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles TxtDemResample.Validating
         If Not String.IsNullOrEmpty(TxtDemResample.Text) Then
             If Not IsNumeric(TxtDemResample.Text) Then
                 ' Cancel the event and select the text to be corrected by the user.
@@ -335,7 +376,7 @@ Public Class FrmExportToAscii
         End If
     End Sub
 
-    Private Sub TxtHruResample_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles TxtHruResample.Validating
+    Private Sub TxtHruResample_Validating(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles TxtHruResample.Validating
         If Not String.IsNullOrEmpty(TxtHruResample.Text) Then
             If Not IsNumeric(TxtHruResample.Text) Then
                 ' Cancel the event and select the text to be corrected by the user.
