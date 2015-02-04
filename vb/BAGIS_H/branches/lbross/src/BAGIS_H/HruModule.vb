@@ -470,7 +470,7 @@ Module HruModule
             Dim newFullPath = hruOutputPath & "\" & prismRule.OutputDatasetName
             If prismRule.DataRange <> PrismDataRange.Custom Then
                 Dim snapRasterPath As String = BA_GeodatabasePath(aoiPath, GeodatabaseNames.Aoi) & BA_EnumDescription(PublicPath.AoiGrid)
-                success = BA_Resample_Raster(prismRule.InputFolderPath, tempOutputPath, cellSize, snapRasterPath)
+                success = BA_Resample_Raster(prismRule.InputFolderPath, tempOutputPath, cellSize, snapRasterPath, Nothing)
                 If success = BA_ReturnCode.Success Then
                     Dim tmpReclassItems(prismRule.ReclassItems.GetUpperBound(0)) As ReclassItem
                     If prismRule.DisplayUnits <> prismRule.DataUnits Then
@@ -518,7 +518,7 @@ Module HruModule
                 If success = BA_ReturnCode.Success Then
                     prismRule.InputFolderPath = hruOutputPath & "\" & BA_EnumDescription(MapsFileName.sum)
                     Dim snapRasterPath As String = BA_GeodatabasePath(aoiPath, GeodatabaseNames.Aoi) & BA_EnumDescription(PublicPath.AoiGrid)
-                    success = BA_Resample_Raster(prismRule.InputFolderPath, tempOutputPath, cellSize, snapRasterPath)
+                    success = BA_Resample_Raster(prismRule.InputFolderPath, tempOutputPath, cellSize, snapRasterPath, Nothing)
                     If success = BA_ReturnCode.Success Then
                         success = BA_ReclassifyRasterFromTable(tempOutputPath, BA_FIELD_VALUE, _
                                                                prismRule.ReclassItems, newFullPath, ActionType.ReclCont, snapRasterPath)
