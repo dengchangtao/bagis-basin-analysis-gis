@@ -1,7 +1,7 @@
 ﻿Public Module ConstantsModule
 
     'Class library version; Update with each change to class library
-    Public Const BA_CLASS_LIBRARY_VERSION As String = "L032"
+    Public Const BA_CLASS_LIBRARY_VERSION As String = "L034"
 
     ' Used with BA_QueryAttributeTable to customize query
     Public Const BA_STRING_ATTRIBUTE As String = "string_attribute"
@@ -170,6 +170,12 @@
     Public Const BA_ChartWidth = 600
     Public Const BA_ChartHeight = 330
     Public Const BA_ChartSpacing = 5
+
+    'Resampling constants
+    Public Const BA_Resample_Nearest = "NEAREST"
+    Public Const BA_Resample_Bilinear = "BILINEAR"
+    Public Const BA_Resample_Cubic = "CUBIC"
+    Public Const BA_Resample_Majority = "MAJORITY"
 End Module
 
 
