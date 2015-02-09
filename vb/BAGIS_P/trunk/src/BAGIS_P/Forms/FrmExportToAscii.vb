@@ -231,6 +231,7 @@ Public Class FrmExportToAscii
                 End If
                 BA_Remove_File(outputFolder & "\" & demFileName)
             End If
+            BtnSelectAoi.Focus()
             BtnExport.Enabled = False
 
             If Not String.IsNullOrEmpty(TxtHruResample.Text) Then
