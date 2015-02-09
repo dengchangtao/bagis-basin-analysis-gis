@@ -3,3 +3,4 @@
 3. Make Data Manager window longer
 4. Add validation to make sure temperature units are defined if they are used in a method
 5. Add export to ASCII function
+6. Update export to ASCII function so that user can specify resampling method
