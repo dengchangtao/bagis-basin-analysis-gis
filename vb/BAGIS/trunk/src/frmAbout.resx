@@ -112,20 +112,21 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LblAbout.Text" xml:space="preserve">
-    <value>NRCS National Water and Climate Center (NWCC) &amp;
+    <value>NRCS National Water and Climate Center (NWCC) and
 Center for Spatial Analysis &amp; Research (CSAR), Geography, Portland State University
 
  Spatial Services 2012
 
 Funded through Cooperative Ecosystem Studies Units (CESU) National Network Agreement
 
-NWCC Contact: Jim Marron (jim.marron@por.usda.gov)
-PSU Contact: Jiunn-Der (Geoffrey) Duh (jduh@pdx.edu)</value>
+Contacts:
+USDA-NRCS NWCC Water and Climate Services Team: Cara McCarthy (cara.s.mccarthy@por.usda.gov)
+PSU Geography Department: Geoffrey Duh (jduh@pdx.edu)</value>
   </data>
 </root>
