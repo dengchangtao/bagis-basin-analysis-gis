@@ -17,8 +17,9 @@ Public Class FrmAbout
         messageString = messageString & "Center for Spatial Analysis & Research (CSAR)" & vbCrLf & "Geography, Portland State University" & vbCrLf & vbCrLf
         messageString = messageString & "Funded through Spatial Services 2010-2011 Project" & vbCrLf
         messageString = messageString & "Cooperative Ecosystem Studies Units (CESU) Agreement #68-3A75-4-101" & vbCrLf & vbCrLf
-        messageString = messageString & "NWCC Contact: Jim Marron (jim.marron@por.usda.gov)" & vbCrLf
-        messageString = messageString & "PSU Contact: Jiunn-Der (Geoffrey) Duh (jduh@pdx.edu)" & vbCrLf
+        messageString = messageString & "Contacts:" & vbCrLf
+        messageString = messageString & "USDA-NRCS NWCC Water and Climate Services Team: Cara McCarthy (cara.s.mccarthy@por.usda.gov)" & vbCrLf
+        messageString = messageString & "PSU Geography Department: Geoffrey Duh (jduh@pdx.edu)" & vbCrLf
         messageString = messageString & "ArcGIS Programmers: Lesley Bross and Richa Jain"
         LblAbout.Text = messageString
     End Sub
