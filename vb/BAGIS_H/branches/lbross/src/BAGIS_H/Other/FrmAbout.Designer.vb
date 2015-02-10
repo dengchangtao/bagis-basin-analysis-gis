@@ -42,7 +42,7 @@ Partial Class FrmAbout
         Me.LblAbout.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblAbout.Location = New System.Drawing.Point(24, 40)
         Me.LblAbout.Name = "LblAbout"
-        Me.LblAbout.Size = New System.Drawing.Size(450, 200)
+        Me.LblAbout.Size = New System.Drawing.Size(450, 230)
         Me.LblAbout.TabIndex = 1
         Me.LblAbout.Text = "About"
         Me.LblAbout.TextAlign = System.Drawing.ContentAlignment.TopCenter
@@ -60,7 +60,7 @@ Partial Class FrmAbout
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(502, 262)
+        Me.ClientSize = New System.Drawing.Size(502, 282)
         Me.Controls.Add(Me.BtnDisclaimers)
         Me.Controls.Add(Me.LblAbout)
         Me.Controls.Add(Me.LblVersionText)
