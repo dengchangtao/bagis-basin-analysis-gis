@@ -50,6 +50,8 @@ Partial Class FrmDownloadAoiMenu
         Me.TxtAoiPath = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.BtnSelectAoi = New System.Windows.Forms.Button()
+        Me.TxtBasinsDb = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
         CType(Me.AoiGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -67,7 +69,7 @@ Partial Class FrmDownloadAoiMenu
         Me.AoiGrid.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.AoiGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.AoiGrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.AoiName, Me.Uploaded, Me.Author, Me.Download, Me.Remarks})
-        Me.AoiGrid.Location = New System.Drawing.Point(12, 120)
+        Me.AoiGrid.Location = New System.Drawing.Point(12, 151)
         Me.AoiGrid.Name = "AoiGrid"
         Me.AoiGrid.ReadOnly = True
         Me.AoiGrid.Size = New System.Drawing.Size(851, 208)
@@ -121,7 +123,7 @@ Partial Class FrmDownloadAoiMenu
         'BtnCancel
         '
         Me.BtnCancel.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnCancel.Location = New System.Drawing.Point(614, 346)
+        Me.BtnCancel.Location = New System.Drawing.Point(614, 377)
         Me.BtnCancel.Name = "BtnCancel"
         Me.BtnCancel.Size = New System.Drawing.Size(108, 30)
         Me.BtnCancel.TabIndex = 57
@@ -130,9 +132,8 @@ Partial Class FrmDownloadAoiMenu
         '
         'BtnDownloadAoi
         '
-        Me.BtnDownloadAoi.Enabled = False
         Me.BtnDownloadAoi.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnDownloadAoi.Location = New System.Drawing.Point(738, 346)
+        Me.BtnDownloadAoi.Location = New System.Drawing.Point(738, 377)
         Me.BtnDownloadAoi.Name = "BtnDownloadAoi"
         Me.BtnDownloadAoi.Size = New System.Drawing.Size(125, 30)
         Me.BtnDownloadAoi.TabIndex = 56
@@ -143,7 +144,7 @@ Partial Class FrmDownloadAoiMenu
         '
         Me.LblHruLayers.AutoSize = True
         Me.LblHruLayers.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblHruLayers.Location = New System.Drawing.Point(9, 9)
+        Me.LblHruLayers.Location = New System.Drawing.Point(9, 40)
         Me.LblHruLayers.Name = "LblHruLayers"
         Me.LblHruLayers.Size = New System.Drawing.Size(104, 16)
         Me.LblHruLayers.TabIndex = 58
@@ -153,7 +154,7 @@ Partial Class FrmDownloadAoiMenu
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(137, 9)
+        Me.Label1.Location = New System.Drawing.Point(141, 40)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(82, 16)
         Me.Label1.TabIndex = 59
@@ -162,7 +163,7 @@ Partial Class FrmDownloadAoiMenu
         'TxtNewHruName
         '
         Me.TxtNewHruName.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtNewHruName.Location = New System.Drawing.Point(218, 7)
+        Me.TxtNewHruName.Location = New System.Drawing.Point(218, 38)
         Me.TxtNewHruName.Name = "TxtNewHruName"
         Me.TxtNewHruName.Size = New System.Drawing.Size(174, 22)
         Me.TxtNewHruName.TabIndex = 60
@@ -171,7 +172,7 @@ Partial Class FrmDownloadAoiMenu
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(219, 32)
+        Me.Label2.Location = New System.Drawing.Point(219, 63)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(94, 13)
         Me.Label2.TabIndex = 61
@@ -181,7 +182,7 @@ Partial Class FrmDownloadAoiMenu
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(607, 9)
+        Me.Label3.Location = New System.Drawing.Point(607, 40)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(131, 16)
         Me.Label3.TabIndex = 62
@@ -191,7 +192,7 @@ Partial Class FrmDownloadAoiMenu
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(403, 9)
+        Me.Label4.Location = New System.Drawing.Point(403, 76)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(117, 16)
         Me.Label4.TabIndex = 63
@@ -200,7 +201,7 @@ Partial Class FrmDownloadAoiMenu
         'TextBox1
         '
         Me.TextBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox1.Location = New System.Drawing.Point(736, 7)
+        Me.TextBox1.Location = New System.Drawing.Point(736, 38)
         Me.TextBox1.Name = "TextBox1"
         Me.TextBox1.Size = New System.Drawing.Size(75, 22)
         Me.TextBox1.TabIndex = 64
@@ -208,7 +209,7 @@ Partial Class FrmDownloadAoiMenu
         'TextBox2
         '
         Me.TextBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox2.Location = New System.Drawing.Point(517, 6)
+        Me.TextBox2.Location = New System.Drawing.Point(517, 37)
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.Size = New System.Drawing.Size(75, 22)
         Me.TextBox2.TabIndex = 65
@@ -217,7 +218,7 @@ Partial Class FrmDownloadAoiMenu
         '
         Me.Label5.AutoSize = True
         Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(464, 45)
+        Me.Label5.Location = New System.Drawing.Point(464, 40)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(56, 16)
         Me.Label5.TabIndex = 66
@@ -229,7 +230,7 @@ Partial Class FrmDownloadAoiMenu
         Me.CboRuleType.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CboRuleType.FormattingEnabled = True
         Me.CboRuleType.Items.AddRange(New Object() {"Contributing Area", "DAFlow-Type Zones", "PRISM Precipitation", "Raster Reclass (Continuous data)", "Raster Reclass (Discrete data)", "Raster Slice", "Template - Aspect", "Template - Canopy", "Template - Land Use", "Template - Slope"})
-        Me.CboRuleType.Location = New System.Drawing.Point(518, 41)
+        Me.CboRuleType.Location = New System.Drawing.Point(518, 72)
         Me.CboRuleType.Name = "CboRuleType"
         Me.CboRuleType.Size = New System.Drawing.Size(150, 24)
         Me.CboRuleType.TabIndex = 67
@@ -237,7 +238,7 @@ Partial Class FrmDownloadAoiMenu
         'BtnSearch
         '
         Me.BtnSearch.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSearch.Location = New System.Drawing.Point(711, 38)
+        Me.BtnSearch.Location = New System.Drawing.Point(711, 69)
         Me.BtnSearch.Name = "BtnSearch"
         Me.BtnSearch.Size = New System.Drawing.Size(100, 30)
         Me.BtnSearch.TabIndex = 68
@@ -249,7 +250,7 @@ Partial Class FrmDownloadAoiMenu
         Me.TxtAoiPath.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.TxtAoiPath.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TxtAoiPath.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.TxtAoiPath.Location = New System.Drawing.Point(109, 77)
+        Me.TxtAoiPath.Location = New System.Drawing.Point(109, 108)
         Me.TxtAoiPath.Name = "TxtAoiPath"
         Me.TxtAoiPath.ReadOnly = True
         Me.TxtAoiPath.Size = New System.Drawing.Size(559, 22)
@@ -260,7 +261,7 @@ Partial Class FrmDownloadAoiMenu
         '
         Me.Label6.AutoSize = True
         Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(9, 80)
+        Me.Label6.Location = New System.Drawing.Point(9, 111)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(98, 16)
         Me.Label6.TabIndex = 70
@@ -269,18 +270,40 @@ Partial Class FrmDownloadAoiMenu
         'BtnSelectAoi
         '
         Me.BtnSelectAoi.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.BtnSelectAoi.Location = New System.Drawing.Point(711, 75)
+        Me.BtnSelectAoi.Location = New System.Drawing.Point(711, 106)
         Me.BtnSelectAoi.Name = "BtnSelectAoi"
         Me.BtnSelectAoi.Size = New System.Drawing.Size(100, 30)
         Me.BtnSelectAoi.TabIndex = 69
         Me.BtnSelectAoi.Text = "Select"
         Me.BtnSelectAoi.UseVisualStyleBackColor = True
         '
+        'TxtBasinsDb
+        '
+        Me.TxtBasinsDb.Enabled = False
+        Me.TxtBasinsDb.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtBasinsDb.Location = New System.Drawing.Point(143, 6)
+        Me.TxtBasinsDb.Name = "TxtBasinsDb"
+        Me.TxtBasinsDb.Size = New System.Drawing.Size(350, 22)
+        Me.TxtBasinsDb.TabIndex = 73
+        Me.TxtBasinsDb.Text = "https://webservices.geog.pdx.edu:8000/api/rest/"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label7.Location = New System.Drawing.Point(9, 9)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(131, 16)
+        Me.Label7.TabIndex = 72
+        Me.Label7.Text = "Basins Database:"
+        '
         'FrmDownloadAoiMenu
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(874, 387)
+        Me.ClientSize = New System.Drawing.Size(874, 417)
+        Me.Controls.Add(Me.TxtBasinsDb)
+        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.TxtAoiPath)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.BtnSelectAoi)
@@ -328,4 +351,6 @@ Partial Class FrmDownloadAoiMenu
     Friend WithEvents TxtAoiPath As System.Windows.Forms.TextBox
     Friend WithEvents Label6 As System.Windows.Forms.Label
     Friend WithEvents BtnSelectAoi As System.Windows.Forms.Button
+    Friend WithEvents TxtBasinsDb As System.Windows.Forms.TextBox
+    Friend WithEvents Label7 As System.Windows.Forms.Label
 End Class

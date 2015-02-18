@@ -6,9 +6,9 @@
   <Image>Images\ClassLibraryAddin.png</Image>
   <Author>Lesley Bross, Richa Jain, and Geoffrey Duh</Author>
   <Company>Portland State University</Company>
-  <Date>1/27/2015</Date>
+  <Date>2/18/2015</Date>
   <Targets>
-    <Target name="Desktop" version="10.0" />
+    <Target name="Desktop" version="10.2" />
   </Targets>
   <AddIn language="CLR4.0" library="BAGIS_H.dll" namespace="BAGIS_H">
     <ArcMap>
@@ -47,6 +47,7 @@
         <Button id="Portland_State_University_BAGIS_H_BtnSnodas" class="BtnSnodas" message="Snodas Clip Tool (test mode)" caption="Snodas Clip Tool (test mode)" tip="Snodas Clip Tool (test mode)" category="BAGIS Tools" image="Images\BtnSnodas.png" />
         <Button id="Portland_State_University_BAGIS_H_BtnFileModify" class="BtnFileModify" message="Modify Date Test" caption="Modify Date Test" tip="Modify Date Test" category="BAGIS Tools" image="Images\BtnFileModify.png" />
         <Button id="Portland_State_University_BAGIS_H_BtnWebServices" class="BtnWebServices" message="Web Services Testing" caption="Web Services Testing" tip="Web Services Testing" category="BAGIS-H" image="Images\BtnWebServices.png" />
+        <Button id="Portland_State_University_BAGIS_H_BtnDownloadAoi" class="BtnDownloadAoi" message="Download AOI" caption="Download AOI" tip="Download AOI" category="BAGIS Tools" image="Images\BtnDownloadAoi.png" />
       </Commands>
       <DockableWindows>
         <DockableWindow id="ClassLibraryAddin_frmHruZone" class="frmHruZone+AddinImpl" caption="Current AOI: (Not selected)" image="Images\frmHruZone.png">
@@ -82,6 +83,7 @@
             <Button refID="Portland_State_University_BAGIS_H_BtnSlopeConverter" />
             <Button refID="Portland_State_University_BAGIS_H_BtnFileModify" />
             <Button refID="Portland_State_University_BAGIS_H_BtnWebServices" />
+            <Button refID="Portland_State_University_BAGIS_H_BtnDownloadAoi" />
             <!-- ToDo: This is a test button for running the Snodas export tool -->
             <!--<Button refID="Portland_State_University_BAGIS_H_BtnSnodas" /> -->
           </Items>
