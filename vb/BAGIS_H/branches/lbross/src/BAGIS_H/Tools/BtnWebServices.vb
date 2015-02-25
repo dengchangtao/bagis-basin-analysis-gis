@@ -5,6 +5,8 @@ Imports ESRI.ArcGIS.Geometry
 Imports BAGIS_ClassLibrary
 Imports System.Web
 Imports ESRI.ArcGIS.esriSystem
+Imports ESRI.ArcGIS.DataSourcesGDB
+Imports System.Text
 
 Public Class BtnWebServices
     Inherits ESRI.ArcGIS.Desktop.AddIns.Button
@@ -14,7 +16,8 @@ Public Class BtnWebServices
     End Sub
 
     Protected Overrides Sub OnClick()
-        AccessImageServerLayer()
+        'AccessImageServerLayer()
+        AccessFeatureLayer()
     End Sub
 
     Protected Overrides Sub OnUpdate()
@@ -27,7 +30,7 @@ Public Class BtnWebServices
         Try
             'Create an image server layer by passing a URL.
             Dim isLayer As IImageServerLayer = New ImageServerLayerClass
-            Dim URL As String = "http://atlas.geog.pdx.edu/arcgis/services/30_Meters_DEM/westus_30m"
+            Dim URL As String = "http://atlas.geog.pdx.edu/arcgis/services/30_Meters_DEM/westus_30m/ImageServer"
             isLayer.Initialize(URL)
 
             'For services that require https/authentication, use the following
@@ -47,7 +50,7 @@ Public Class BtnWebServices
             rasterProps.Height = 1771
 
             'Save the clipped raster to the file system.
-            BA_SaveRasterDataset(raster, "D:\Momeni\AOIs\teton_aoi", "isLayer")
+            BA_SaveRasterDataset(raster, "C:\Docs\Lesley\teton_aoi", "isLayer")
             MsgBox("I'm done!")
         Catch ex As Exception
             Debug.Print("AccessImageServerLayer Exception:" & ex.Message)
@@ -56,21 +59,47 @@ Public Class BtnWebServices
 
     Protected Sub AccessFeatureLayer()
         Try
-            Dim query As String = String.Format("http://services2.arcgis.com/iaresdfsofjwerr/ArcGIS/rest/services/fognatura/FeatureServer/2/query?where={0}&units=esriSRUnit_Meter&outFields=*&returnGeometry=true&f=json", HttpUtility.UrlEncode(String.Format("OBJECTID>{0}", 0)))
+            Dim sb As StringBuilder = New StringBuilder()
+            'url base for query
+            sb.Append("http://atlas.geog.pdx.edu/arcgis/rest/services/AWDB/AWDB_COOP/FeatureServer/0/query?")
+            'units for output
+            sb.Append("units=esriSRUnit_Meter")
+            'append the query; where clause is required; This one returns all records
+            sb.Append("&where={0}")
+            'return all fields
+            sb.Append("&outFields=*")
+            'return the geometries
+            sb.Append("&returnGeometry=true")
+            'append the geometry type for spatial quer
+            sb.Append("&geometryType=esriGeometryPolygon")
+            'append the spatial relation
+            sb.Append("&spatialRel=esriSpatialRelIntersects")
+            'append the geometry
+            Dim strGeo As String = GetGeometry()
+            sb.Append("&geometry=" & strGeo)
+            'return results in JSON format
+            sb.Append("&f=json")
+            'Dim query As String = sb.ToString
+            Dim query As String = String.Format(sb.ToString, HttpUtility.UrlEncode(String.Format("OBJECTID>{0}", 0)))
             Dim jsonFeatures As String = GetResult(query)
             Dim jsonReader As IJSONReader = New JSONReader
             jsonReader.ReadFromString(jsonFeatures)
-            Dim JSONConverterGdb As IJSONConverterGdb
-
-            'IJSONConverterGdb JSONConverterGdb = new JSONConverterGdbClass();
-            'IPropertySet originalToNewFieldMap;
-            'IRecordSet recorset;
-            'JSONConverterGdb.ReadRecordSet(jsonReader, null, null, out recorset, out originalToNewFieldMap);
-            'Type factoryType = Type.GetTypeFromProgID("esriDataSourcesGDB.FileGDBWorkspaceFactory");
-            'IWorkspaceFactory workspaceFactory = (IWorkspaceFactory)Activator.CreateInstance(factoryType);
-            'IWorkspace workspace = workspaceFactory.OpenFromFile(@"C:\Temp\MyGDB.gdb", 0);
-            'IRecordSet2 recordSet2 = recorset as IRecordSet2;
-            'recordSet2.SaveAsTable(workspace, "TheNameTable");
+            Dim JSONConverterGdb As IJSONConverterGdb = New JSONConverterGdb()
+            Dim originalToNewFieldMap As IPropertySet = Nothing
+            Dim recordSet As IRecordSet = Nothing
+            JSONConverterGdb.ReadRecordSet(jsonReader, Nothing, Nothing, recordSet, originalToNewFieldMap)
+            Dim workspaceFactory As IWorkspaceFactory = New FileGDBWorkspaceFactory
+            Dim workspace As IFeatureWorkspace = workspaceFactory.OpenFromFile("C:\Docs\Lesley\teton_aoi\aoi.gdb", 0)
+            Dim searchWS As IWorkspace2 = CType(workspace, IWorkspace2)
+            Dim recordSet2 As IRecordSet2 = CType(recordSet, IRecordSet2)
+            'Delete existing file if it exists
+            Dim fName As String = "newFClass"
+            If searchWS.NameExists(esriDatasetType.esriDTFeatureClass, fName) Then
+                Dim oldClass As IFeatureClass = workspace.OpenFeatureClass(fName)
+                Dim pDataset As IDataset = CType(oldClass, IDataset)
+                pDataset.Delete()
+            End If
+            recordSet2.SaveAsTable(workspace, fName)
 
             MsgBox("Finish!")
         Catch ex As Exception
@@ -90,7 +119,7 @@ Public Class BtnWebServices
 
 
     Protected Function GetEnvelope() As IEnvelope
-        Dim aoiFolder As String = "D:\Momeni\AOIs\teton_aoi\aoi.gdb"
+        Dim aoiFolder As String = "C:\Docs\Lesley\teton_aoi\aoi.gdb"
         Dim aoiFile As String = "aoib_v"
         Dim fClass As IFeatureClass = BA_OpenFeatureClassFromGDB(aoiFolder, aoiFile)
 
@@ -98,7 +127,22 @@ Public Class BtnWebServices
         Dim pClipFCursor As IFeatureCursor = fClass.Search(Nothing, False)
         Dim pClipFeature As IFeature = pClipFCursor.NextFeature
         Dim pGeo As IGeometry = pClipFeature.Shape
-        Return pGeo.Envelope
+        Return (pGeo.Envelope)
+    End Function
+
+    Protected Function GetGeometry() As String
+        Dim aoiFolder As String = "C:\Docs\Lesley\teton_aoi\aoi.gdb"
+        Dim aoiFile As String = "aoib_v"
+        Dim fClass As IFeatureClass = BA_OpenFeatureClassFromGDB(aoiFolder, aoiFile)
+
+        'retrieve IFeature from FeatureClass
+        Dim pClipFCursor As IFeatureCursor = fClass.Search(Nothing, False)
+        Dim pClipFeature As IFeature = pClipFCursor.NextFeature
+        Dim pGeo As IGeometry = pClipFeature.Shape
+        Dim jsonOut As IJSONObject = New JSONObject
+        Dim JSONConverter As IJSONConverterGeometry = New JSONConverterGeometry()
+        JSONConverter.QueryJSONGeometry(pGeo, False, jsonOut)
+        Return jsonOut.ToJSONString(Nothing)
     End Function
 
 End Class
