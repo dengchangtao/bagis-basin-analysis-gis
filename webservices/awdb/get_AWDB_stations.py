@@ -17,10 +17,12 @@
 # some import statements in functions to speed process generation
 from __future__ import print_function
 from suds.client import Client
+from urllib2 import URLError
 from multiprocessing import Process, Lock, Queue
 import traceback
 import os
 import logging
+from login_settings import ADMIN_USER, ADMIN_PSWD
 
 
 # --------------------------------------
@@ -42,12 +44,12 @@ FDS_SDE_PREFIX = SDE_DATABASE + "." + SDE_USERNAME + "."
 # name of output feature dataset
 FDS_NAME = "AWDB"  # set to None to write to DB root, not dataset
 
-
 # url of the NRCS AWDB SOAP WDSL (defines the web API connection)
 WDSL = "http://www.wcc.nrcs.usda.gov/awdbWebService/services?WSDL"
 
 # NRCS AWDB network codes to download
-NETWORKS = ["SNTL", "SNOW", "USGS", "COOP"]
+NETWORKS = ["SNTL", "SNOW", "USGS", "COOP", "SCAN", "SNTLT", "OTHER", "BOR",
+            "MPRC", "MSNT"]
 #NETWORKS = ["SNOW"]
 
 
@@ -94,11 +96,10 @@ MAX_REQUEST = 250
 # ArcGIS Server settings
 SERVER_ADDRESS = "atlas.geog.pdx.edu"  # PSU server hosting AWDB services
 SERVER_PORT = "6080"
-ADMIN_USER = "AtlasAdmin"
-ADMIN_PSWD = "CSARAtlas459"
 
 # WFS service settings
-WFS_SERVICE_FOLDER = "AWDB"  # name of the folder containing all the AWDB web services
+# name of the folders containing all the AWDB web services
+WFS_SERVICE_FOLDERS = ["AWDB", "AWDB_ALL", "AWDB_ACTIVE", "AWDB_INACTIVE"]
 
 # USGS metadata retrival constants
 NEW_FIELDS = [("basinarea", "DOUBLE"), ("USGS_ID", "TEXT"), ("USGSname", "TEXT")]  # fields to add: tuple of name and data type
@@ -140,7 +141,7 @@ def recursive_asdict(d):
     """
 
     from suds.sudsobject import asdict
-    
+
     out = {}
     for key, value in asdict(d).iteritems():
         if hasattr(value, '__keylist__'):
@@ -179,7 +180,7 @@ def grouper(iterable, n, fillvalue=None):
     """
 
     from itertools import izip_longest
-    
+
     args = [iter(iterable)] * n
     pieces = list(izip_longest(*args, fillvalue=fillvalue))
 
@@ -214,7 +215,7 @@ def get_multiple_stations_thread(stations, outQueue, queueLock, recursiveCall=0)
     """
 
     data = None
-    
+
     try:
         client = Client(WDSL)  # connect to the service definition
         data = client.service.getStationMetadataMultiple(stationTriplets=stations)
@@ -306,7 +307,7 @@ def validate_station_data(station):
     Error condition: if a required field is missing, will return False
     """
 
-    # test to ensure all required fields have a value    
+    # test to ensure all required fields have a value
     for field in REQUIRED_FIELDS:
         try:
             station[field["field_name"]]
@@ -340,10 +341,10 @@ def get_network_stations(networkCode, fc_name, spatialref, workspace="in_memory"
 
     Returns: fc -- the result object from the CreateFeatureClass function
     """
-    
+
     from arcpy import AddField_management, CreateFeatureclass_management
     from arcpy.da import InsertCursor
-    
+
     LOGGER.info("\nGetting stations in the {0} network...".format(networkCode))
     client = Client(WDSL)  # connect to the service definition
     stationIDs = client.service.getStations(networkCds=networkCode)  # get list of station IDs in network
@@ -403,7 +404,7 @@ def get_network_stations(networkCode, fc_name, spatialref, workspace="in_memory"
                 pass
 
             stationIDs.remove(station["stationTriplet"])
-            
+
             cursor.insertRow((station[FIELDS[0]["field_name"]],
                               station[FIELDS[1]["field_name"]],
                               station[FIELDS[2]["field_name"]],
@@ -443,7 +444,7 @@ def archive_GDB_FC(fc, outdir):
 
     Returns:  zippath -- the path to the created zip archive
     """
-    
+
     import zipfile
     import glob
     from datetime import datetime
@@ -488,7 +489,7 @@ def replace_wfs_data(newdata, target_workspace):
     CopyFeatures_management(newdata, os.path.join(target_workspace, os.path.splitext(os.path.basename(newdata))[0]))
 
 
-def update_all_wfs(fcstoupdate, target_workspace, servicefoldername):
+def update_all_wfs(fcstoupdate, target_workspace, servicefoldernames):
     """
     Stops all web services in a folder on the server to remove all data locks.
     For all new data, write that data to SDE, replacing the old web service data.
@@ -501,18 +502,20 @@ def update_all_wfs(fcstoupdate, target_workspace, servicefoldername):
 
     Returns:  errorcount -- the number of FCs that were not copied successfully
     """
-    
+
     from arcpyExt import agsAdmin
 
     if not fcstoupdate:
         raise Exception("No FCs to update.")
 
     errorcount = 0
+    errors = 0
 
     try:
-        print("Connecting to server admin and stopping all services in {0} folder...".format(servicefoldername))
+        print("Connecting to server admin and stopping all services in {0} folder(s)...".format(servicefoldernames))
         agsconnection = agsAdmin.AgsAdmin.connectWithoutToken(SERVER_ADDRESS, SERVER_PORT, ADMIN_USER, ADMIN_PSWD)
-        errors = agsconnection.stopAllServicesInFolder(servicefoldername)
+        for servicefoldername in servicefoldernames:
+            errors += agsconnection.stopAllServicesInFolder(servicefoldername)
     except Exception as e:
         LOGGER.log(15, e)
         LOGGER.log(15, traceback.format_exc())
@@ -520,7 +523,8 @@ def update_all_wfs(fcstoupdate, target_workspace, servicefoldername):
         return
     else:
         if errors:
-            agsconnection.startAllServicesInFolder(servicefoldername)
+            for servicefoldername in servicefoldernames:
+                agsconnection.startAllServicesInFolder(servicefoldername)
             raise Exception("Failed to stop all services in {0}. Tried to restart then aborted.".format(servicefoldername))
 
     for newdata in fcstoupdate:
@@ -536,14 +540,15 @@ def update_all_wfs(fcstoupdate, target_workspace, servicefoldername):
 
     LOGGER.info("Restarting stoppped services...")
     try:
-        agsconnection.startAllServicesInFolder(servicefoldername)
+        for servicefoldername in servicefoldernames:
+            agsconnection.startAllServicesInFolder(servicefoldername)
     except Exception as e:
         LOGGER.log(15, e)
         LOGGER.log(15, traceback.format_exc())
         errorcount += 1
 
     return errorcount
-        
+
 
 def validateSDE(sdeconnection):
     """
@@ -554,7 +559,7 @@ def validateSDE(sdeconnection):
     Returns: True if the connection exists
     """
     from arcpy import Exists
-    
+
     if not Exists(sdeconnection):
         raise SDEError("SDE connection invalid or inaccessible.")
 
@@ -574,7 +579,7 @@ def validateFDS(sdeconnection, fds, spatialref="#"):
     Returns:  True if successful
     """
     from arcpy import Exists, CreateFeatureDataset_management
-    
+
     if not Exists(os.path.join(sdeconnection, fds)):
         CreateFeatureDataset_management(sdeconnection, fds, spatialref)
 
@@ -607,7 +612,7 @@ def create_temp_workspace(directory, name, is_gdb=True):
     if os.path.isdir(path):
         LOGGER.log(15, "Temp workspace already exists; removing...")
         shutil.rmtree(path)
-        
+
     if is_gdb:
         CreateFileGDB_management(directory, name)
     else:
@@ -626,7 +631,7 @@ def get_USGS_metadata(usgs_fc):
 
     Returns:  None
     """
-    
+
     import urllib
     import urllib2
     import gzip
@@ -656,7 +661,7 @@ def get_USGS_metadata(usgs_fc):
 
     #print(len(stationIDs))
 
-    # setup and get the HTTP request 
+    # setup and get the HTTP request
     request = urllib2.Request(USGS_URL, urllib.urlencode({"format": "rdb",  # get the data in USGS rdb format
                                                           "sites": ",".join(stationIDs),  # the site IDs to get, separated by commas
                                                           "siteOutput": "expanded",  # expanded output includes basin area
@@ -679,7 +684,7 @@ def get_USGS_metadata(usgs_fc):
             line = line.split("\t")  # data elements in line (station record) are separated by tabs
             stationAreas[line[1]] = (line[29], line[1], line[2])  # the 2nd element is the station ID, 3rd is the name, and the 30th is the area
                                                                   # order in the tuple is important, so data is entered into the correct fields in the table
-                                                                  
+
     #print(len(stationAreas))
 
     # write the response data to the FC
@@ -702,13 +707,13 @@ def get_USGS_metadata(usgs_fc):
             except ValueError:
                 # in case ID returned is ""
                 pass
-            
+
             try:
                 row[3] = stationAreas[stationid][2]  # row[3] is the USGS station name
             except ValueError:
                 # in case name returned is ""
                 pass
-            
+
             # no exception so data valid, update row
             cursor.updateRow(row)
 
@@ -726,15 +731,15 @@ def write_to_summary_log(message):
 
 
 # ----------------------------
-#             MAIN 
+#             MAIN
 # ----------------------------
 
 def main():
-    from datetime import datetime, date
+    from datetime import datetime
     import shutil
     import arcpy
     from arcpy import env
-    
+
     start = datetime.now()
     LOGGER.log(15, "\n\n--------------------------------------------------------------\n")
     LOGGER.log(15, "Started at {0}.".format(start))
@@ -775,14 +780,14 @@ def main():
 
     wfsupdatelist = []  # list of wfs data to update
     archiveerror = 0
-    
+
     # process stations in each network
     for network in NETWORKS:
         fc = None
         fc_name = "stations_" + network
         try_count = 0
         archiveerror += 1  # add error to be removed after successful execution
-        
+
         while try_count <= RETRY_COUNT:
             try:
                 try_count += 1
@@ -810,7 +815,7 @@ def main():
                 LOGGER.log(15, traceback.format_exc())
                 LOGGER.error("Failed to retreive the USGS area data. Could not continue.")
                 write_to_summary_log("{}: stations_{} processing FAILED".format(datetime.now(), network))
-                continue   
+                continue
 
         try:
             projectedfc = arcpy.Project_management(fc, os.path.join(templocation, fc_name), prjSR)  # from unprjSR to prjSR
@@ -828,7 +833,7 @@ def main():
             arcpy.Delete_management(fc)
         except:
             pass
-        
+
         try:
             LOGGER.info("Archiving the data to the FTP site...")
             archive_GDB_FC(projectedfc.getOutput(0), ARCHIVE_WORKSPACE)
@@ -848,7 +853,7 @@ def main():
     if wfsupdatelist:
         LOGGER.info("\nUpdating WFSs in update list...")
         try:
-            updateerrors = update_all_wfs(wfsupdatelist, target_workspace, WFS_SERVICE_FOLDER)
+            updateerrors = update_all_wfs(wfsupdatelist, target_workspace, WFS_SERVICE_FOLDERS)
             if updateerrors:
                 LOGGER.error("\nUpdating failed with errors. Aborting...")
                 return 201
@@ -874,11 +879,11 @@ def main():
             LOGGER.log(15, e)
             LOGGER.log(15, traceback.format_exc())
             LOGGER.error("Could not remove temp data.")
-    
+
     end = datetime.now()
     LOGGER.info("\nTime finished: {0}.".format(end))
     LOGGER.info("Time elapsed: {0}.".format(end-start))
-    
+
     return 0
 
 
@@ -923,6 +928,6 @@ if __name__ == '__main__':
     LOGGER.addHandler(pr)
 
     # -------------------------------
-    
+
     # call main
     sys.exit(main())
