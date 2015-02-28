@@ -31,6 +31,7 @@ from arcpy import env
 from arcpy.sa import *
 from datetime import datetime
 import traceback
+from login_settings import ADMIN_USER, ADMIN_PSWD
 
 
 # ---------------- TODO ITEMS -----------------
@@ -57,8 +58,6 @@ MOSAIC_FIELDS = ("Name", "Time")
 # ArcGIS Server settings
 SERVER_ADDRESS = "atlas.geog.pdx.edu"
 SERVER_PORT = "6080"
-ADMIN_USER = "AtlasAdmin"
-ADMIN_PSWD = "CSARAtlas459"
 
 # image service settings
 IMAGE_SERVICE = "SNODAS/SNODAS_SWE_TimeAware.ImageServer"
