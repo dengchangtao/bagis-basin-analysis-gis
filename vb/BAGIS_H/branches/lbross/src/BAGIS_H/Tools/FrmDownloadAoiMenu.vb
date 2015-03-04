@@ -42,7 +42,7 @@ Public Class FrmDownloadAoiMenu
         AoiGrid.CurrentCell = Nothing
 
         'Check for token
-        m_token.token = SecurityModule.GetStoredToken
+        m_token.token = SecurityHelper.GetStoredToken
     End Sub
 
     Private Sub BtnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnCancel.Click
@@ -51,7 +51,7 @@ Public Class FrmDownloadAoiMenu
 
     Private Sub BtnDownloadAoi_Click(sender As System.Object, e As System.EventArgs) Handles BtnDownloadAoi.Click
         If String.IsNullOrEmpty(m_token.token) Then
-            Dim strToken As String = SecurityModule.GetServerToken(m_userName, m_password, TxtBasinsDb.Text & "api-token-auth/")
+            Dim strToken As String = SecurityHelper.GetServerToken(m_userName, m_password, TxtBasinsDb.Text & "api-token-auth/")
             m_token.token = strToken
             If String.IsNullOrEmpty(strToken) Then
                 MessageBox.Show("Invalid user name or password. Failed to connect to database.", "Failed Connection", MessageBoxButtons.OK, MessageBoxIcon.Error)
