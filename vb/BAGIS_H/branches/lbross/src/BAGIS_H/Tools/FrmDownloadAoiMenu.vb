@@ -1,18 +1,36 @@
 ﻿Imports System.Windows.Forms
 Imports System.Net
 Imports System.Text
+Imports System.IO
 
 Public Class FrmDownloadAoiMenu
 
     Private m_token As BagisToken = New BagisToken
     'In practice the user name/password will be provided by the user
-    Private m_userName As String = "testUser"
-    Private m_password As String = "CSARBasins2015"
+    Private m_userName As String = Nothing
+    Private m_password As String = Nothing
 
     Public Sub New()
 
         ' This call is required by the designer.
         InitializeComponent()
+
+        'Set the user name and password from a text file that is NOT in source countrol
+        'Note: Developers will have to change this to a path valid on their machine
+        Dim filePath As String = "C:\Docs\Lesley\Repository\vb\BAGIS_H\branches\lbross\src\BAGIS_H\GoldenTicket.txt"
+        '@ToDo: In the future, this comes from user input
+        Try
+            ' Create an instance of StreamReader to read from a file.
+            ' The using statement also closes the StreamReader.
+            Using sr As New StreamReader(filePath)
+                m_userName = sr.ReadLine()
+                m_password = sr.ReadLine()
+            End Using
+        Catch e As Exception
+            ' Let the user know what went wrong.
+            Console.WriteLine("The file could not be read:")
+            Console.WriteLine(e.Message)
+        End Try
 
         ' Add any initialization after the InitializeComponent() call.
         '---create a row---

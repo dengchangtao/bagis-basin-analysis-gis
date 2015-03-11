@@ -16,9 +16,11 @@ Public Class BtnWebServices
     End Sub
 
     Protected Overrides Sub OnClick()
-        AccessImageServerLayer()
+        Dim wForm As FrmWebservices = New FrmWebservices
+        wForm.ShowDialog()
+        'AccessImageServerLayer()
         'AccessFeatureLayer()
-        MsgBox("Finish!")
+        'MsgBox("Finish!")
     End Sub
 
     Protected Overrides Sub OnUpdate()
