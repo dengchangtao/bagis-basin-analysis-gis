@@ -19,7 +19,7 @@ Module WebservicesModule
         End If
         Dim sb As StringBuilder = New StringBuilder()
         'url base for query
-        sb.Append("http://atlas.geog.pdx.edu/arcgis/rest/services/AWDB/AWDB_COOP/FeatureServer/0/")
+        sb.Append(webServiceUrl)
         'append the query; where clause is required; This one returns all records
         Dim whereClause As String = "query?&where={0}"
         sb.Append(String.Format(whereClause, HttpUtility.UrlEncode(String.Format("OBJECTID>{0}", 0))))
@@ -250,5 +250,51 @@ Module WebservicesModule
         End Try
 
     End Function
+
+    Public Function BA_QueryFeatureServiceFieldNames(ByVal webserviceUrl As String) As IList(Of String)
+        Dim sb As StringBuilder = New StringBuilder()
+        'url base for query
+        sb.Append(webserviceUrl)
+        'append the query; where clause is required; This one returns all records
+        Dim whereClause As String = "query?&where={0}"
+        sb.Append(String.Format(whereClause, HttpUtility.UrlEncode(String.Format("OBJECTID={0}", 1))))
+        'return all fields
+        sb.Append("&outFields=*")
+        'return the geometries
+        sb.Append("&returnGeometry=true")
+        'append the geometry type for spatial query
+        'sb.Append("&geometryType=esriGeometryEnvelope")
+        'append the spatial relation
+        'sb.Append("&spatialRel=esriSpatialRelIntersects")
+        'append the geometry
+        'sb.Append("&geometry=" & GetJSONEnvelope(clipFilePath))
+        'return results in JSON format
+        sb.Append("&f=json")
+        Dim query As String = sb.ToString
+        'read the JSON request
+        Dim jsonFeature As String = GetResult(query)
+        Dim jsonReader As IJSONReader = New JSONReader
+        Dim JSONConverterGdb As IJSONConverterGdb = New JSONConverterGdb()
+        Dim originalToNewFieldMap As IPropertySet = Nothing
+        Dim recordSet As IRecordSet = Nothing
+        Try
+            jsonReader.ReadFromString(jsonFeature)
+            JSONConverterGdb.ReadRecordSet(jsonReader, Nothing, Nothing, recordSet, originalToNewFieldMap)
+            DebugPropertySet(originalToNewFieldMap)
+        Catch ex As Exception
+            Debug.Print("BA_QueryFeatureServiceFieldNames Exception: " & ex.Message)
+            Return Nothing
+        End Try
+    End Function
+
+    Private Sub DebugPropertySet(ByVal propertySet As IPropertySet)
+        Dim names(propertySet.Count - 1) As Object
+        Dim values(propertySet.Count - 1) As Object
+        propertySet.GetAllProperties(names, values)
+        For i As Integer = 0 To propertySet.Count - 1
+            Debug.Print(CStr(names(i) & "-->"))
+            Debug.Print(values(i).ToString & vbCrLf)
+        Next
+    End Sub
 
 End Module

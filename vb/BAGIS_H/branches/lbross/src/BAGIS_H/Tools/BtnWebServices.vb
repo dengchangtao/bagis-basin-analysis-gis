@@ -17,9 +17,10 @@ Public Class BtnWebServices
 
     Protected Overrides Sub OnClick()
         Dim wForm As FrmWebservices = New FrmWebservices
-        wForm.ShowDialog()
+        'wForm.ShowDialog()
         'AccessImageServerLayer()
         'AccessFeatureLayer()
+        QueryFields()
         'MsgBox("Finish!")
     End Sub
 
@@ -37,9 +38,14 @@ Public Class BtnWebServices
     Protected Sub AccessFeatureLayer()
         Dim aoiPath As String = "C:\Docs\Lesley\teton_aoi"
         Dim clipFilePath As String = aoiPath & "\aoi.gdb\aoib_v"
-        Dim webServiceUrl As String = "http://atlas.geog.pdx.edu/arcgis/rest/services/AWDB_ALL/AWDB_SNOTEL_ALL/FeatureServer"
+        Dim webServiceUrl As String = "http://atlas.geog.pdx.edu/arcgis/rest/services/AWDB_ALL/AWDB_SNOTEL_ALL/FeatureServer/0/"
         Dim newFilePath As String = aoiPath & "\layers.gdb\snotel_sites_web"
         Dim success As BA_ReturnCode = BA_ClipFeatureService(clipFilePath, webServiceUrl, newFilePath, aoiPath)
+    End Sub
+
+    Protected Sub QueryFields()
+        Dim webServiceUrl As String = "http://atlas.geog.pdx.edu/arcgis/rest/services/AWDB_ALL/AWDB_SNOTEL_ALL/FeatureServer/0/"
+        Dim fieldNames As IList(Of String) = BA_QueryFeatureServiceFieldNames(webServiceUrl)
     End Sub
 
 End Class
