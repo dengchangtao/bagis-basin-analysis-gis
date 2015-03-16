@@ -28,7 +28,7 @@ Public Class SecurityHelper
         reqT.ContentLength = credArray.Length
 
         '@ToDo: Workaround for certificate error; This should come out when the certificate issue is fixed
-        ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf AcceptAllCertifications)
+        'ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf AcceptAllCertifications)
 
         Try
             'Intercept the httpRequest so we can add the user name/password
@@ -64,7 +64,7 @@ Public Class SecurityHelper
         reqT.Headers(HttpRequestHeader.Authorization) = cred
 
         '@ToDo: Workaround for certificate error; This should come out when the certificate issue is fixed
-        ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf AcceptAllCertifications)
+        'ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf AcceptAllCertifications)
 
         Try
             resT = CType(reqT.GetResponse(), HttpWebResponse)

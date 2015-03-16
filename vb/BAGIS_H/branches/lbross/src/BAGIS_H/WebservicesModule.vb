@@ -7,6 +7,7 @@ Imports ESRI.ArcGIS.esriSystem
 Imports ESRI.ArcGIS.DataSourcesGDB
 Imports ESRI.ArcGIS.Carto
 Imports ESRI.ArcGIS.DataSourcesRaster
+Imports System.Net
 
 Module WebservicesModule
 
@@ -253,38 +254,24 @@ Module WebservicesModule
 
     Public Function BA_QueryFeatureServiceFieldNames(ByVal webserviceUrl As String) As IList(Of String)
         Dim sb As StringBuilder = New StringBuilder()
-        'url base for query
-        sb.Append(webserviceUrl)
-        'append the query; where clause is required; This one returns all records
-        Dim whereClause As String = "query?&where={0}"
-        sb.Append(String.Format(whereClause, HttpUtility.UrlEncode(String.Format("OBJECTID={0}", 1))))
-        'return all fields
-        sb.Append("&outFields=*")
-        'return the geometries
-        sb.Append("&returnGeometry=true")
-        'append the geometry type for spatial query
-        'sb.Append("&geometryType=esriGeometryEnvelope")
-        'append the spatial relation
-        'sb.Append("&spatialRel=esriSpatialRelIntersects")
-        'append the geometry
-        'sb.Append("&geometry=" & GetJSONEnvelope(clipFilePath))
-        'return results in JSON format
-        sb.Append("&f=json")
-        Dim query As String = sb.ToString
         'read the JSON request
-        Dim jsonFeature As String = GetResult(query)
-        Dim jsonReader As IJSONReader = New JSONReader
-        Dim JSONConverterGdb As IJSONConverterGdb = New JSONConverterGdb()
-        Dim originalToNewFieldMap As IPropertySet = Nothing
-        Dim recordSet As IRecordSet = Nothing
-        Try
-            jsonReader.ReadFromString(jsonFeature)
-            JSONConverterGdb.ReadRecordSet(jsonReader, Nothing, Nothing, recordSet, originalToNewFieldMap)
-            DebugPropertySet(originalToNewFieldMap)
-        Catch ex As Exception
-            Debug.Print("BA_QueryFeatureServiceFieldNames Exception: " & ex.Message)
-            Return Nothing
-        End Try
+        Dim req As System.Net.WebRequest = System.Net.WebRequest.Create(webserviceUrl & "?f=pjson")
+        Dim resp As System.Net.WebResponse = req.GetResponse()
+
+        Dim fs As FeatureService = New FeatureService()
+        Dim ser As System.Runtime.Serialization.Json.DataContractJsonSerializer = New System.Runtime.Serialization.Json.DataContractJsonSerializer(fs.[GetType]())
+        fs = CType(ser.ReadObject(resp.GetResponseStream), FeatureService)
+        Dim fieldList As List(Of String) = New List(Of String)
+        For Each fsf As FeatureServiceField In fs.fields
+            If fsf.fieldType = esriFieldType.esriFieldTypeString Or _
+                fsf.fieldType = esriFieldType.esriFieldTypeInteger Then
+                fieldList.Add(fsf.alias)
+            End If
+        Next
+        If fieldList.Count > 1 Then
+            fieldList.Sort()
+        End If
+        Return fieldList
     End Function
 
     Private Sub DebugPropertySet(ByVal propertySet As IPropertySet)

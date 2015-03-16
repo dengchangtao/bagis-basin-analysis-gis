@@ -25,6 +25,9 @@ Partial Class FrmWebservices
         Me.TxtWebService = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.BtnSet = New System.Windows.Forms.Button()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.cboFields = New System.Windows.Forms.ComboBox()
+        Me.BtnFields = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'TxtWebService
@@ -37,6 +40,8 @@ Partial Class FrmWebservices
         Me.TxtWebService.ReadOnly = True
         Me.TxtWebService.Size = New System.Drawing.Size(459, 22)
         Me.TxtWebService.TabIndex = 64
+        Me.TxtWebService.Text = "http://atlas.geog.pdx.edu/arcgis/rest/services/AWDB_ALL/AWDB_SNOTEL_ALL/FeatureSe" & _
+    "rver/0"
         '
         'Label5
         '
@@ -58,17 +63,50 @@ Partial Class FrmWebservices
         Me.BtnSet.Text = "Set"
         Me.BtnSet.UseVisualStyleBackColor = True
         '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Location = New System.Drawing.Point(7, 43)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(48, 16)
+        Me.Label1.TabIndex = 67
+        Me.Label1.Text = "Fields:"
+        '
+        'cboFields
+        '
+        Me.cboFields.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboFields.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cboFields.FormattingEnabled = True
+        Me.cboFields.Location = New System.Drawing.Point(61, 43)
+        Me.cboFields.Name = "cboFields"
+        Me.cboFields.Size = New System.Drawing.Size(135, 24)
+        Me.cboFields.TabIndex = 68
+        '
+        'BtnFields
+        '
+        Me.BtnFields.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.BtnFields.Location = New System.Drawing.Point(207, 40)
+        Me.BtnFields.Name = "BtnFields"
+        Me.BtnFields.Size = New System.Drawing.Size(108, 30)
+        Me.BtnFields.TabIndex = 69
+        Me.BtnFields.Text = "Get Fields"
+        Me.BtnFields.UseVisualStyleBackColor = True
+        '
         'FrmWebservices
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(682, 262)
+        Me.Controls.Add(Me.BtnFields)
+        Me.Controls.Add(Me.cboFields)
+        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.BtnSet)
         Me.Controls.Add(Me.TxtWebService)
         Me.Controls.Add(Me.Label5)
         Me.Name = "FrmWebservices"
         Me.ShowIcon = False
-        Me.Text = "FrmWebservices"
+        Me.Text = "Webservices testing"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -76,4 +114,7 @@ Partial Class FrmWebservices
     Friend WithEvents TxtWebService As System.Windows.Forms.TextBox
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents BtnSet As System.Windows.Forms.Button
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents cboFields As System.Windows.Forms.ComboBox
+    Friend WithEvents BtnFields As System.Windows.Forms.Button
 End Class

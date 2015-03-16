@@ -60,7 +60,7 @@ Public Class FrmDownloadAoiMenu
         AoiGrid.CurrentCell = Nothing
 
         'Check for token
-        m_token.token = SecurityHelper.GetStoredToken
+        'm_token.token = SecurityHelper.GetStoredToken
     End Sub
 
     Private Sub BtnCancel_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles BtnCancel.Click
@@ -80,7 +80,7 @@ Public Class FrmDownloadAoiMenu
         Dim reqT As HttpWebRequest
         Dim resT As HttpWebResponse
         'The end point for getting a token for the web service
-        reqT = WebRequest.Create(TxtBasinsDb.Text & "AOI/")
+        reqT = WebRequest.Create(TxtBasinsDb.Text & "aoi/")
         'This is a GET request
         reqT.Method = "GET"
 

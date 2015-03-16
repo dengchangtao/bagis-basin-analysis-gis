@@ -285,7 +285,7 @@ Partial Class FrmDownloadAoiMenu
         Me.TxtBasinsDb.Name = "TxtBasinsDb"
         Me.TxtBasinsDb.Size = New System.Drawing.Size(350, 22)
         Me.TxtBasinsDb.TabIndex = 73
-        Me.TxtBasinsDb.Text = "https://webservices.geog.pdx.edu:8000/api/rest/"
+        Me.TxtBasinsDb.Text = "https://webservices.geog.pdx.edu/api/rest/"
         '
         'Label7
         '

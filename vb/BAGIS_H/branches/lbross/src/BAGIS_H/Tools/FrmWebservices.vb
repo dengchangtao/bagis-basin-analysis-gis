@@ -7,6 +7,8 @@ Imports ESRI.ArcGIS.esriSystem
 
 Public Class FrmWebservices
 
+
+
     Private Sub BtnSet_Click(sender As System.Object, e As System.EventArgs) Handles BtnSet.Click
         Dim pGxDialog As IGxDialog = New GxDialog
         pGxDialog.AllowMultiSelect = False
@@ -33,5 +35,23 @@ Public Class FrmWebservices
         End If
 
 
+    End Sub
+
+    Private Sub BtnFields_Click(sender As System.Object, e As System.EventArgs) Handles BtnFields.Click
+        cboFields.Items.Clear()
+        Dim fieldNames As IList(Of String) = BA_QueryFeatureServiceFieldNames(TxtWebService.Text)
+        For Each fName As String In fieldNames
+            cboFields.Items.Add(fName)
+        Next
+        cboFields.SelectedIndex = 0
+    End Sub
+
+    Public Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        BtnFields.Focus()
     End Sub
 End Class
