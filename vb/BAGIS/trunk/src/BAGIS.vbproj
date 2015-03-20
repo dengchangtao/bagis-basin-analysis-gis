@@ -333,9 +333,9 @@
     </Compile>
     <Compile Include="Basin\setDEMExtenttool.vb" />
     <Compile Include="AOI\setPourPointtool.vb" />
-    <Compile Include="Images\Objects\Analysis.vb" />
-    <Compile Include="Images\Objects\AreaStatistics.vb" />
-    <Compile Include="Images\Objects\Site.vb" />
+    <Compile Include="Objects\Analysis.vb" />
+    <Compile Include="Objects\AreaStatistics.vb" />
+    <Compile Include="Objects\Site.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AOI\frmCreateAOIfromExistingBND.resx">
