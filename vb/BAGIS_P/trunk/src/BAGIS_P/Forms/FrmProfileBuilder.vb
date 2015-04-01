@@ -35,6 +35,7 @@ Public Class FrmProfileBuilder
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        Dim bExt As BagisPExtension = BagisPExtension.GetExtension
         m_mode = pMode
         If m_mode = BA_BAGISP_MODE_LOCAL Then
             Me.Text = "Profile Builder (AOI: Not selected)"
@@ -46,7 +47,6 @@ Public Class FrmProfileBuilder
             'Hide select AOI Button
             BtnSelectAoi.Visible = False
             'Display settings folder
-            Dim bExt As BagisPExtension = BagisPExtension.GetExtension
             Dim settingsPath As String = bExt.SettingsPath
             Dim bagisFolder As String = "PleaseReturn"
             Dim tmpFile As String = BA_GetBareName(BA_EnumDescription(PublicPath.BagisPProfiles), bagisFolder)
@@ -100,6 +100,9 @@ Public Class FrmProfileBuilder
             'Re-Initialize m_methodStatusTable
             m_methodStatusTable = New Hashtable
         End If
+
+        'Enable profile editing if user has entered the admin password
+        If bExt.ProfileAdministrator = True Then EnableAdminButtons()
 
     End Sub
 
@@ -1778,4 +1781,22 @@ Public Class FrmProfileBuilder
             pRasterBand = Nothing
         End Try
     End Function
+
+    Private Sub TxtProfileName_DoubleClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles TxtProfileName.DoubleClick
+        Dim frmPassword As FrmProfilePassword = New FrmProfilePassword(Me)
+        frmPassword.ShowDialog()
+    End Sub
+
+    Public Sub EnableAdminButtons()
+        BtnProfileNew.Visible = True
+        BtnEditProfile.Visible = True
+        BtnProfileDelete.Visible = True
+        BtnProfileCopy.Visible = True
+        BtnApply.Visible = True
+        BtnImport.Visible = True
+        BtnExportProfile.Visible = True
+        BtnAddMethod.Visible = True
+        BtnMethodDelete.Visible = True
+        BtnMethodNew.Visible = True
+    End Sub
 End Class

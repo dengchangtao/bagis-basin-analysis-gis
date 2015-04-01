@@ -14,6 +14,7 @@ Public Class BagisPExtension
     Private m_spatialReferenceName As String
     Private m_arcMapVersion As String
     Private m_noDataValue As String
+    Private m_profileAdministrator As Boolean
 
     Public Sub New()
         s_extension = Me
@@ -100,6 +101,15 @@ Public Class BagisPExtension
         Get
             Return m_arcMapVersion
         End Get
+    End Property
+
+    Friend Property ProfileAdministrator() As Boolean
+        Get
+            Return m_profileAdministrator
+        End Get
+        Set(ByVal value As Boolean)
+            m_profileAdministrator = value
+        End Set
     End Property
 
 End Class
